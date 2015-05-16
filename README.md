@@ -6,7 +6,7 @@
   * development_**userName**
 
 * git rules: 
-  - master untouchable, only the project leader has access.
+  - master **untouchable**, only the project leader has access.
   - everyone develop in their own branch and after it's been tested, comes into the development branch.
   - never merge master with your branch; IT MUST BE ALWAYS MERGED YOUR BRANCH WITH MASTER, BE CAREFUL!
     * EXAMPLE OF THE **CORRECT** WAY:
