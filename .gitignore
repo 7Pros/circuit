@@ -1,4 +1,11 @@
 #
+# Project
+#
+
+/db.sqlite3
+
+
+#
 # https://github.com/github/gitignore/blob/master/Python.gitignore
 #
 
