@@ -1,0 +1,21 @@
+{
+  "name": "circuit",
+  "homepage": "https://github.com/7Pros/circuit",
+  "authors": [
+    "Gjum <code.gjum@gmail.com>",
+    "lotka <jelisaweta_kamm@iotka.de>",
+    "juanecabellob <juanecabellob@gmail.com>",
+    "KjellPirschel <kjellpirschel@freenet.de>",
+    "LeviTU <levi.v.geiser@campus.tu-berlin.de>",
+    "MetalMatze <me@metalmatze.de>",
+    "nrigheriu <n_righeriu@yahoo.com>"
+  ],
+  "description": "circuit is a social network that gives you control over your posts visibility by grouping people in circles.",
+  "dependencies": {
+    "core-elements": "Polymer/core-elements#^0.5",
+    "paper-elements": "Polymer/paper-elements#^0.5"
+  },
+  "resolutions": {
+    "webcomponentsjs": "0.7.0"
+  }
+}
