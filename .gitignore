@@ -2,6 +2,7 @@
 # Project
 #
 
+/circuit/static/vendor/
 /db.sqlite3
 
 
