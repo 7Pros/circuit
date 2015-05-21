@@ -1,36 +1,26 @@
-# circuit
+# CONTRIBUTING
 
-* git branch structure:
-  * master
-  * development
-  * development_**featureName**
+## Coding Style
 
-* git rules: 
-  - master **untouchable**, only the project leader has access.
-  - everyone develop in **their own branch** (development_**featureName**) and *after* it's been tested, comes into the **development branch**.
-  - never merge master with your branch; IT MUST BE ALWAYS MERGED YOUR BRANCH WITH MASTER, BE CAREFUL!
-    * EXAMPLE OF THE **CORRECT** WAY:
-      * git branch
-        * *master
-        * development
-        * development_juan
-      * git checkout development_juan
-      * git status
-        * On branch development_juan
-        * Your branch is up-to-date with 'origin/development'.
-        * nothing to commit, working directory clean.
-      * git merge master
-    * EXAMPLE OF THE **WRONG** WAY:
-      * git branch
-        * *master
-        * development
-        * development_juan
-      * git merge development_juan
-    
-    - All this is to preserve the stable version. The presented way to merge, it's possible and it should be done that way because     so you will always work with the latest stable version.
-    
-* git tips: 
-  - Don't w8 to long to commit! Mixed commits with more than one stories or epics are harder to handle with in case of a bug. 
-  - If your pushing into the development branch, don't forget to pull the latest version from the repository's branch.
-    
-    
+For all django related files take a look at Django's [Coding Style](https://docs.djangoproject.com/en/1.8/internals/contributing/writing-code/coding-style/).  
+Before merging we will make sure that the style was correctfully used.
+
+If you're contributing HTML please take a look at mdo's (create of [bootstrap](http://getbootstrap.com/)) [codeguide](http://codeguide.co/).  
+This isn't a must, but some rules should be applied.
+
+## Which Branch?
+
+We're using [git flow](http://nvie.com/posts/a-successful-git-branching-model/) for our git branch names.
+There are several good resource online about git flow.
+
+* [https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
+* [http://danielkummer.github.io/git-flow-cheatsheet/](http://danielkummer.github.io/git-flow-cheatsheet/)
+
+#### Overview
+* For **bug fixes** you must create a pull request that wants to merge into our `master` branch.  
+* For **new features or improvements** you must create a pull request that wants to merge into `develop`.
+
+## Code of Conduct
+As a contributor, you can help us keep the Django community open and inclusive.  
+Please read and follow our [Code of Conduct](https://www.djangoproject.com/conduct/).
+
