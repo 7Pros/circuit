@@ -17,14 +17,14 @@ Run
     python manage.py makemigrations
     python manage.py migrate
 
-We use [Polymer](http://www.polymer-project.org) for the frontend.
+We use [Bootstrap](http://www.getbootstrap.com/) for the frontend.
 
-To pull in all Polymer dependencies we use [bower](http://bower.io/).  
+To pull in all Bootstrap dependencies we use [bower](http://bower.io/).  
 At this point you should already have node installed, so run the following to get bower, if not installed.
 
     npm install -g bower
 
-Now you can use bower to fetch all Polymer dependencies
+Now you can use bower to fetch all dependencies
 
     bower install
 
