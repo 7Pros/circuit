@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+
+            <h2>Signup</h2>
+
+            <form action="" method="post">
+                {% csrf_token %}
+
+                <br/>
+                <input type="text" class="form-control floating-label" placeholder="Username" required>
+                <br/>
+                <input type="email" class="form-control floating-label" placeholder="E-Mail" required>
+                <br/>
+                <input type="password" class="form-control floating-label" placeholder="Password" required>
+
+                <button class="btn btn-lg btn-raised btn-material-indigo" type="submit">Sign up</button>
+            </form>
+
+        </div>
+
+    </div>
+{% endblock %}
