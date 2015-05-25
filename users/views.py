@@ -6,10 +6,9 @@ from users.models import User
 
 # Create your views here.
 
-class ShowUser(generic.DetailView):
+class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
-    context_object_name = 'userData'
+    model = User
     # how to get an specific value
-    def get_queryself(self):
-        return User.objects.all(self)
+
 
