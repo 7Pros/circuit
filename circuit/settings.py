@@ -107,3 +107,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     "circuit/static/",
 )
+
+AUTH_USER_MODEL = 'users.User'
