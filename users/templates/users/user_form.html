@@ -7,17 +7,33 @@
 
             <h2>Signup</h2>
 
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">There was an error.</div>
+            {% endif %}
+
             <form action="" method="post">
                 {% csrf_token %}
 
                 <br/>
-                <input type="text" class="form-control floating-label" placeholder="Username" required>
+                <input type="email"
+                       name="email"
+                       class="form-control floating-label {% if 'email' in form.errors %} has-error{% endif %}"
+                       placeholder="E-Mail"
+                       required>
                 <br/>
-                <input type="email" class="form-control floating-label" placeholder="E-Mail" required>
+                <input type="text"
+                       name="username"
+                       class="form-control floating-label {% if 'username' in form.errors %} has-error{% endif %}"
+                       placeholder="Username"
+                       required>
                 <br/>
-                <input type="password" class="form-control floating-label" placeholder="Password" required>
+                <input type="password"
+                       name="password"
+                       class="form-control floating-label {% if 'password' in form.errors %} has-error{% endif %}"
+                       placeholder="Password"
+                       required>
 
-                <button class="btn btn-lg btn-raised btn-material-indigo" type="submit">Sign up</button>
+                <button class="btn btn-lg btn-raised btn-material-light-blue" type="submit">Sign up</button>
             </form>
 
         </div>
