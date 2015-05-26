@@ -108,4 +108,7 @@ STATICFILES_DIRS = (
     "circuit/static/",
 )
 
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
 AUTH_USER_MODEL = 'users.User'
