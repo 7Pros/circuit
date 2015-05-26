@@ -1,15 +1,17 @@
-from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import UpdateView, CreateView
+
+from django.views.generic import CreateView
+
 from users.models import User
 
 
 class UserCreateView(CreateView):
     model = User
     fields = [
-        'username',
         'email',
-        'name',
+        'username',
         'password',
-        'description'
     ]
+
+    # TODO change singup to `login` when merging
+    success_url = reverse_lazy('signup')
