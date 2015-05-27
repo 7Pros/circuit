@@ -9,6 +9,3 @@ from users.models import User
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
     model = User
-    # how to get an specific value
-
-
