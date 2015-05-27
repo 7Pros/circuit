@@ -18,7 +18,7 @@ class UserCreateView(CreateView):
     ]
 
     # TODO change singup to `login` when merging
-    success_url = reverse_lazy('signup')
+    success_url = reverse_lazy('users:signup')
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -52,9 +52,9 @@ def UserCreateConfirmView(request, token):
         user.save()
 
         # TODO redirect('login')
-        return redirect('signup')
+        return redirect('users:signup')
     except ObjectDoesNotExist:
-        return redirect('signup')
+        return redirect('users:signup')
 
 
 class UserProfileView(generic.DetailView):
