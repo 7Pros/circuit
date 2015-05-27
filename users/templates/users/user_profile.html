@@ -1,18 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <div class="row">
-                <div class="col-sm-8 col-md-6 col-lg-4">
-                    <label>{{ object.username }}</label>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="panel panel-default panel-profile">
+                <div class="panel-body">
+                    <div class="header"></div>
+                    <img src="http://0.gravatar.com/avatar/088e4fb4456157398d147c276c22dabc?s=50&d=mm" alt=""/>
+                    <strong>{{ object.name }}</strong>
+                    <a href="{% url 'users:profile' pk=object.pk %}">@{{ object.username }}</a>
+                    {% if user.description %}
+                        <br/><br/>
+                        <p>{{ user.description | escape }}</p>
+                    {% endif %}
                 </div>
-                <div class="col-sm-8 col-md-6 col-lg-4">
-                    <label>{{ object.name }}</label>
-                </div>
-                <div class="col-sm-8 col-md-6 col-lg-4">
-                    <label>{{ object.description }}</label>
-                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <div style="height: 300px; padding: 20px; background-color: #cccccc; border-radius: 2px;">
+                <h1 style="color: #aaa; text-align: center;">Posts</h1>
             </div>
         </div>
     </div>
