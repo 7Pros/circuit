@@ -107,3 +107,18 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     "circuit/static/",
 )
+
+SITE_URL = 'http://localhost:8000/'
+
+# LOCALHOST
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
+# GMAIL
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'me@gmail.com'
+# EMAIL_HOST_PASSWORD = 'password'
+
+AUTH_USER_MODEL = 'users.User'
