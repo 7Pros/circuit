@@ -1,9 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 from django.template import loader, Context
+from django.views import generic
 from django.views.generic import CreateView
 
 from users.models import User
@@ -55,3 +55,8 @@ def UserCreateConfirmView(request, token):
         return redirect('signup')
     except ObjectDoesNotExist:
         return redirect('signup')
+
+
+class UserProfileView(generic.DetailView):
+    template_name = 'users/user_profile.html'
+    model = User
