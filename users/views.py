@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.shortcuts import redirect
 from django.template import loader, Context
 from django.views import generic
@@ -59,3 +59,16 @@ def UserCreateConfirmView(request, token):
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
     model = User
+
+class UserUpdateView(generic.UpdateView):
+    model = User
+    fields = [
+        'username',
+        'name',
+        'description',
+        'email',
+    ]
+    template_name = 'users/user_edit.html'
+
+    def get_success_url(self):
+        return reverse('users:profile', kwargs={'pk': self.object.pk})
