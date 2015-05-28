@@ -51,7 +51,6 @@ def UserCreateConfirmView(request, token):
         user.is_active = True
         user.save()
 
-        # TODO redirect('login')
         return redirect('users:signup')
     except ObjectDoesNotExist:
         return redirect('users:signup')

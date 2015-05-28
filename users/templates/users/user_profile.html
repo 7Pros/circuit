@@ -7,8 +7,8 @@
                 <div class="panel-body">
                     <div class="header"></div>
                     <img src="http://0.gravatar.com/avatar/088e4fb4456157398d147c276c22dabc?s=50&d=mm" alt=""/>
-                    <strong>{{ object.name }}</strong>
-                    <a href="{% url 'users:profile' pk=object.pk %}">@{{ object.username }}</a>
+                    <strong>{{ user.name }}</strong>
+                    <a href="{% url 'users:profile' pk=user.pk %}">@{{ user.username }}</a>
                     {% if user.description %}
                         <br/><br/>
                         <p>{{ user.description | escape }}</p>
