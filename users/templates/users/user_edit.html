@@ -52,6 +52,7 @@
             <h3>Change your password</h3>
 
             <form action="" method="post">
+                {% csrf_token %}
                 <br/>
                 <input type="password"
                        name="name"
