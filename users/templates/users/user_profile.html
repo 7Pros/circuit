@@ -13,11 +13,7 @@
                         <br/><br/>
                         <p>{{ user.description | escape }}</p>
                     {% endif %}
-                    {% if request.user.is_authenticated and request.user.username == user.username %}
-                        <a href="{% url 'users:edit' pk=user.pk %}">Edit your profile</a>
-                    {% else %} {# TODO remove, demo only #}
-                        <a href="{% url 'users:edit' pk=user.pk %}">Edit your profile</a>
-                    {% endif %}
+                    <a href="{% url 'users:edit' pk=user.pk %}">Edit your profile</a>
                 </div>
             </div>
         </div>
