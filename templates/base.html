@@ -32,15 +32,15 @@
                     <ul class="nav navbar-nav">
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-						{% if user %}
-							<li><a href="{% url 'users:profile' pk=user.pk %}">@{{ user.username }}</a></li>
-							<li><a href="#">Log out</a></li>
-{#							<li><a href="{% url 'users:logout' pk=user.pk %}">Log out</a></li>#}
-						{% else %}
-							<li><a href="{% url 'users:signup' %}">Sign up</a></li>
-							<li><a href="#">Log in</a></li>
-{#							<li><a href="{% url 'users:login' %}">Log in</a></li>#}
-						{% endif %}
+                        {% if user %}
+                            <li><a href="{% url 'users:profile' pk=user.pk %}">@{{ user.username }}</a></li>
+                            <li><a href="#">Log out</a></li>
+                            <li><a href="{% url 'users:logout' pk=user.pk %}">Log out</a></li>
+                        {% else %}
+                            <li><a href="{% url 'users:signup' %}">Sign up</a></li>
+                            <li><a href="#">Log in</a></li>
+                            <li><a href="{% url 'users:login' %}">Log in</a></li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>
