@@ -19,40 +19,40 @@
                        name="username"
                        class="form-control floating-label {% if 'username' in form.errors %} has-error{% endif %}"
                        placeholder="Username"
-					   value="{{ user.username}}"
+                       value="{{ user.username}}"
                        required>
 
                 <br/>
                 <input type="text"
                        name="name"
                        class="form-control floating-label {% if 'name' in form.errors %} has-error{% endif %}"
-					   value="{{ user.name}}"
+                       value="{{ user.name}}"
                        placeholder="Long name">
 
                 <br/>
                 <textarea
                        name="description"
                        class="form-control floating-label {% if 'description' in form.errors %} has-error{% endif %}"
-					   content="{{ user.description }}"
-                       placeholder="Description"></textarea>
+                       rows="3"
+                       placeholder="Description">{{ user.description | escape }}</textarea>
 
                 <br/>
                 <input type="email"
                        name="email"
                        class="form-control floating-label {% if 'email' in form.errors %} has-error{% endif %}"
                        placeholder="E-Mail"
-					   value="{{ user.email}}"
+                       value="{{ user.email}}"
                        required>
 
                 <button class="btn btn-raised btn-material-light-blue" type="submit">Save</button>
 
                 <br/>
-				<a href="#">Change your password</a>
-{#				<a href="{% url 'users:password' pk=user.pk %}">Change your password</a>#}
+                <a href="#">Change your password</a>
+{#                <a href="{% url 'users:password' pk=user.pk %}">Change your password</a>#}
 
-				<br/>
-				<a href="#">Delete your profile</a>
-{#				<a href="{% url 'users:delete' pk=user.pk %}">Delete your profile</a>#}
+                <br/>
+                <a href="#">Delete your profile</a>
+{#                <a href="{% url 'users:delete' pk=user.pk %}">Delete your profile</a>#}
             </form>
 
         </div>
