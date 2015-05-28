@@ -44,11 +44,15 @@
 					   value="{{ user.email}}"
                        required>
 
-                <br/>
-{#				<a href="{% url 'users:password' pk=user.pk %}">Change your password</a>#}
-{#				<a href="{% url 'users:delete' pk=user.pk %}">Delete your profile</a>#}
-
                 <button class="btn btn-raised btn-material-light-blue" type="submit">Save</button>
+
+                <br/>
+				<a href="#">Change your password</a>
+{#				<a href="{% url 'users:password' pk=user.pk %}">Change your password</a>#}
+
+				<br/>
+				<a href="#">Delete your profile</a>
+{#				<a href="{% url 'users:delete' pk=user.pk %}">Delete your profile</a>#}
             </form>
 
         </div>
