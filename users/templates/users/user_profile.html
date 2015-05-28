@@ -13,7 +13,9 @@
                         <br/><br/>
                         <p>{{ user.description | escape }}</p>
                     {% endif %}
-                    <a href="{% url 'users:edit' pk=user.pk %}">Edit your profile</a>
+                    <a class="mdi-content-create pull-right"
+                       style="color: rgba(0,0,0,0.84); text-decoration: none"
+                       href="{% url 'users:edit' pk=user.pk %}"></a>
                 </div>
             </div>
         </div>
