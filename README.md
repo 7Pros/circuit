@@ -38,3 +38,5 @@ Open [127.0.0.1:8000](http://127.0.0.1:8000/) - DONE
 
 If you want to contribute you should take a look at [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Documentation
+Check out our [META](https://github.com/7Pros/META) repository. In the [README.md](https://github.com/7Pros/META/blob/master/README.md) you can find all references.
