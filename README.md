@@ -34,6 +34,14 @@ You're ready to start the django webserver with
 
 Open [127.0.0.1:8000](http://127.0.0.1:8000/) - DONE
 
+## Development
+
+While developing you will need to run a smtp server, once you try to sign up.
+
+    python -m smtpd -n -c DebuggingServer localhost:1025
+    
+This will start a smtp server in your command line which django will send emails to.
+
 ### Contributing
 
 If you want to contribute you should take a look at [CONTRIBUTING.md](CONTRIBUTING.md).
