@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="panel panel-default panel-profile">
+                <div class="panel-body">
+                    <div class="header"></div>
+                    <img src="http://0.gravatar.com/avatar/088e4fb4456157398d147c276c22dabc?s=50&d=mm" alt=""/>
+                    <strong>{{ user.name }}</strong>
+                    <a href="{% url 'users:profile' pk=user.pk %}">@{{ user.username }}</a>
+                    {% if user.description %}
+                        <br/><br/>
+                        <p>{{ user.description | escape }}</p>
+                    {% endif %}
+                    <a class="mdi-content-create pull-right"
+                       style="color: rgba(0,0,0,0.84); text-decoration: none"
+                       href="{% url 'users:edit' pk=user.pk %}"></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <div style="height: 300px; padding: 20px; background-color: #cccccc; border-radius: 2px;">
+                <h1 style="color: #aaa; text-align: center;">Posts</h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,14 @@
+<html>
+<body>
+<p>Hi <strong>{{ user.username }}</strong>,</p>
+
+<p>Welcome to circuit! Please verify your email address below.</p>
+
+<p>Click to <a href="http://localhost:8000{% url 'users:signup_confirm' token=user.confirm_token %}">verify {{ user.email }}</a></p>
+
+<p>
+    Thanks,<br/>
+    The circuit team
+</p>
+</body>
+</html>
