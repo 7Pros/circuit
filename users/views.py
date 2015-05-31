@@ -1,12 +1,16 @@
+from __future__ import print_function
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
 
 from users.models import User
+from users.forms import UserLoginForm
 
 
 class UserCreateView(CreateView):
@@ -51,7 +55,6 @@ def UserCreateConfirmView(request, token):
         user.is_active = True
         user.save()
 
-        # TODO redirect('login')
         return redirect('users:signup')
     except ObjectDoesNotExist:
         return redirect('users:signup')
@@ -60,3 +63,39 @@ def UserCreateConfirmView(request, token):
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
     model = User
+
+
+class UserUpdateView(generic.UpdateView):
+    model = User
+    fields = [
+        'username',
+        'name',
+        'description',
+        'email',
+    ]
+    template_name = 'users/user_edit.html'
+
+    def get_success_url(self):
+        return reverse('users:profile', kwargs={'pk': self.object.pk})
+
+
+class UserLoginView(generic.FormView):
+    form_class = UserLoginForm
+    success_url = reverse_lazy('users:profile')
+    template_name = 'users/user_login_form.html'
+    print("HERE!")
+
+    def form_valid(self, form):
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        user = authenticate(username=username, password=password)
+        print("2HERE!")
+        if user is not None and user.is_active:
+            login(self.request, user)
+            return super(UserLoginView, self).form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_invalid(self, form):
+        print(form.errors)
+        return super(UserLoginView, self).form_invalid(form)
