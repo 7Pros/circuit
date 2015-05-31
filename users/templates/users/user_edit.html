@@ -78,7 +78,7 @@
 
             <h3>Delete your account</h3>
             <br/>
-            <a class="btn btn-raised btn-danger" href="#delete">Delete your account</a>
+            <a class="btn btn-raised btn-danger" href="{% url 'users:delete' pk=user.pk %}">Delete your account</a>
 
         </div>
 

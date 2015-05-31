@@ -72,3 +72,7 @@ class UserUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
+
+class UserDeleteView(generic.DeleteView):
+    model = User
+    success_url = reverse_lazy('landingpage')
