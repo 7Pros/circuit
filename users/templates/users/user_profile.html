@@ -13,9 +13,11 @@
                         <br/><br/>
                         <p>{{ user.description | escape }}</p>
                     {% endif %}
-                    <a class="mdi-content-create pull-right"
-                       style="color: rgba(0,0,0,0.84); text-decoration: none"
-                       href="{% url 'users:edit' pk=user.pk %}"></a>
+                    {% if request.user.is_authenticated and request.user.pk == user.pk %}
+                        <a class="mdi-content-create pull-right"
+                           style="color: rgba(0,0,0,0.84); text-decoration: none"
+                           href="{% url 'users:edit' pk=user.pk %}"></a>
+                    {% endif %}
                 </div>
             </div>
         </div>
