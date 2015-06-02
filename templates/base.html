@@ -32,7 +32,12 @@
                     <ul class="nav navbar-nav">
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="{% url 'users:signup' %}">Sign up</a></li>
+                        {% if user.is_authenticated %}
+                            <li><a href="{% url 'users:logout' %}">Logout</a></li>
+                        {% else %}
+                            <li><a href="{% url 'users:signup' %}">Sign up</a></li>
+                            <li><a href="{% url 'users:login' %}">Login</a></li>
+                        {% endif %}
                     </ul>
                 </nav>
             </div>
