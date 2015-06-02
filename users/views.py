@@ -1,6 +1,10 @@
+from django.contrib import messages
+
+from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader, Context
 from django.views import generic
@@ -17,8 +21,7 @@ class UserCreateView(CreateView):
         'password',
     ]
 
-    # TODO change singup to `login` when merging
-    success_url = reverse_lazy('users:signup')
+    success_url = reverse_lazy('users:login')
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -56,9 +59,38 @@ def UserCreateConfirmView(request, token):
         return redirect('users:signup')
 
 
+def UserLoginView(request):
+    if request.method == "GET":
+        template = loader.get_template('users/user_login.html')
+        return HttpResponse(template.render(request=request))
+
+    if request.method == "POST":
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user = authenticate(email=email, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('users:profile', pk=user.pk)
+            else:
+                messages.error(request, 'Your account is inactive.')
+                return redirect('users:login')
+        else:
+            messages.error(request, message='Bad credentials.')
+            return redirect('users:login')
+
+
+def UserLogoutView(request):
+    logout(request)
+    return redirect('landingpage')
+
+
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
     model = User
+
 
 class UserUpdateView(generic.UpdateView):
     model = User
@@ -72,6 +104,7 @@ class UserUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
+
 
 class UserDeleteView(generic.DeleteView):
     model = User
