@@ -25,7 +25,7 @@ class UserCreateView(CreateView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             # user is logged in, send to their profile
-            return reverse('users:profile')
+            return redirect('users:profile', pk=request.user.pk)
         else:
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
