@@ -107,11 +107,12 @@ class UserUpdateView(generic.UpdateView):
     ]
     template_name = 'users/user_edit.html'
 
-    def dispatch(self, request, *args, pk=None, **kwargs):
-        if request.user.is_authenticated() and str(request.user.pk) == pk:
-            return generic.UpdateView.dispatch(self, request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated() \
+                and str(request.user.pk) == kwargs['pk']:
+            return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
         else:
-            raise Http404  # deny access, act as if there is no such account
+            raise Http404  # deny access, act as if there was no such account
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
