@@ -74,7 +74,7 @@ def UserLoginView(request):
                 login(request, user)
                 return redirect('users:profile', pk=user.pk)
             else:
-                messages.error(request, 'Your account is inactive.')
+                messages.error(request, 'Your account is inactive. Be sure to check your emails.')
                 return redirect('users:login')
         else:
             messages.error(request, message='Bad credentials.')
