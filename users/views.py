@@ -55,14 +55,13 @@ class UserCreateView(CreateView):
 def UserCreateConfirmView(request, token):
     try:
         user = User.objects.get(confirm_token=token)
-
+    except ObjectDoesNotExist:
+        return redirect('users:signup')
+    else:
         user.confirm_token = ''
         user.is_active = True
         user.save()
-
         return redirect('users:login')
-    except ObjectDoesNotExist:
-        return redirect('users:signup')
 
 
 def UserLoginView(request):
