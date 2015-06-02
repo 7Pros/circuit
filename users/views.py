@@ -1,5 +1,4 @@
 from django.contrib import messages
-
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
@@ -54,7 +53,7 @@ def UserCreateConfirmView(request, token):
         user.is_active = True
         user.save()
 
-        return redirect('users:signup')
+        return redirect('users:login')
     except ObjectDoesNotExist:
         return redirect('users:signup')
 
