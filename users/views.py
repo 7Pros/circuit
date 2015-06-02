@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, Http404
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
@@ -100,6 +100,12 @@ class UserUpdateView(generic.UpdateView):
         'email',
     ]
     template_name = 'users/user_edit.html'
+
+    def dispatch(self, request, *args, pk=None, **kwargs):
+        if request.user.is_authenticated() and str(request.user.pk) == pk:
+            return generic.UpdateView.dispatch(self, request, *args, **kwargs)
+        else:
+            raise Http404  # deny access, act as if there is no such account
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
