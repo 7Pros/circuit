@@ -22,6 +22,13 @@ class UserCreateView(CreateView):
 
     success_url = reverse_lazy('users:login')
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            # user is logged in, send to their profile
+            return reverse('users:profile')
+        else:
+            return super(UserCreateView, self).dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
         user = form.save()
