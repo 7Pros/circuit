@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, Http404
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
@@ -21,6 +21,13 @@ class UserCreateView(CreateView):
     ]
 
     success_url = reverse_lazy('users:login')
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            # user is logged in, send to their profile
+            return redirect('users:profile', pk=request.user.pk)
+        else:
+            return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -48,14 +55,13 @@ class UserCreateView(CreateView):
 def UserCreateConfirmView(request, token):
     try:
         user = User.objects.get(confirm_token=token)
-
+    except ObjectDoesNotExist:
+        return redirect('users:signup')
+    else:
         user.confirm_token = ''
         user.is_active = True
         user.save()
-
         return redirect('users:login')
-    except ObjectDoesNotExist:
-        return redirect('users:signup')
 
 
 def UserLoginView(request):
@@ -100,6 +106,13 @@ class UserUpdateView(generic.UpdateView):
         'email',
     ]
     template_name = 'users/user_edit.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated() \
+                and str(request.user.pk) == kwargs['pk']:
+            return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
+        else:
+            raise Http404  # deny access, act as if there was no such account
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
