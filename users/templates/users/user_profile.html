@@ -39,9 +39,12 @@
             </form>
 
 
-            {% for post in posts %}
+            {% for post in posts|dictsortreversed:'created_at' %}
                 <div class="panel panel-default">
-                    <div class="panel-heading"> @{{ post.author.username }}</div>
+                    <div class="panel-heading">
+                        @{{ post.author.username }}
+                        <span class="pull-right">{{ post.created_at }}</span>
+                    </div>
                     <div class="panel-body">{{ post.content }}</div>
                 </div>
             {% endfor %}
