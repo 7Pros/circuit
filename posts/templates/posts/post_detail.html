@@ -6,11 +6,15 @@
         <div class="col-xs-12 col-sm-6 col-md-4">
 
             <div class="well well-lg">
-                <h2> @{{ post.author.username }}<span class="pull-right">{{ post.created_at }}</span></h2>
 
-                <p>
+                <p class="lead">
                     {{ post.content }}
                 </p>
+                <small>
+                    <a href="{% url 'users:profile' pk=post.author.pk %}">@{{ post.author.username }}</a>
+                    <a href="{% url 'posts:post' pk=post.pk %}" class="pull-right">{{ post.created_at }}</a>
+                </small>
+
             </div>
         </div>
     </div>

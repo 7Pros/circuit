@@ -40,12 +40,12 @@
 
 
             {% for post in posts|dictsortreversed:'created_at' %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        @{{ post.author.username }}
+                <div class="well">
+                    <p>{{ post.content }}</p>
+                    <small>
+                        <a href="{% url 'users:profile' pk=post.author.pk %}">@{{ post.author.username }}</a>
                         <a href="{% url 'posts:post' pk=post.pk %}" class="pull-right">{{ post.created_at }}</a>
-                    </div>
-                    <div class="panel-body">{{ post.content }}</div>
+                    </small>
                 </div>
             {% endfor %}
         </div>
