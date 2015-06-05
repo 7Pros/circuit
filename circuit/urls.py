@@ -20,5 +20,6 @@ from circuit import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^users/', include('users.urls', namespace='users')),
-    url(r'^', views.landingpage, name='landingpage'),
+    url(r'^posts/', include('posts.urls', namespace='posts')),
+    url(r'^', views.LandingPage.as_view(), name='landingpage'),
 ]
