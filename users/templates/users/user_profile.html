@@ -21,9 +21,10 @@
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-8">
-            <h1 style="color: #aaa; text-align: center;">Posts</h1>
 
-            <form action="{% url 'posts:create' %}" method="post">
+            {% if request.user.is_authenticated and request.user.pk == user.pk %}
+
+                <form class="well" action="{% url 'posts:create' %}" method="post">
                 {% csrf_token %}
 
                 <br/>
@@ -38,7 +39,8 @@
 
             </form>
 
-
+            {% endif %}
+            {% if posts %}
             {% for post in posts|dictsortreversed:'created_at' %}
                 <div class="well">
                     <p>{{ post.content }}</p>
@@ -48,6 +50,10 @@
                     </small>
                 </div>
             {% endfor %}
+            {% else %}
+                <p class="text-muted lead" style="color: #aaa; text-align: center;">This user has no Posts <br/>
+                    #circuitzombie </p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
