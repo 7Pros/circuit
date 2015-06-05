@@ -1,13 +1,7 @@
 from django.conf.urls import url
 
-from users import views
-from users.views import (
-    UserCreateView,
-    UserProfileView,
-    UserUpdateView,
-    UserDeleteView,
-)
+from posts import views
 
 urlpatterns = [
-    url(r'^create/$', PostCreateView.as_view(), name='create'),
+    url(r'^create/$', views.PostCreateView, name='create'),
 ]

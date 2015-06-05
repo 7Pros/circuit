@@ -9,10 +9,10 @@
             <br/>
             <textarea
                     maxlength="256"
-                    name="newPost"
+                    name="content"
                     class="form-control floating-label {% if 'newPost' in form.errors %} has-error{% endif %}"
                     rows="3"
-                    placeholder="newPost">{{ user.newPost | escape }}</textarea>
+                    placeholder="newPost"></textarea>
 
             <button class="btn btn-lg btn-raised btn-material-light-blue" type="submit">newPost</button>
 

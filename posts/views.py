@@ -1,23 +1,10 @@
-from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import render
-from django.views.generic import CreateView
+from django.shortcuts import redirect
 # Create your views here.
 from posts.models import Post
 
 
-class PostCreateView(CreateView):
-    model = Post
-
-    fields = [
-        'content',
-        'author',
-    ]
-
-    success_url = reverse_lazy('landingpage')
-
-    def form_valid(self, form):
-        post = form.save(commit=False)
-        post.author = self.request.user
+def PostCreateView(request):
+    if (len(request.POST['content']) <= 256):
+        post = Post(content=request.POST['content'], author=request.user)
         post.save()
-        return super(PostCreateView, self).form_valid(form)
-
+    return redirect(request.META['HTTP_REFERER'] or 'landingpage')
