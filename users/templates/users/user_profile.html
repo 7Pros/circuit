@@ -43,7 +43,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         @{{ post.author.username }}
-                        <span class="pull-right">{{ post.created_at }}</span>
+                        <a href="{% url 'posts:post' pk=post.pk %}" class="pull-right">{{ post.created_at }}</a>
                     </div>
                     <div class="panel-body">{{ post.content }}</div>
                 </div>

@@ -1,6 +1,6 @@
 from django.shortcuts import redirect
-# Create your views here.
 from posts.models import Post
+from django.views import generic
 
 
 def PostCreateView(request):
@@ -8,3 +8,8 @@ def PostCreateView(request):
         post = Post(content=request.POST['content'], author=request.user)
         post.save()
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
+
+
+class PostDetailView(generic.DetailView):
+    template_name = 'posts/post_detail.html'
+    model = Post

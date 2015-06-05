@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-0 col-sm-3 col-md-4"></div>
+        <div class="col-xs-12 col-sm-6 col-md-4">
+
+            <div class="well well-lg">
+                <h2> @{{ post.author.username }}<span class="pull-right">{{ post.created_at }}</span></h2>
+
+                <p>
+                    {{ post.content }}
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}
