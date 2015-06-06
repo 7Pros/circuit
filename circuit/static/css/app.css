@@ -23,3 +23,11 @@ body {
     border: 2px solid white;
     border-radius: 50%;
 }
+
+.hover-here .show-on-hover {
+    color: #DDDDDD;
+}
+
+.hover-here:hover .show-on-hover {
+    color: #000000;
+}
