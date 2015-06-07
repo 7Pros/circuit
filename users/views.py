@@ -118,6 +118,31 @@ class UserUpdateView(generic.UpdateView):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
 
 
+def UserPasswordView(request):
+    if request.method != "POST":
+        raise Http404
+
+    if not request.user.is_authenticated():
+        raise Http404
+
+    pw_old = request.POST['password-old']
+    pw_new = request.POST['password-new']
+    pw_confirm = request.POST['password-confirm']
+
+    if not request.user.check_password(pw_old):
+        messages.error(request, 'Current password is wrong.')
+    elif pw_new != pw_confirm:
+        messages.error(request, 'Passwords do not match.')
+    else:
+        request.user.set_password(pw_new)
+        request.user.save()
+        user = authenticate(email=request.user.email, password=pw_new)
+        login(request, user)
+        messages.success(request, 'Password updated.')
+
+    return redirect('users:edit', pk=request.user.pk)
+
+
 class UserDeleteView(generic.DeleteView):
     model = User
     success_url = reverse_lazy('landingpage')

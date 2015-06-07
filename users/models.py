@@ -58,8 +58,8 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     username = models.CharField(unique=True, max_length=32)
     email = models.EmailField(unique=True)
-    name = models.CharField(max_length=50)
-    description = models.TextField(default='')
+    name = models.CharField(max_length=50, default='', blank=True)
+    description = models.TextField(default='', blank=True)
     is_active = models.BooleanField(default=False)
     confirm_token = models.CharField(default=create_hash, max_length=40)
     password_token = models.CharField(default=create_hash, max_length=40)
