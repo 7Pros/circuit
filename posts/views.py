@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-# Create your views here.
+
 from posts.models import Post
 
 
