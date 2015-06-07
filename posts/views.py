@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from posts.models import Post, Hashtag
 import re
 
+
 def PostCreateView(request):
     if (len(request.POST['content']) <= 256):
         parsedString = ParseContent(request.POST['content'])
@@ -17,6 +18,7 @@ def ParseContent(content):
     mentions = re.findall(r"@(\w+)", content)
     return {'hashtags': hashtags, 'mentions': mentions}
 
+
 def SaveHashtags(hashtags, post):
     for hashtagWord in hashtags:
         hashtagList = Hashtag.objects.filter(name=hashtagWord)
@@ -26,4 +28,4 @@ def SaveHashtags(hashtags, post):
             hashtag.save()
             hashtag.posts.add(post)
         else:
-             hashtagList[0].posts.add(post)
+            hashtagList[0].posts.add(post)
