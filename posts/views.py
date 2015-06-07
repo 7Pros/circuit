@@ -13,6 +13,13 @@ def check_repost(post, user):
     return 'ok'
 
 
+def set_post_extra(post, request):
+    extra = {
+        'can_be_reposted': 'ok' == check_repost(post.original_or_self(), request.user)
+    }
+    setattr(post, 'extra', extra)
+
+
 def PostCreateView(request):
     if (len(request.POST['content']) <= 256):
         post = Post(content=request.POST['content'], author=request.user)
@@ -23,6 +30,10 @@ def PostCreateView(request):
 class PostDetailView(generic.DetailView):
     template_name = 'posts/post_detail.html'
     model = Post
+
+    def render_to_response(self, context, **response_kwargs):
+        set_post_extra(context['post'], self.request)
+        return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
 
 def PostRepostView(request, pk=None):

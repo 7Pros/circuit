@@ -9,7 +9,7 @@ from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
 from posts.models import Post
-
+from posts.views import set_post_extra
 from users.models import User
 
 
@@ -92,7 +92,10 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = Post.objects.select_related('author').filter(author=self.object.pk)
+        posts = Post.objects.filter(author=self.object.pk)\
+            .select_related('author', 'original_post')
+        for post in posts:
+            set_post_extra(post, self.request)
         context.update(posts=posts)
         return  super(UserProfileView, self).render_to_response(context,**response_kwargs)
 
