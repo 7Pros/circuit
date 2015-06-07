@@ -23,9 +23,44 @@
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-8">
-            <div style="height: 300px; padding: 20px; background-color: #cccccc; border-radius: 2px;">
-                <h1 style="color: #aaa; text-align: center;">Posts</h1>
+            <div class="panel panel-default panel-profile">
+                <div class="panel-body">
+                    <form action="{% url 'posts:create' %}" method="post">
+                        {% csrf_token %}
+                        <br/>
+                <textarea
+                        maxlength="256"
+                        name="content"
+                        class="form-control floating-label {% if 'newPost' in form.errors %} has-error{% endif %}"
+                        rows="3"
+                        placeholder="Write something!"></textarea>
+                        <button class="btn btn-lg btn-raised btn-material-light-blue pull-right"
+                                type="submit">Write
+                        </button>
+                    </form>
+
+                    <div class="clearfix"></div>
+
+                    {% for post in posts|dictsortreversed:'created_at' %}
+
+                        <hr/>
+
+                        <div class="post">
+                            {% if post.author.name %}
+                                <strong>{{ post.author.name }}</strong>
+                            {% endif %}
+                            <a href="{% url 'users:profile' pk=post.author.pk %}">@{{ post.author.username }}</a>
+                            <a class="pull-right" href="#/posts/{{ post.pk }}">{{ post.created_at }}</a>
+
+                            <div class="clearfix"></div>
+                            <div>
+                                <p>{{ post.content }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
+
         </div>
     </div>
 {% endblock %}
