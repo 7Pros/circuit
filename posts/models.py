@@ -7,3 +7,4 @@ class Post(models.Model):
     content = models.CharField(max_length=256)
     author = models.ForeignKey(User)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
