@@ -8,6 +8,7 @@ from django.shortcuts import redirect, Http404
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
+from posts.models import Post
 
 from users.models import User
 
@@ -95,6 +96,11 @@ def UserLogoutView(request):
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
     model = User
+
+    def render_to_response(self, context, **response_kwargs):
+        posts = Post.objects.select_related('author').filter(author=self.request.user.pk)
+        context.update(posts=posts)
+        return  super(UserProfileView, self).render_to_response(context,**response_kwargs)
 
 
 class UserUpdateView(generic.UpdateView):
