@@ -2,7 +2,7 @@
 
     {% if post.original_post %}
         <small>
-            <span class="mdi-av-loop" style="font-size: inherit"></span>
+            <span class="mdi-av-repeat" style="font-size: inherit"></span>
             <span class="post-subtle">
                 {% if post.author.name %}
                     <strong>{{ post.author.name }}</strong>
@@ -36,7 +36,7 @@
         {% if request.user.is_authenticated %}
             {# reader actions (favorite, repost, ...) #}
             {% if post.extra.can_be_reposted %}
-                <a class="mdi-av-loop post-controls" style="font-size: inherit"
+                <a class="mdi-av-repeat post-controls" style="font-size: inherit"
                    href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
             {% endif %}
             <span class="pull-right">
