@@ -29,15 +29,16 @@ body {
     font-size: inherit;
 }
 
-.panel-post .post-subtle,
-.panel-post .post-subtle * {
+.post .post-subtle,
+.post .post-subtle * {
     color: #cccccc;
 }
 
-.panel-post:hover .post-subtle {
+.post:hover .post-subtle,
+.post:hover .post-subtle * {
     color: #333333;
 }
 
-.panel-post:hover .post-subtle a {
+.post:hover .post-subtle a {
     color: #009688;
 }

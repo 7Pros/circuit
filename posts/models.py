@@ -9,6 +9,7 @@ class Post(models.Model):
     # the post of which this is a repost
     original_post = models.ForeignKey('self', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def original_or_self(self):
         p = self

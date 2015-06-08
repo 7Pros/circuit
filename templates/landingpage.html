@@ -2,24 +2,7 @@
 
 {% block content %}
 
-    {% if request.user.is_authenticated %}
-        <form action="{% url 'posts:create' %}" method="post">
-            {% csrf_token %}
+    <h1>Welcome to the circuit!</h1>
+    <p>Create an user account to get started.</p>
 
-            <br/>
-            <textarea
-                    maxlength="256"
-                    name="content"
-                    class="form-control floating-label {% if 'newPost' in form.errors %} has-error{% endif %}"
-                    rows="3"
-                    placeholder="newPost"></textarea>
-
-            <button class="btn btn-lg btn-raised btn-material-light-blue" type="submit">newPost</button>
-
-        </form>
-    {% else %}
-        <h1>Welcome to the circuit!</h1>
-        <p>Create an user account to get started.</p>
-
-    {% endif %}
 {% endblock %}
