@@ -10,6 +10,11 @@ def check_repost(post, user):
     if user.pk == post.author.pk:
         return 'own_post'  # don't repost own post
 
+    existing_repost = Post.objects.filter(author=user, original_post=post).exists()
+    if existing_repost:
+        # don't repost more than once
+        return 'already_reposted_as'
+
     return 'ok'
 
 
