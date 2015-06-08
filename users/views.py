@@ -98,7 +98,7 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = Post.objects.select_related('author').filter(author=self.request.user.pk)
+        posts = Post.objects.select_related('author').filter(author=self.object.pk)
         context.update(posts=posts)
         return  super(UserProfileView, self).render_to_response(context,**response_kwargs)
 
