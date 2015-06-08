@@ -1,42 +1,51 @@
 <div class="post {% if not posts %} lead{% endif %}">
 
     {% if post.original_post %}
-        <span class="mdi-av-loop" style="font-size: inherit">reposted</span>
-        <span class="post-subtle">
-            by
-            <a href="{% url 'users:profile' pk=post.author.pk %}">@{{ post.author.username }}</a>
-            on
-            <a href="{% url 'posts:post' pk=post.pk %}">{{ post.created_at }}</a>
-        </span>
+        <small>
+            <span class="mdi-av-loop" style="font-size: inherit"></span>
+            <span class="post-subtle">
+                {% if post.author.name %}
+                    <strong>{{ post.author.name }}</strong>
+                {% endif %}
+                <a href="{% url 'users:profile' pk=post.author.pk %}">@{{ post.author.username }}</a>
+                on
+                <a href="{% url 'posts:post' pk=post.pk %}">{{ post.created_at }}</a>
+            </span>
+        </small>
+        <br/>
     {% endif %}
 
     <small>
-        {% if post.author.name %}
-            <strong>{{ post.author.name }}</strong>
+        {% if post.original_or_self.author.name %}
+            <strong>{{ post.original_or_self.author.name }}</strong>
         {% endif %}
-        <a href="#">
-            @{{ post.author.username }}</a>
-        <a class="pull-right post-subtle" href="#">
-            {{ post.created_at }}</a>
+        <a href="{% url 'users:profile' pk=post.original_or_self.author.pk %}">
+            @{{ post.original_or_self.author.username }}</a>
+        <span class="pull-right post-subtle">
+            <a href="{% url 'posts:post' pk=post.original_or_self.pk %}">
+                {{ post.original_or_self.created_at }}</a>
+        </span>
+        <div class="clearfix"></div>
     </small>
 
-    <div class="clearfix"></div>
-
     <div>
-        <p>{{ post.content }}</p>
+        <p>{{ post.original_or_self.content }}</p>
     </div>
 
     <small class="post-subtle">
         {% if request.user.is_authenticated %}
             {# reader actions (favorite, repost, ...) #}
+            {% if post.extra.can_be_reposted %}
+                <a class="mdi-av-loop post-controls" style="font-size: inherit"
+                   href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
+            {% endif %}
             <span class="pull-right">
                 {# author actions (edit, delete, ...) #}
             </span>
+            <div class="clearfix"></div>
         {% else %}
             Please <a href="{% url 'landingpage' %}">log in</a> to enjoy full functionality.
         {% endif %}
     </small>
-    <div class="clearfix"></div>
 
 </div>
-

@@ -34,7 +34,8 @@ body {
     color: #cccccc;
 }
 
-.post:hover .post-subtle, .post:hover .post-subtle * {
+.post:hover .post-subtle,
+.post:hover .post-subtle * {
     color: #333333;
 }
 
