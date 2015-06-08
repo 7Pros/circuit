@@ -14,6 +14,7 @@ from users.models import User
 
 
 class UserCreateView(CreateView):
+    template_name = 'users/user_create.html'
     model = User
     fields = [
         'email',
