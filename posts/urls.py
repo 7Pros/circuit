@@ -4,5 +4,5 @@ from posts import views
 
 urlpatterns = [
     url(r'^create/$', views.PostCreateView, name='create'),
-    url(r'^posts/$', views.PostUpdateView, name='update')
+    url(r'^(?P<hashtag_name>[\w+])/$', views.PostsListView, name='post_list'),
 ]

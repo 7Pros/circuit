@@ -1,6 +1,7 @@
 from django.shortcuts import redirect
 
 from posts.models import Post, Hashtag
+from django.views.generic import ListView
 import re
 
 
@@ -29,3 +30,11 @@ def SaveHashtags(hashtags, post):
             hashtag.posts.add(post)
         else:
             hashtagList[0].posts.add(post)
+
+class PostsListView(ListView):
+    model = Post
+
+    def get_context_data(self, **kwargs):
+        context = super(PostsListView, self).get_context_data(**kwargs)
+        context['posts'] = Hashtag.filter_posts_by_hashtag(Hashtag, kwargs['name'])
+        return context

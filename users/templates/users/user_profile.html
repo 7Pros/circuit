@@ -54,7 +54,8 @@
 
                             <div class="clearfix"></div>
                             <div>
-                                <p>{{ post.content }}</p>
+                            {% load parser %}
+                                {% filter parse %}<p>{{ post.content }}</p>{% endfilter %}
                             </div>
                         </div>
                     {% endfor %}
