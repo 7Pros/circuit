@@ -1,18 +1,39 @@
+"""@package docstring
+User model.
+
+@author     7Pros
+@copyright  Some license
+"""
 import hashlib
 import os
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 import time
 
-
 def create_hash():
+    """@package docstring
+    Calculate a hexadecimal value.
+
+    @return string - the hexadecimal of blob
+    """
     hash = hashlib.sha1()
     hash.update(os.urandom(5))
     return hash.hexdigest()
 
 
 class UserManager(BaseUserManager):
+
     def create_user(self, email, username, password):
+        """@package docstring
+        Creates a new user.
+
+        @param self: object - User's model object
+        @param email: email - user's email
+        @param username: string - user's username
+        @param password: string - user's password
+
+        @return object - created user
+        """
         if not email:
             raise ValueError('Users must have an email address')
 

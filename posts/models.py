@@ -19,3 +19,6 @@ class Hashtag(models.Model):
 
     def __str__(self):
         return self.name
+
+    def filter_posts_by_hashtag(self, post_content):
+        return self.objects.filter(posts__name=post_content)
