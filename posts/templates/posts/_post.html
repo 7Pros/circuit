@@ -34,7 +34,9 @@
 
     <small class="post-subtle">
         {% if request.user.is_authenticated %}
-            {# reader actions (favorite, repost, ...) #}
+            <a class="mdi-action-grade post-controls{% if post.extra.is_favorited %} post-favorited{% endif %}"
+               style="font-size: inherit"
+               href="{% url 'posts:favorite' pk=post.original_or_self.pk %}"></a>
             {% if post.extra.can_be_reposted %}
                 <a class="mdi-av-repeat post-controls" style="font-size: inherit"
                    href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>

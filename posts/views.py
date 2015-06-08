@@ -19,10 +19,13 @@ def check_repost(post, user):
 
 
 def set_post_extra(post, request):
-    extra = {
-        'can_be_reposted': 'ok' == check_repost(post.original_or_self(), request.user)
-    }
-    setattr(post, 'extra', extra)
+    can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
+    is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
+
+    setattr(post, 'extra', {
+        'can_be_reposted': can_be_reposted,
+        'is_favorited': is_favorited,
+    })
 
 
 def PostCreateView(request):
@@ -56,3 +59,18 @@ def PostRepostView(request, pk=None):
                   original_post=original_post)
     repost.save()
     return redirect('posts:post', pk=repost.pk)
+
+
+def PostFavoriteView(request, pk=None):
+    post = Post.objects.get(pk=pk).original_or_self()
+    if post.favorites.filter(pk=request.user.pk).exists():
+        post.favorites.remove(request.user)
+    else:
+        post.favorites.add(request.user)
+    post.save()
+
+    referer = request.META['HTTP_REFERER']
+    if referer:
+        return redirect(referer)
+    else:
+        return redirect('posts:post', pk=post.pk)
