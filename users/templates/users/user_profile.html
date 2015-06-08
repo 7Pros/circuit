@@ -25,28 +25,30 @@
         <div class="col-xs-12 col-sm-6 col-md-8">
             <div class="panel panel-default panel-profile">
                 <div class="panel-body">
-                    <form action="{% url 'posts:create' %}" method="post">
-                        {% csrf_token %}
-                        <br/>
-                <textarea
-                        maxlength="256"
-                        name="content"
-                        class="form-control floating-label {% if 'newPost' in form.errors %} has-error{% endif %}"
-                        rows="3"
-                        placeholder="Write something!"></textarea>
-                        <button class="btn btn-lg btn-raised btn-material-light-blue pull-right"
-                                type="submit">Write
-                        </button>
-                    </form>
+                    {% if request.user.is_authenticated and request.user.pk == user.pk %}
+                        <form action="{% url 'posts:create' %}" method="post">
+                            {% csrf_token %}
+                            <br/>
+                            <textarea
+                                    maxlength="256"
+                                    name="content"
+                                    class="form-control floating-label {% if 'newPost' in form.errors %} has-error{% endif %}"
+                                    rows="3"
+                                    placeholder="Write something!"></textarea>
+                            <button class="btn btn-lg btn-raised btn-material-light-blue pull-right"
+                                    type="submit">Write
+                            </button>
+                        </form>
 
-                    <div class="clearfix"></div>
+                        <div class="clearfix"></div>
+                        <hr/>
+                    {% endif %}
 
                     {% for post in posts|dictsortreversed:'created_at' %}
-
-                        <hr/>
-
+                        {% if forloop.counter != 1 %}
+                            <hr/>
+                        {% endif %}
                         {% include 'posts/include_post.html' %}
-
                     {% endfor %}
                 </div>
             </div>
