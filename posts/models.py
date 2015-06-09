@@ -10,6 +10,7 @@ class Post(models.Model):
     original_post = models.ForeignKey('self', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    favorites = models.ManyToManyField(User, related_name='favorites')
 
     def original_or_self(self):
         p = self
