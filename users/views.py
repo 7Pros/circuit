@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
@@ -9,8 +10,7 @@ from django.views import generic
 from django.views.generic import CreateView
 from posts.models import Post
 from posts.views import set_post_extra
-from users.models import User
-from users.forms import UserLoginForm
+from users.models import User, create_hash
 
 
 class UserCreateView(CreateView):
@@ -52,6 +52,75 @@ class UserCreateView(CreateView):
             fail_silently=False,
             html_message=html
         )
+
+
+def UserRequestResetPasswordView(request):
+    if request.method == "GET":
+        template = loader.get_template('users/user_request_password_reset.html')
+        return HttpResponse(template.render(request=request))
+
+    if request.method == "POST":
+        email = request.POST['email']
+
+        try:
+            user = User.objects.get(email=email)
+            user.password_reset_token = create_hash()
+            user.save()
+
+            # send password reset email with token
+            template = loader.get_template('users/password_reset_email.html')
+            context = Context({'user': user})
+            html = template.render(context)
+
+            send_mail(
+                subject='Password reset',
+                message='hi',
+                from_email='hello@circuit.io',
+                recipient_list=[user.email],
+                fail_silently=False,
+                html_message=html
+            )
+
+            messages.success(request, 'Password reset email send.')
+
+            return redirect('users:login')
+
+        except ObjectDoesNotExist:
+            messages.error(request, 'User with email <{:s}> does not exist'.format(email))
+            return redirect('users:request_password_reset')
+
+
+def UserResetPasswordView(request, token):
+    if request.method == "GET":
+        try:
+            user = User.objects.get(password_reset_token=token)
+            template = loader.get_template('users/user_password_reset.html')
+            return HttpResponse(template.render(request=request))
+        except ObjectDoesNotExist:
+            messages.error(request, "Invalid token.")
+            return redirect('users:login')
+
+    if request.method == "POST":
+        pw_new = request.POST['password-new']
+        pw_confirm = request.POST['password-confirm']
+        try:
+            user = User.objects.get(password_reset_token=token)
+            if pw_new != pw_confirm:
+                messages.error(request, 'Passwords do not match.')
+                template = loader.get_template('users/user_password_reset.html')
+                return HttpResponse(template.render(request=request))
+            else:
+                user.set_password(pw_new)
+
+                user.save()
+                # user = authenticate(email=request.user.email, password=pw_new)
+                # login(request, user)
+                messages.success(request, 'Password reset.')
+
+            return redirect('users:login')
+
+        except ObjectDoesNotExist:
+            return redirect('users:signup')
 
 
 def UserCreateConfirmView(request, token):

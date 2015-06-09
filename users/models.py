@@ -62,6 +62,7 @@ class User(AbstractBaseUser):
     description = models.TextField(default='', blank=True)
     is_active = models.BooleanField(default=False)
     confirm_token = models.CharField(default=create_hash, max_length=40)
+    password_reset_token = models.CharField(default=create_hash, max_length=40)
     password_token = models.CharField(default=create_hash, max_length=40)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
