@@ -30,7 +30,7 @@
     </small>
 
     <div>
-        <p>{{ post.original_or_self.content }}</p>
+        <p>{{ post.content }}</p>
     </div>
 
     <small class="post-subtle">
@@ -44,6 +44,10 @@
             {% endif %}
             <span class="pull-right">
                 {# author actions (edit, delete, ...) #}
+                {% if post.extra.can_be_edited %}
+                    <a class="mdi-editor-mode-edit" style="font-size: inherit"
+                       href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
+                {% endif %}
             </span>
             <div class="clearfix"></div>
         {% endif %}

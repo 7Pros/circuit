@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 from posts.models import Post
 from django.views import generic
 
@@ -20,10 +21,12 @@ def check_repost(post, user):
 
 def set_post_extra(post, request):
     can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
+    can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
 
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
+        'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
     })
 
@@ -42,6 +45,28 @@ class PostDetailView(generic.DetailView):
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
+
+
+class PostEditView(generic.UpdateView):
+    model = Post
+    fields = [
+        'content',
+    ]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def form_valid(self, form):
+        if not self.request.user.is_authenticated:
+            return super(PostEditView, self).form_invalid(form)
+
+        if len(self.request.POST['content']) > 256:
+            return super(PostEditView, self).form_invalid(form)
+
+        return super(PostEditView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('posts:post', kwargs={'pk': self.object.pk})
 
 
 def PostRepostView(request, pk=None):
