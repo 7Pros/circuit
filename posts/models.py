@@ -1,5 +1,4 @@
 from django.db import models
-from django.http import Http404
 from users.models import User
 
 
@@ -20,9 +19,6 @@ class Hashtag(models.Model):
     def __str__(self):
         return self.name
 
-    def filter_posts_by_hashtag(self, hashtag_name):
-        try:
-            hashtagObject = self.objects.get(name=hashtag_name)
-        except:
-            raise Http404("Hashtag does not exist")
+    def filter_posts_by_hashtag(hashtag_name):
+        hashtagObject = Hashtag.objects.get(name=hashtag_name)
         return hashtagObject.posts.all()

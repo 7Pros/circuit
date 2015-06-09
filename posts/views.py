@@ -1,7 +1,5 @@
-from django.shortcuts import redirect, render
-
+from django.shortcuts import redirect, Http404
 from posts.models import Post, Hashtag
-
 from django.views.generic import ListView
 import re
 
@@ -32,7 +30,18 @@ def SaveHashtags(hashtags, post):
         else:
             hashtagList[0].posts.add(post)
 
-def PostsListView(request, hashtag_name):
-    posts = Hashtag.filter_posts_by_hashtag(Hashtag, hashtag_name)
+class PostsListView(ListView):
+    template_name = 'posts/posts_list.html'
+    model = Post
 
-    return render(request, 'posts/posts_list.html', {'posts': posts})
+    def get_queryset(self):
+        try:
+            self.posts = Hashtag.filter_posts_by_hashtag(hashtag_name=self.kwargs['hashtag_name'])
+        except:
+            raise Http404('Hashtag doesn\'t exist', self.kwargs['hashtag_name'])
+        return self.posts
+
+    def get_context_data(self, **kwargs):
+        context = super(PostsListView, self).get_context_data(**kwargs)
+        context['posts'] = self.posts
+        return context
