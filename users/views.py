@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponse
-from django.shortcuts import redirect, Http404
+from django.shortcuts import redirect, Http404, render
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
@@ -93,6 +93,20 @@ def UserLogoutView(request):
     logout(request)
     return redirect('landingpage')
 
+
+def UserProfileViewByUsername(request, username):
+    try:
+        user = User.objects.get(username=username)
+    except:
+        raise Http404("Username doesn't exist", username)
+
+    posts = Post.objects.filter(author=user.pk) \
+            .select_related('author', 'original_post')
+    for post in posts:
+        set_post_extra(post, request)
+    context = {'posts': posts, 'user': user}
+
+    return render(request, 'users/user_profile.html', context)
 
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
