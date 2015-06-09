@@ -1,7 +1,30 @@
 from django.shortcuts import redirect, Http404
 from posts.models import Post, Hashtag
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 import re
+
+
+
+def check_repost(post, user):
+    if not user.is_authenticated():
+        return 'not_auth'  # no user to repost as
+
+    if user.pk == post.author.pk:
+        return 'own_post'  # don't repost own post
+
+    existing_repost = Post.objects.filter(author=user, original_post=post).exists()
+    if existing_repost:
+        # don't repost more than once
+        return 'already_reposted_as'
+
+    return 'ok'
+
+
+def set_post_extra(post, request):
+    extra = {
+        'can_be_reposted': 'ok' == check_repost(post.original_or_self(), request.user)
+    }
+    setattr(post, 'extra', extra)
 
 
 def PostCreateView(request):
@@ -11,6 +34,32 @@ def PostCreateView(request):
         post.save()
         SaveHashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
+
+
+class PostDetailView(DetailView):
+    template_name = 'posts/post_detail.html'
+    model = Post
+
+    def render_to_response(self, context, **response_kwargs):
+        set_post_extra(context['post'], self.request)
+        return super(PostDetailView, self).render_to_response(context, **response_kwargs)
+
+
+def PostRepostView(request, pk=None):
+    user = request.user
+    original_post = Post.objects.get(pk=pk).original_or_self()
+
+    check = check_repost(original_post, user)
+    if check == 'not_auth':
+        return redirect('posts:post', pk=original_post.pk)
+    if check != 'ok':
+        return redirect(request.META['HTTP_REFERER'] or 'landingpage')
+
+    repost = Post(content=original_post.content,
+                  author=user,
+                  original_post=original_post)
+    repost.save()
+    return redirect('posts:post', pk=repost.pk)
 
 
 def ParseContent(content):
