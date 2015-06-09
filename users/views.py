@@ -97,8 +97,9 @@ def UserResetPasswordView(request, token):
             template = loader.get_template('users/user_password_reset.html')
             return HttpResponse(template.render(request=request))
         except ObjectDoesNotExist:
-            messages.error(request, "Invalid token.")
-            return redirect('users:login')
+            # messages.error(request, "The given password reset token is invalid.")
+            # return redirect('users:login')
+            raise Http404
 
     if request.method == "POST":
         pw_new = request.POST['password-new']
@@ -113,8 +114,6 @@ def UserResetPasswordView(request, token):
                 user.set_password(pw_new)
 
                 user.save()
-                # user = authenticate(email=request.user.email, password=pw_new)
-                # login(request, user)
                 messages.success(request, 'Password reset.')
 
             return redirect('users:login')
