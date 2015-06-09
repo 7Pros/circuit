@@ -93,7 +93,6 @@ def PostRepostView(request, pk=None):
 
 def ParseContent(content):
     hashtags = re.findall(r"#(\w+)", content)
-    mentions = re.findall(r"@(\w+)", content)
     return {'hashtags': hashtags, 'mentions': mentions}
 
 

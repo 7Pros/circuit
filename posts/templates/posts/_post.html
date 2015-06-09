@@ -31,7 +31,7 @@
     </small>
 
     <div>
-        {% filter parse %}<p>{{ post.content }}</p>{% endfilter %}
+        {% filter parse_post_content %}{% autoescape off %}<p>{{ post.content }}</p>{% endautoescape %}{% endfilter %}
     </div>
 
     <small class="post-subtle">

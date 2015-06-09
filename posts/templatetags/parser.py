@@ -14,7 +14,7 @@ register = template.Library()
 
 @register.filter
 @stringfilter
-def parse(content):
+def parse_post_content(content):
     pattern = re.compile(r"#(\w+).*?", flags=re.IGNORECASE | re.UNICODE)
     parsed_content = pattern.sub(createHashtagURL, content)
 

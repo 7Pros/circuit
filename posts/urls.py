@@ -9,5 +9,5 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/edit/$', views.PostEditView.as_view(), name='edit'),
     url(r'^(?P<pk>\d+)/repost/$', views.PostRepostView, name='repost'),
     url(r'^(?P<pk>\d+)/favorite/$', views.PostFavoriteView, name='favorite'),
-    url(r'^show/(?P<hashtag_name>\w+)/$', PostsListView.as_view(), name='posts_list'),
+    url(r'^hashtags/(?P<hashtag_name>\w+)/$', PostsListView.as_view(), name='posts_list'),
 ]
