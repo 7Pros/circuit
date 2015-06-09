@@ -5,8 +5,6 @@ Extra template functions for posts.
 @copyright
 """
 from django import template
-from django.core.urlresolvers import reverse
-from posts.views import PostsListView
 from django.template.defaultfilters import stringfilter
 import re
 
@@ -15,7 +13,7 @@ register = template.Library()
 
 @register.filter
 @stringfilter
-def parse(content):
+def parse_post_content(content):
     """
     It parses a string replacing hashtags and mentions with urls of those.
 
@@ -38,7 +36,7 @@ def createHashtagURL(matchobj):
 
     @return hashtag between <a></a> HTML tags
     """
-    return '<a class="hashtag" href="/posts/show/' + matchobj.group(0).lstrip('#') + '/">' + matchobj.group(0) + '</a>'
+    return '<a class="hashtag" href="/posts/hashtags/'+matchobj.group(0).lstrip('#')+'/">'+matchobj.group(0)+'</a>'    
 
 
 def createMentionURL(matchobj):
