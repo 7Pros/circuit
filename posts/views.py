@@ -8,6 +8,8 @@ from django.shortcuts import redirect, Http404
 from posts.models import Post, Hashtag
 from django.views.generic import ListView, DetailView
 import re
+from django.core.urlresolvers import reverse
+from django.views import generic
 
 
 def check_repost(post, user):
@@ -26,10 +28,15 @@ def check_repost(post, user):
 
 
 def set_post_extra(post, request):
-    extra = {
-        'can_be_reposted': 'ok' == check_repost(post.original_or_self(), request.user)
-    }
-    setattr(post, 'extra', extra)
+    can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
+    can_be_edited = post.original_or_self().author.pk == request.user.pk
+    is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
+
+    setattr(post, 'extra', {
+        'can_be_reposted': can_be_reposted,
+        'can_be_edited': can_be_edited,
+        'is_favorited': is_favorited,
+    })
 
 
 def PostCreateView(request):
@@ -48,6 +55,28 @@ class PostDetailView(DetailView):
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
+
+
+class PostEditView(generic.UpdateView):
+    model = Post
+    fields = [
+        'content',
+    ]
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def form_valid(self, form):
+        if not self.request.user.is_authenticated:
+            return super(PostEditView, self).form_invalid(form)
+
+        if len(self.request.POST['content']) > 256:
+            return super(PostEditView, self).form_invalid(form)
+
+        return super(PostEditView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('posts:post', kwargs={'pk': self.object.pk})
 
 
 def PostRepostView(request, pk=None):
@@ -110,3 +139,17 @@ class PostsListView(ListView):
         context = super(PostsListView, self).get_context_data(**kwargs)
         context['posts'] = self.posts
         return context
+
+def PostFavoriteView(request, pk=None):
+    post = Post.objects.get(pk=pk).original_or_self()
+    if post.favorites.filter(pk=request.user.pk).exists():
+        post.favorites.remove(request.user)
+    else:
+        post.favorites.add(request.user)
+    post.save()
+
+    referer = request.META['HTTP_REFERER']
+    if referer:
+        return redirect(referer)
+    else:
+        return redirect('posts:post', pk=post.pk)
