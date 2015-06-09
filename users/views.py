@@ -97,9 +97,8 @@ def UserResetPasswordView(request, token):
             template = loader.get_template('users/user_password_reset.html')
             return HttpResponse(template.render(request=request))
         except ObjectDoesNotExist:
-            # messages.error(request, "The given password reset token is invalid.")
-            # return redirect('users:login')
-            raise Http404
+            messages.error(request, "Oops, an error happend. Please reset your password again.")
+            return redirect('users:login')
 
     if request.method == "POST":
         pw_new = request.POST['password-new']
