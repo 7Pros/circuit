@@ -1,0 +1,56 @@
+<div class="post {% if not posts %} lead{% endif %}">
+
+    {% if post.original_post %}
+        <small>
+            <span class="mdi-av-repeat" style="font-size: inherit"></span>
+            <span class="post-subtle">
+                {% if post.author.name %}
+                    <strong>{{ post.author.name }}</strong>
+                {% endif %}
+                <a href="{% url 'users:profile' pk=post.author.pk %}">@{{ post.author.username }}</a>
+                on
+                <a href="{% url 'posts:post' pk=post.pk %}">{{ post.created_at }}</a>
+            </span>
+        </small>
+        <br/>
+    {% endif %}
+
+    <small>
+        {% if post.original_or_self.author.name %}
+            <strong>{{ post.original_or_self.author.name }}</strong>
+        {% endif %}
+        <a href="{% url 'users:profile' pk=post.original_or_self.author.pk %}">
+            @{{ post.original_or_self.author.username }}</a>
+        <span class="pull-right post-subtle">
+            <a href="{% url 'posts:post' pk=post.original_or_self.pk %}">
+                {{ post.original_or_self.created_at }}</a>
+        </span>
+
+        <div class="clearfix"></div>
+    </small>
+
+    <div>
+        <p>{{ post.content }}</p>
+    </div>
+
+    <small class="post-subtle">
+        {% if request.user.is_authenticated %}
+            <a class="mdi-action-grade post-controls{% if post.extra.is_favorited %} post-favorited{% endif %}"
+               style="font-size: inherit"
+               href="{% url 'posts:favorite' pk=post.original_or_self.pk %}"></a>
+            {% if post.extra.can_be_reposted %}
+                <a class="mdi-av-repeat post-controls" style="font-size: inherit"
+                   href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
+            {% endif %}
+            <span class="pull-right">
+                {# author actions (edit, delete, ...) #}
+                {% if post.extra.can_be_edited %}
+                    <a class="mdi-editor-mode-edit" style="font-size: inherit"
+                       href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
+                {% endif %}
+            </span>
+            <div class="clearfix"></div>
+        {% endif %}
+    </small>
+
+</div>

@@ -7,7 +7,16 @@
 
             <h2>Edit your profile</h2>
 
-            {% if form.errors %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-dismissable
+                        {% if message.tags == 'error' %} alert-danger
+                        {% elif message.tags == 'success' %} alert-success {% endif %}">
+                        <button type="button" class="close" data-dismiss="alert">×</button>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% elif form.errors %}
                 <div class="alert alert-danger" role="alert">There was an error.</div>
             {% endif %}
 
@@ -51,25 +60,29 @@
 
             <h3>Change your password</h3>
 
-            <form action="" method="post">
+            <form action="{% url 'users:update-password' %}" method="post">
                 {% csrf_token %}
-                <br/>
-                <input type="password"
-                       name="name"
-                       class="form-control floating-label {% if 'name' in form.errors %} has-error{% endif %}"
-                       placeholder="Current password">
 
                 <br/>
                 <input type="password"
-                       name="name"
-                       class="form-control floating-label {% if 'name' in form.errors %} has-error{% endif %}"
-                       placeholder="New password">
+                       name="password-old"
+                       class="form-control floating-label {% if 'password-old' in form.errors %} has-error{% endif %}"
+                       placeholder="Current password"
+                       required>
 
                 <br/>
                 <input type="password"
-                       name="name"
-                       class="form-control floating-label {% if 'name' in form.errors %} has-error{% endif %}"
-                       placeholder="New password confirmation">
+                       name="password-new"
+                       class="form-control floating-label {% if 'password-new' in form.errors %} has-error{% endif %}"
+                       placeholder="New password"
+                       required>
+
+                <br/>
+                <input type="password"
+                       name="password-confirm"
+                       class="form-control floating-label {% if 'password-confirm' in form.errors %} has-error{% endif %}"
+                       placeholder="New password confirmation"
+                       required>
 
                 <button class="btn btn-raised btn-material-light-blue" type="submit">Save</button>
             </form>
@@ -78,7 +91,7 @@
 
             <h3>Delete your account</h3>
             <br/>
-            <a class="btn btn-raised btn-danger" href="#delete">Delete your account</a>
+            <a class="btn btn-raised btn-danger" href="{% url 'users:delete' pk=user.pk %}">Delete your account</a>
 
         </div>
 

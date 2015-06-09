@@ -1,19 +1,20 @@
-from __future__ import print_function
-
+from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect
+from django.http import HttpResponse
+from django.shortcuts import redirect, Http404
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
-
+from posts.models import Post
+from posts.views import set_post_extra
 from users.models import User
 from users.forms import UserLoginForm
 
 
 class UserCreateView(CreateView):
+    template_name = 'users/user_create.html'
     model = User
     fields = [
         'email',
@@ -21,8 +22,14 @@ class UserCreateView(CreateView):
         'password',
     ]
 
-    # TODO change singup to `login` when merging
-    success_url = reverse_lazy('users:signup')
+    success_url = reverse_lazy('users:login')
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            # user is logged in, send to their profile
+            return redirect('users:profile', pk=request.user.pk)
+        else:
+            return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.set_password(form.cleaned_data['password'])
@@ -50,19 +57,54 @@ class UserCreateView(CreateView):
 def UserCreateConfirmView(request, token):
     try:
         user = User.objects.get(confirm_token=token)
-
+    except ObjectDoesNotExist:
+        return redirect('users:signup')
+    else:
         user.confirm_token = ''
         user.is_active = True
         user.save()
+        return redirect('users:login')
 
-        return redirect('users:signup')
-    except ObjectDoesNotExist:
-        return redirect('users:signup')
+
+def UserLoginView(request):
+    if request.method == "GET":
+        template = loader.get_template('users/user_login.html')
+        return HttpResponse(template.render(request=request))
+
+    if request.method == "POST":
+        email = request.POST['email']
+        password = request.POST['password']
+
+        user = authenticate(email=email, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('users:profile', pk=user.pk)
+            else:
+                messages.error(request, 'Your account is inactive. Be sure to check your emails.')
+                return redirect('users:login')
+        else:
+            messages.error(request, message='Bad credentials.')
+            return redirect('users:login')
+
+
+def UserLogoutView(request):
+    logout(request)
+    return redirect('landingpage')
 
 
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'
     model = User
+
+    def render_to_response(self, context, **response_kwargs):
+        posts = Post.objects.filter(author=self.object.pk) \
+            .select_related('author', 'original_post')
+        for post in posts:
+            set_post_extra(post, self.request)
+        context.update(posts=posts)
+        return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
 class UserUpdateView(generic.UpdateView):
@@ -75,25 +117,42 @@ class UserUpdateView(generic.UpdateView):
     ]
     template_name = 'users/user_edit.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated() \
+                and str(request.user.pk) == kwargs['pk']:
+            return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
+        else:
+            raise Http404  # deny access, act as if there was no such account
+
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
 
 
-class UserLoginView(generic.FormView):
-    form_class = UserLoginForm
-    success_url = reverse_lazy('users:profile')
-    template_name = 'users/user_login_form.html'
+def UserPasswordView(request):
+    if request.method != "POST":
+        raise Http404
 
-    def form_valid(self, form):
-        username = form.cleaned_data['username']
-        password = form.cleaned_data['password']
-        user = authenticate(username=username, password=password)
-        if user is not None and user.is_active:
-            login(self.request, user)
-            return super(UserLoginView, self).form_valid(form)
-        else:
-            return self.form_invalid(form)
+    if not request.user.is_authenticated():
+        raise Http404
 
-    def form_invalid(self, form):
-        print(form.errors)
-        return super(UserLoginView, self).form_invalid(form)
+    pw_old = request.POST['password-old']
+    pw_new = request.POST['password-new']
+    pw_confirm = request.POST['password-confirm']
+
+    if not request.user.check_password(pw_old):
+        messages.error(request, 'Current password is wrong.')
+    elif pw_new != pw_confirm:
+        messages.error(request, 'Passwords do not match.')
+    else:
+        request.user.set_password(pw_new)
+        request.user.save()
+        user = authenticate(email=request.user.email, password=pw_new)
+        login(request, user)
+        messages.success(request, 'Password updated.')
+
+    return redirect('users:edit', pk=request.user.pk)
+
+
+class UserDeleteView(generic.DeleteView):
+    model = User
+    success_url = reverse_lazy('landingpage')
