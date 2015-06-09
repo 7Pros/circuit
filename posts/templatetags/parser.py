@@ -16,9 +16,13 @@ register = template.Library()
 @stringfilter
 def parse(content):
     pattern = re.compile(r"#(\w+).*?", flags=re.IGNORECASE | re.UNICODE)
-    parsed_content = pattern.sub(createHashtagURL, content)
-
-    return parsed_content
+    parsed_content_with_hashtags = pattern.sub(createHashtagURL, content)
+    pattern = re.compile(r"@(\w+).*?", flags=re.IGNORECASE | re.UNICODE)
+    parsed_content_complete = pattern.sub(createMentionURL, parsed_content_with_hashtags)
+    return parsed_content_complete
 
 def createHashtagURL(matchobj):
     return '<a class="hashtag" href="/posts/show/'+matchobj.group(0).lstrip('#')+'/">'+matchobj.group(0)+'</a>'
+
+def createMentionURL(matchobj):
+    return '<a class="mention" href="/users/'+matchobj.group(0).lstrip('@')+'/">'+matchobj.group(0)+'</a>'
