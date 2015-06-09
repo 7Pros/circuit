@@ -1,3 +1,9 @@
+"""@package docstring
+Users urlspatterns file.
+
+@author 7Pros
+@copyright
+"""
 from django.conf.urls import url
 
 from users import views

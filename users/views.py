@@ -1,3 +1,9 @@
+"""@package docstring
+Users views file.
+
+@author 7Pros
+@copyright
+"""
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
@@ -95,18 +101,27 @@ def UserLogoutView(request):
 
 
 def UserProfileViewByUsername(request, username):
+    """
+    Renders the view of a profile that was searched by username
+
+    @param request: HttpRequestObj - current request.
+    @param username: string - searched username
+
+    @return rendered template with the given context
+    """
     try:
         user = User.objects.get(username=username)
     except:
         raise Http404("Username doesn't exist", username)
 
     posts = Post.objects.filter(author=user.pk) \
-            .select_related('author', 'original_post')
+        .select_related('author', 'original_post')
     for post in posts:
         set_post_extra(post, request)
     context = {'posts': posts, 'user': user}
 
     return render(request, 'users/user_profile.html', context)
+
 
 class UserProfileView(generic.DetailView):
     template_name = 'users/user_profile.html'

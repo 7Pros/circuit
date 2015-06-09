@@ -1,8 +1,13 @@
+"""@package docstring
+Post views file.
+
+@author 7Pros
+@copyright
+"""
 from django.shortcuts import redirect, Http404
 from posts.models import Post, Hashtag
 from django.views.generic import ListView, DetailView
 import re
-
 
 
 def check_repost(post, user):
@@ -79,11 +84,17 @@ def SaveHashtags(hashtags, post):
         else:
             hashtagList[0].posts.add(post)
 
+
 class PostsListView(ListView):
     template_name = 'posts/posts_list.html'
     model = Post
 
     def get_queryset(self):
+        """
+        Returns the posts containing a wished hashtag
+
+        @return posts objects that contain the searched hashtag
+        """
         try:
             self.posts = Hashtag.filter_posts_by_hashtag(hashtag_name=self.kwargs['hashtag_name'])
         except:
@@ -91,6 +102,11 @@ class PostsListView(ListView):
         return self.posts
 
     def get_context_data(self, **kwargs):
+        """
+
+        @param kwargs: dictionary with keyword arguments given through the url
+        @return context to be shown in the template
+        """
         context = super(PostsListView, self).get_context_data(**kwargs)
         context['posts'] = self.posts
         return context
