@@ -42,3 +42,7 @@ body {
 .post:hover .post-subtle a {
     color: #009688;
 }
+
+.post-favorited {
+    color: #ffc107 !important;
+}

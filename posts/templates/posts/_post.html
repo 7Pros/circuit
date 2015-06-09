@@ -25,26 +25,31 @@
             <a href="{% url 'posts:post' pk=post.original_or_self.pk %}">
                 {{ post.original_or_self.created_at }}</a>
         </span>
+
         <div class="clearfix"></div>
     </small>
 
     <div>
-        <p>{{ post.original_or_self.content }}</p>
+        <p>{{ post.content }}</p>
     </div>
 
     <small class="post-subtle">
         {% if request.user.is_authenticated %}
-            {# reader actions (favorite, repost, ...) #}
+            <a class="mdi-action-grade post-controls{% if post.extra.is_favorited %} post-favorited{% endif %}"
+               style="font-size: inherit"
+               href="{% url 'posts:favorite' pk=post.original_or_self.pk %}"></a>
             {% if post.extra.can_be_reposted %}
                 <a class="mdi-av-repeat post-controls" style="font-size: inherit"
                    href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
             {% endif %}
             <span class="pull-right">
                 {# author actions (edit, delete, ...) #}
+                {% if post.extra.can_be_edited %}
+                    <a class="mdi-editor-mode-edit" style="font-size: inherit"
+                       href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
+                {% endif %}
             </span>
             <div class="clearfix"></div>
-        {% else %}
-            Please <a href="{% url 'landingpage' %}">log in</a> to enjoy full functionality.
         {% endif %}
     </small>
 
