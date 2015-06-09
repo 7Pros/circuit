@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    {% load parser %}
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-4">
             <div class="panel panel-default panel-profile">
@@ -54,7 +55,6 @@
 
                             <div class="clearfix"></div>
                             <div>
-                            {% load parser %}
                                 {% filter parse %}<p>{{ post.content }}</p>{% endfilter %}
                             </div>
                         </div>

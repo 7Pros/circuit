@@ -21,4 +21,4 @@ def parse(content):
     return parsed_content
 
 def createHashtagURL(matchobj):
-    return '<a class="hashtag" href=/posts/'+matchobj.group(0).lstrip('#')+'>'+matchobj.group(0)+'</a>'
+    return '<a class="hashtag" href="/posts/show/'+matchobj.group(0).lstrip('#')+'/">'+matchobj.group(0)+'</a>'

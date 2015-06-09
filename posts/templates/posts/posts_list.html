@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load parser %}
+    <div class="col-xs-12 col-sm-6 col-md-8">
+        <div class="panel panel-default panel-profile">
+            <div class="panel-body">
+                <div class="clearfix"></div>
+
+                {% for post in posts|dictsortreversed:'created_at' %}
+
+                    <hr/>
+
+                    <div class="post">
+                        {% if post.author.name %}
+                            <strong>{{ post.author.name }}</strong>
+                        {% endif %}
+                        <a href="{% url 'users:profile' pk=post.author.pk %}">@{{ post.author.username }}</a>
+                        <a class="pull-right" href="#/posts/{{ post.pk }}">{{ post.created_at }}</a>
+
+                        <div class="clearfix"></div>
+                        <div>
+                            {% filter parse %}<p>{{ post.content }}</p>{% endfilter %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
