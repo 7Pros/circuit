@@ -23,3 +23,22 @@ body {
     border: 2px solid white;
     border-radius: 50%;
 }
+
+.post-subtle a,
+.post-subtle:hover a {
+    font-size: inherit;
+}
+
+.post .post-subtle,
+.post .post-subtle * {
+    color: #cccccc;
+}
+
+.post:hover .post-subtle,
+.post:hover .post-subtle * {
+    color: #333333;
+}
+
+.post:hover .post-subtle a {
+    color: #009688;
+}
