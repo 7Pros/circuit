@@ -2,8 +2,7 @@ from django.shortcuts import redirect
 from posts.models import Post
 from django.views import generic
 from django.shortcuts import Http404
-from django.core.urlresolvers import reverse_lazy, reverse
-from users.models import User
+from django.shortcuts import render, get_object_or_404
 
 def check_repost(post, user):
     if not user.is_authenticated():
@@ -67,11 +66,6 @@ def PostDeleteView(request, pk=None):
     except:
         raise Http404("Post not found")
     return redirect('users:profile', pk=request.user.pk)
-class DeleteView(generic.DeleteView):
 
-    model = Post
-    success_url = redirect('users:profile', pk=self.get_object().user.pk)
-    def get_object(self, queryset=None):
-        object = super(PostDeleteView, self).get_object()
-        return object
+
 
