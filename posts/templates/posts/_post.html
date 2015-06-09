@@ -25,6 +25,7 @@
             <a href="{% url 'posts:post' pk=post.original_or_self.pk %}">
                 {{ post.original_or_self.created_at }}</a>
         </span>
+
         <div class="clearfix"></div>
     </small>
 
@@ -45,8 +46,6 @@
                 {# author actions (edit, delete, ...) #}
             </span>
             <div class="clearfix"></div>
-        {% else %}
-            Please <a href="{% url 'landingpage' %}">log in</a> to enjoy full functionality.
         {% endif %}
     </small>
 
