@@ -41,11 +41,30 @@
             {% endif %}
             <span class="pull-right">
                 {# author actions (edit, delete, ...) #}
+            {% if request.user.pk == user.pk %}
+                <a id="delete-button" href="{% url 'posts:delete' pk=post.original_or_self.pk %}"  role="button" ><span class="glyphicon glyphicon-trash"></span></a>
+            {% endif %}
             </span>
             <div class="clearfix"></div>
         {% else %}
             Please <a href="{% url 'landingpage' %}">log in</a> to enjoy full functionality.
         {% endif %}
     </small>
+<style>
+    #delete-button  {
+        opacity: 0;
+        -webkit-transition: opacity 0.15s ease-in-out;
+  -moz-transition: opacity 0.15s  ease-in-out;
+  -ms-transition: opacity 0.15s  ease-in-out;
+  -o-transition: opacity 0.15s  ease-in-out;
+  transition: opacity 0.15s  ease-in-out;
+    }
+
+    div.post:hover #delete-button {
+         filter: alpha(opacity=70);
+        opacity: 1;
+
+    }
+</style>
 
 </div>
