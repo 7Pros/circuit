@@ -6,7 +6,6 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 
 
-
 def check_repost(post, user):
     if not user.is_authenticated():
         return 'not_auth'  # no user to repost as
@@ -107,6 +106,7 @@ def SaveHashtags(hashtags, post):
         else:
             hashtagList[0].posts.add(post)
 
+
 class PostsListView(ListView):
     template_name = 'posts/posts_list.html'
     model = Post
@@ -122,6 +122,7 @@ class PostsListView(ListView):
         context = super(PostsListView, self).get_context_data(**kwargs)
         context['posts'] = self.posts
         return context
+
 
 def PostFavoriteView(request, pk=None):
     post = Post.objects.get(pk=pk).original_or_self()
