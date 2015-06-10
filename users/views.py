@@ -8,6 +8,7 @@ from django.shortcuts import redirect, Http404
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
+from circuit import settings
 from posts.models import Post
 from posts.views import set_post_extra
 from users.models import User, create_hash
@@ -41,7 +42,10 @@ class UserCreateView(CreateView):
 
     def send_confirm_mail(self, user):
         template = loader.get_template('users/confirmation_email.html')
-        context = Context({'user': user})
+        context = Context({
+            'user': user,
+            'site_url': settings.SITE_URL,
+        })
         html = template.render(context)
 
         send_mail(
@@ -69,7 +73,10 @@ def UserRequestResetPasswordView(request):
 
             # send password reset email with token
             template = loader.get_template('users/password_reset_email.html')
-            context = Context({'user': user})
+            context = Context({
+                'user': user,
+                'site_url': settings.SITE_URL,
+            })
             html = template.render(context)
 
             send_mail(
