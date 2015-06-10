@@ -39,37 +39,21 @@
                style="font-size: inherit"
                href="{% url 'posts:favorite' pk=post.original_or_self.pk %}"></a>
             {% if post.extra.can_be_reposted %}
-                <a class="mdi-av-repeat post-controls" style="font-size: inherit"
+                <a class="mdi-av-repeat post-controls"
                    href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
             {% endif %}
             <span class="pull-right">
-                {# author actions (edit, delete, ...) #}
-            {% if post.extra.can_be_deleted %}
-                <a id="delete-button" href="{% url 'posts:delete' pk=post.original_or_self.pk %}"  role="button" ><span class="glyphicon glyphicon-trash"></span></a>
-            {% endif %}
                 {% if post.extra.can_be_edited %}
-                    <a class="mdi-editor-mode-edit" style="font-size: inherit"
+                    <a class="mdi-editor-mode-edit post-controls"
                        href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
+                {% endif %}
+                {% if post.extra.can_be_deleted %}
+                    <a class="mdi-action-delete post-controls"
+                       href="{% url 'posts:delete' pk=post.original_or_self.pk %}"></a>
                 {% endif %}
             </span>
             <div class="clearfix"></div>
         {% endif %}
     </small>
-<style>
-    #delete-button  {
-        opacity: 0;
-        -webkit-transition: opacity 0.15s ease-in-out;
-  -moz-transition: opacity 0.15s  ease-in-out;
-  -ms-transition: opacity 0.15s  ease-in-out;
-  -o-transition: opacity 0.15s  ease-in-out;
-  transition: opacity 0.15s  ease-in-out;
-    }
-
-    div.post:hover #delete-button {
-         filter: alpha(opacity=70);
-        opacity: 1;
-
-    }
-</style>
 
 </div>

@@ -24,23 +24,24 @@ body {
     border-radius: 50%;
 }
 
-.post-subtle a,
-.post-subtle:hover a {
-    font-size: inherit;
+.post-controls {
+    font-size: 1.3em !important;
 }
 
 .post .post-subtle,
 .post .post-subtle * {
-    color: #cccccc;
+    opacity: 0;
+    -webkit-transition: opacity 0.15s ease-in-out;
+    -moz-transition: opacity 0.15s ease-in-out;
+    -ms-transition: opacity 0.15s ease-in-out;
+    -o-transition: opacity 0.15s ease-in-out;
+    transition: opacity 0.15s ease-in-out;
 }
 
 .post:hover .post-subtle,
 .post:hover .post-subtle * {
-    color: #333333;
-}
-
-.post:hover .post-subtle a {
-    color: #009688;
+    filter: alpha(opacity=70);
+    opacity: 1;
 }
 
 .post-favorited {
