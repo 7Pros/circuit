@@ -17,3 +17,18 @@ class Post(models.Model):
         while p.original_post:
             p = p.original_post
         return p
+
+    def __str__(self):
+        return self.content
+
+
+class Hashtag(models.Model):
+    name = models.CharField(max_length=255)
+    posts = models.ManyToManyField(Post)
+
+    def __str__(self):
+        return self.name
+
+    def filter_posts_by_hashtag(hashtag_name):
+        hashtagObject = Hashtag.objects.get(name=hashtag_name)
+        return hashtagObject.posts.all()

@@ -1,3 +1,4 @@
+{% load parser %}
 <div class="post {% if not posts %} lead{% endif %}">
 
     {% if post.original_post %}
@@ -30,7 +31,7 @@
     </small>
 
     <div>
-        <p>{{ post.content }}</p>
+        {% filter parse_post_content %}{% autoescape off %}<p>{{ post.content }}</p>{% endautoescape %}{% endfilter %}
     </div>
 
     <small class="post-subtle">
