@@ -1,9 +1,9 @@
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-from posts.models import Post
 from django.views import generic
-from django.shortcuts import Http404
-from django.shortcuts import render, get_object_or_404
+
+from posts.models import Post
+
 
 def check_repost(post, user):
     if not user.is_authenticated():
@@ -88,7 +88,6 @@ def PostRepostView(request, pk=None):
     return redirect('posts:post', pk=repost.pk)
 
 
-
 def PostFavoriteView(request, pk=None):
     post = Post.objects.get(pk=pk).original_or_self()
     if post.favorites.filter(pk=request.user.pk).exists():
@@ -102,6 +101,8 @@ def PostFavoriteView(request, pk=None):
         return redirect(referer)
     else:
         return redirect('posts:post', pk=post.pk)
+
+
 class PostDeleteView(generic.DeleteView):
     model = Post
 
