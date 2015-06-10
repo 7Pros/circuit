@@ -1,3 +1,9 @@
+"""@package docstring
+Post and Hashtag model file.
+
+@author 7Pros
+@copyright
+"""
 from django.db import models
 
 from users.models import User
@@ -30,5 +36,11 @@ class Hashtag(models.Model):
         return self.name
 
     def filter_posts_by_hashtag(hashtag_name):
+        """
+        Filters posts by hashtag.
+
+        @param hashtag_name: string - the hashtag name with which be used for filtering by its name.
+        @return list - the posts that have used the hashtag_name
+        """
         hashtagObject = Hashtag.objects.get(name=hashtag_name)
         return hashtagObject.posts.all()

@@ -1,13 +1,20 @@
+"""@package docstring
+Users views file.
+
+@author 7Pros
+@copyright
+"""
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponse
-from django.shortcuts import redirect, Http404
+from django.shortcuts import redirect, Http404, render
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
+
 from circuit import settings
 from posts.models import Post
 from posts.views import set_post_extra
@@ -166,6 +173,29 @@ def UserLoginView(request):
 def UserLogoutView(request):
     logout(request)
     return redirect('landingpage')
+
+
+def UserProfileViewByUsername(request, username):
+    """
+    Renders the view of a profile that was searched by username
+
+    @param request: HttpRequestObj - current request.
+    @param username: string - searched username
+
+    @return rendered template with the given context
+    """
+    try:
+        user = User.objects.get(username=username)
+    except:
+        raise Http404("Username doesn't exist", username)
+
+    posts = Post.objects.filter(author=user.pk) \
+        .select_related('author', 'original_post')
+    for post in posts:
+        set_post_extra(post, request)
+    context = {'posts': posts, 'user': user}
+
+    return render(request, 'users/user_profile.html', context)
 
 
 class UserProfileView(generic.DetailView):
