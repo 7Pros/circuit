@@ -44,7 +44,7 @@
             {% endif %}
             <span class="pull-right">
                 {# author actions (edit, delete, ...) #}
-            {% if request.user.pk == user.pk %}
+            {% if post.extra.can_be_deleted %}
                 <a id="delete-button" href="{% url 'posts:delete' pk=post.original_or_self.pk %}"  role="button" ><span class="glyphicon glyphicon-trash"></span></a>
             {% endif %}
                 {% if post.extra.can_be_edited %}

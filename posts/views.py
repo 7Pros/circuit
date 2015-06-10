@@ -24,11 +24,12 @@ def set_post_extra(post, request):
     can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
-
+    can_be_deleted = post.original_or_self().author.pk == request.user.pk
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
+        'can_be_deleted': can_be_deleted,
     })
 
 
@@ -86,14 +87,6 @@ def PostRepostView(request, pk=None):
     repost.save()
     return redirect('posts:post', pk=repost.pk)
 
-def PostDeleteView(request, pk=None):
-    user = request.user
-    original_post = Post.objects.get(pk=pk).original_or_self()
-    try:
-        original_post.delete()
-    except:
-        raise Http404("Post not found")
-    return redirect('users:profile', pk=request.user.pk)
 
 
 def PostFavoriteView(request, pk=None):
@@ -109,3 +102,8 @@ def PostFavoriteView(request, pk=None):
         return redirect(referer)
     else:
         return redirect('posts:post', pk=post.pk)
+class PostDeleteView(generic.DeleteView):
+    model = Post
+
+    def get_success_url(self):
+        return reverse('users:profile', pk=self.request.user.pk)
