@@ -5,6 +5,7 @@ Extra template functions for posts.
 @copyright
 """
 from django import template
+from django.core.urlresolvers import reverse
 from django.template.defaultfilters import stringfilter
 import re
 
@@ -25,6 +26,7 @@ def parse_post_content(content):
     parsed_content_with_hashtags = pattern.sub(createHashtagURL, content)
     pattern = re.compile(r"@(\w+).*?", flags=re.IGNORECASE | re.UNICODE)
     parsed_content_complete = pattern.sub(createMentionURL, parsed_content_with_hashtags)
+    
     return parsed_content_complete
 
 
@@ -36,7 +38,8 @@ def createHashtagURL(matchobj):
 
     @return hashtag between <a></a> HTML tags
     """
-    return '<a class="hashtag" href="/posts/hashtags/'+matchobj.group(0).lstrip('#')+'/">'+matchobj.group(0)+'</a>'    
+    url = reverse('posts:hashtags', kwargs={'hashtag_name': matchobj.group(0).lstrip('#')})
+    return '<a class="hashtag" href="'+url+'">'+matchobj.group(0)+'</a>'
 
 
 def createMentionURL(matchobj):
@@ -45,6 +48,7 @@ def createMentionURL(matchobj):
 
     @param matchobj: MatchObj - given through pattern.sub.
 
-    @return hashtag between <a></a> HTML tags
+    @return mention between <a></a> HTML tags
     """
-    return '<a class="mention" href="/users/' + matchobj.group(0).lstrip('@') + '/">' + matchobj.group(0) + '</a>'
+    url = reverse('users:profile_username', kwargs={'username': matchobj.group(0).lstrip('@')})
+    return '<a class="mention" href="'+ url + '">' + matchobj.group(0) + '</a>'
