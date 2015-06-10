@@ -11,6 +11,7 @@ import re
 
 register = template.Library()
 
+
 @register.filter
 @stringfilter
 def parse_post_content(content):
@@ -19,6 +20,7 @@ def parse_post_content(content):
 
     return parsed_content
 
+
 def createHashtagURL(matchobj):
     url = reverse('posts:hashtags', kwargs={'hashtag_name': matchobj.group(0).lstrip('#')})
-    return '<a class="hashtag" href="'+url+'">'+matchobj.group(0)+'</a>'
+    return '<a class="hashtag" href="' + url + '">' + matchobj.group(0) + '</a>'
