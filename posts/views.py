@@ -1,7 +1,8 @@
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
-from posts.models import Post
 from django.views import generic
+
+from posts.models import Post
 
 
 def check_repost(post, user):
@@ -23,11 +24,12 @@ def set_post_extra(post, request):
     can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
-
+    can_be_deleted = post.author.pk == request.user.pk
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
+        'can_be_deleted': can_be_deleted,
     })
 
 
@@ -99,3 +101,10 @@ def PostFavoriteView(request, pk=None):
         return redirect(referer)
     else:
         return redirect('posts:post', pk=post.pk)
+
+
+class PostDeleteView(generic.DeleteView):
+    model = Post
+
+    def get_success_url(self):
+        return reverse('users:profile', kwargs={'pk': self.request.user.pk})
