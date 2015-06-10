@@ -24,7 +24,7 @@ def set_post_extra(post, request):
     can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
-    can_be_deleted = post.original_or_self().author.pk == request.user.pk
+    can_be_deleted = post.author.pk == request.user.pk
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
@@ -106,4 +106,4 @@ class PostDeleteView(generic.DeleteView):
     model = Post
 
     def get_success_url(self):
-        return reverse('users:profile', pk=self.request.user.pk)
+        return reverse('users:profile', kwargs={'pk': self.request.user.pk})
