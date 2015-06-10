@@ -4,14 +4,17 @@ Post views file.
 @author 7Pros
 @copyright
 """
-from django.shortcuts import redirect, Http404
-from posts.models import Post, Hashtag
-from django.views.generic import ListView, DetailView
 import re
+
+from django.shortcuts import redirect, Http404
+from django.views.generic import ListView, DetailView
 from django.core.urlresolvers import reverse
+
 from django.views import generic
 
+from posts.models import Hashtag
 from posts.models import Post
+
 
 def check_repost(post, user):
     if not user.is_authenticated():
