@@ -6,9 +6,10 @@ User model.
 """
 import hashlib
 import os
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-import time
+
 
 def create_hash():
     """@package docstring
@@ -22,7 +23,6 @@ def create_hash():
 
 
 class UserManager(BaseUserManager):
-
     def create_user(self, email, username, password):
         """@package docstring
         Creates a new user.
@@ -83,7 +83,7 @@ class User(AbstractBaseUser):
     description = models.TextField(default='', blank=True)
     is_active = models.BooleanField(default=False)
     confirm_token = models.CharField(default=create_hash, max_length=40)
-    password_token = models.CharField(default=create_hash, max_length=40)
+    password_reset_token = models.CharField(default=create_hash, max_length=40)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_staff = models.BooleanField(default=False)

@@ -27,6 +27,7 @@ class Post(models.Model):
     def __str__(self):
         return self.content
 
+
 class Hashtag(models.Model):
     name = models.CharField(max_length=255)
     posts = models.ManyToManyField(Post)

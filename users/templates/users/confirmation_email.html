@@ -4,7 +4,7 @@
 
 <p>Welcome to circuit! Please verify your email address below.</p>
 
-<p>Click to <a href="http://localhost:8000{% url 'users:signup_confirm' token=user.confirm_token %}">verify {{ user.email }}</a></p>
+<p>Click to <a href="{{ site_url }}{% url 'users:signup_confirm' token=user.confirm_token %}">verify {{ user.email }}</a></p>
 
 <p>
     Thanks,<br/>
