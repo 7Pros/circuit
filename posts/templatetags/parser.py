@@ -5,8 +5,7 @@ Extra template functions
 @copyright
 """
 from django import template
-from django.core.urlresolvers import reverse_lazy
-from posts.views import PostsListView
+from django.core.urlresolvers import reverse
 from django.template.defaultfilters import stringfilter
 import re
 
@@ -21,4 +20,5 @@ def parse_post_content(content):
     return parsed_content
 
 def createHashtagURL(matchobj):
-    return '<a class="hashtag" href="/posts/hashtags/'+matchobj.group(0).lstrip('#')+'/">'+matchobj.group(0)+'</a>'
+    url = reverse('posts:hashtags', kwargs={'hashtag_name': matchobj.group(0).lstrip('#')})
+    return '<a class="hashtag" href="'+url+'">'+matchobj.group(0)+'</a>'
