@@ -14,6 +14,7 @@ from django.shortcuts import redirect, Http404, render
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
+
 from circuit import settings
 from posts.models import Post
 from posts.views import set_post_extra
