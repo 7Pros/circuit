@@ -34,10 +34,8 @@
                        required>
 
                 <button class="btn btn-lg btn-raised btn-material-light-blue" type="submit">Login</button>
+                <a class="pull-right" href="{% url 'users:request_password_reset' %}" style="margin-top: 20px">Forgot password?</a>
             </form>
-
-            <br/>
-            <p><a href="{% url 'users:request_password_reset' %}">Forgot password?</a></p>
 
         </div>
 
