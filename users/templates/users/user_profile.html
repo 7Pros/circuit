@@ -9,14 +9,14 @@
                     <img src="http://0.gravatar.com/avatar/088e4fb4456157398d147c276c22dabc?s=50&d=mm" alt=""/>
                     <strong>{{ user.name }}</strong>
                     <a href="{% url 'users:profile' pk=user.pk %}">@{{ user.username }}</a>
-                    {% if user.description %}
-                        <br/><br/>
-                        <p>{{ user.description | escape }}</p>
-                    {% endif %}
                     {% if request.user.is_authenticated and request.user.pk == user.pk %}
                         <a class="mdi-content-create pull-right"
                            style="color: rgba(0,0,0,0.84); text-decoration: none"
                            href="{% url 'users:edit' pk=user.pk %}"></a>
+                    {% endif %}
+                    {% if user.description %}
+                        <br/><br/>
+                        <p>{{ user.description | escape }}</p>
                     {% endif %}
                 </div>
             </div>

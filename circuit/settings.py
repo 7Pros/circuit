@@ -109,7 +109,7 @@ STATICFILES_DIRS = (
     "circuit/static/",
 )
 
-SITE_URL = 'http://localhost:8000/'
+SITE_URL = 'http://localhost:8000'
 
 # LOCALHOST
 EMAIL_HOST = 'localhost'
