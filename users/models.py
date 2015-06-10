@@ -6,9 +6,10 @@ User model.
 """
 import hashlib
 import os
+
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-import time
+
 
 def create_hash():
     """@package docstring
@@ -22,7 +23,6 @@ def create_hash():
 
 
 class UserManager(BaseUserManager):
-
     def create_user(self, email, username, password):
         """@package docstring
         Creates a new user.
