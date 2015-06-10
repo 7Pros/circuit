@@ -16,11 +16,11 @@ register = template.Library()
 @stringfilter
 def parse_post_content(content):
     pattern = re.compile(r"#(\w+).*?", flags=re.IGNORECASE | re.UNICODE)
-    parsed_content = pattern.sub(createHashtagURL, content)
+    parsed_content = pattern.sub(create_hashtag_url, content)
 
     return parsed_content
 
 
-def createHashtagURL(matchobj):
+def create_hashtag_url(matchobj):
     url = reverse('posts:hashtags', kwargs={'hashtag_name': matchobj.group(0).lstrip('#')})
     return '<a class="hashtag" href="' + url + '">' + matchobj.group(0) + '</a>'
