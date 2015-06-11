@@ -1,3 +1,9 @@
+"""@package docstring
+Main project views file.
+
+@author 7Pros
+@copyright
+"""
 from django.views.generic import TemplateView
 
 
