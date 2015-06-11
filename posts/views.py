@@ -44,12 +44,12 @@ def set_post_extra(post, request):
     })
 
 
-def PostCreateView(request):
+def post_create_view(request):
     if (len(request.POST['content']) <= 256):
-        parsedString = ParseContent(request.POST['content'])
+        parsedString = parse_content(request.POST['content'])
         post = Post(content=request.POST['content'], author=request.user)
         post.save()
-        SaveHashtags(parsedString['hashtags'], post)
+        save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
 
@@ -84,7 +84,7 @@ class PostEditView(generic.UpdateView):
         return reverse('posts:post', kwargs={'pk': self.object.pk})
 
 
-def PostRepostView(request, pk=None):
+def post_repost_view(request, pk=None):
     user = request.user
     original_post = Post.objects.get(pk=pk).original_or_self()
 
@@ -101,12 +101,12 @@ def PostRepostView(request, pk=None):
     return redirect('posts:post', pk=repost.pk)
 
 
-def ParseContent(content):
+def parse_content(content):
     hashtags = re.findall(r"#(\w+)", content)
     return {'hashtags': hashtags}
 
 
-def SaveHashtags(hashtags, post):
+def save_hashtags(hashtags, post):
     for hashtagWord in hashtags:
         hashtagList = Hashtag.objects.filter(name=hashtagWord)
 
@@ -145,7 +145,7 @@ class PostsListView(ListView):
         return context
 
 
-def PostFavoriteView(request, pk=None):
+def post_favorite_view(request, pk=None):
     post = Post.objects.get(pk=pk).original_or_self()
     if post.favorites.filter(pk=request.user.pk).exists():
         post.favorites.remove(request.user)
