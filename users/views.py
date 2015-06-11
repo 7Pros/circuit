@@ -65,7 +65,7 @@ class UserCreateView(CreateView):
         )
 
 
-def UserRequestResetPasswordView(request):
+def user_request_reset_password(request):
     if request.method == "GET":
         template = loader.get_template('users/user_request_password_reset.html')
         return HttpResponse(template.render(request=request))
@@ -104,7 +104,7 @@ def UserRequestResetPasswordView(request):
             return redirect('users:request_password_reset')
 
 
-def UserResetPasswordView(request, token):
+def user_reset_password(request, token):
     if request.method == "GET":
         try:
             user = User.objects.get(password_reset_token=token)
@@ -135,7 +135,7 @@ def UserResetPasswordView(request, token):
             return redirect('users:signup')
 
 
-def UserCreateConfirmView(request, token):
+def user_create_confirm(request, token):
     try:
         user = User.objects.get(confirm_token=token)
     except ObjectDoesNotExist:
@@ -147,7 +147,7 @@ def UserCreateConfirmView(request, token):
         return redirect('users:login')
 
 
-def UserLoginView(request):
+def user_login(request):
     if request.method == "GET":
         template = loader.get_template('users/user_login.html')
         return HttpResponse(template.render(request=request))
@@ -170,12 +170,12 @@ def UserLoginView(request):
             return redirect('users:login')
 
 
-def UserLogoutView(request):
+def user_logout(request):
     logout(request)
     return redirect('landingpage')
 
 
-def UserProfileViewByUsername(request, username):
+def user_profile_by_username(request, username):
     """
     Renders the view of a profile that was searched by username
 
@@ -232,7 +232,7 @@ class UserUpdateView(generic.UpdateView):
         return reverse('users:profile', kwargs={'pk': self.object.pk})
 
 
-def UserPasswordView(request):
+def user_password(request):
     if request.method != "POST":
         raise Http404
 

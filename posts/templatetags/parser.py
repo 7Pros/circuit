@@ -26,7 +26,7 @@ def parse_post_content(content):
     pattern = re.compile(r"#(\w+).*?", flags=re.IGNORECASE | re.UNICODE)
     parsed_content_with_hashtags = pattern.sub(create_hashtag_url, content)
     pattern = re.compile(r"@(\w+).*?", flags=re.IGNORECASE | re.UNICODE)
-    parsed_content_complete = pattern.sub(createMentionURL, parsed_content_with_hashtags)
+    parsed_content_complete = pattern.sub(create_mention_url, parsed_content_with_hashtags)
 
     return parsed_content_complete
 
@@ -43,7 +43,7 @@ def create_hashtag_url(matchobj):
     return '<a class="hashtag" href="' + url + '">' + matchobj.group(0) + '</a>'
 
 
-def createMentionURL(matchobj):
+def create_mention_url(matchobj):
     """
     Receives a matched object with a mention in the .group(0) and returns the url from it.
 
