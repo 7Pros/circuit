@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package posts.models
 Post and Hashtag model file.
 
 @author 7Pros
@@ -8,8 +8,9 @@ from django.db import models
 
 from users.models import User
 
-
 class Post(models.Model):
+    """Post model that stores all information of a post
+    """
     content = models.CharField(max_length=256)
     author = models.ForeignKey(User)
     # the post of which this is a repost
