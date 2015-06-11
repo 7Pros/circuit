@@ -44,7 +44,7 @@ def set_post_extra(post, request):
     })
 
 
-def post_create_view(request):
+def post_create(request):
     if (len(request.POST['content']) <= 256):
         parsedString = parse_content(request.POST['content'])
         post = Post(content=request.POST['content'], author=request.user)
@@ -84,7 +84,7 @@ class PostEditView(generic.UpdateView):
         return reverse('posts:post', kwargs={'pk': self.object.pk})
 
 
-def post_repost_view(request, pk=None):
+def post_repost(request, pk=None):
     user = request.user
     original_post = Post.objects.get(pk=pk).original_or_self()
 
@@ -145,7 +145,7 @@ class PostsListView(ListView):
         return context
 
 
-def post_favorite_view(request, pk=None):
+def post_favorite(request, pk=None):
     post = Post.objects.get(pk=pk).original_or_self()
     if post.favorites.filter(pk=request.user.pk).exists():
         post.favorites.remove(request.user)
