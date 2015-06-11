@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package posts.views
 Post views file.
 
 @author 7Pros
@@ -17,6 +17,13 @@ from posts.models import Post
 
 
 def check_repost(post, user):
+    """
+    Check if a post can be reposted by a user.
+
+    @param post: the post to repost
+    @param user: the user that wants to repost
+    @return `ok` if the post can be reposted by the user, a different error string otherwise
+    """
     if not user.is_authenticated():
         return 'not_auth'  # no user to repost as
 
@@ -32,6 +39,12 @@ def check_repost(post, user):
 
 
 def set_post_extra(post, request):
+    """
+    Add an `extra` attribute to a post for easy information access in a template.
+
+    @param post: the post to add extra information to
+    @param request: the request for which information is added
+    """
     can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
@@ -63,15 +76,22 @@ class PostDetailView(DetailView):
 
 
 class PostEditView(generic.UpdateView):
+    """Edit a post's content."""
     model = Post
     fields = [
         'content',
     ]
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def form_valid(self, form):
+        """
+        Check if the user is allowed to edit the post this way.
+
+        The user must be logged in and the post content must be
+        at most 256 python characters long.
+
+        @param form: the form containing the new post
+        @return `form_valid` if accepted, `form_invalid` if not
+        """
         if not self.request.user.is_authenticated:
             return super(PostEditView, self).form_invalid(form)
 
@@ -85,6 +105,18 @@ class PostEditView(generic.UpdateView):
 
 
 def post_repost(request, pk=None):
+    """
+    Repost a post.
+
+    This always reposts the original post.
+
+    Redirects to the post's page if the repost was successful or if the user
+    is not authenticated.
+    Otherwise, redirects to the referer if present, or the landingpage if not.
+
+    @param pk: the primary key which identifies the post
+    @return redirect depending on the success
+    """
     user = request.user
     original_post = Post.objects.get(pk=pk).original_or_self()
 
@@ -146,6 +178,12 @@ class PostsListView(ListView):
 
 
 def post_favorite(request, pk=None):
+    """
+    Favorite or un-favorite a post.
+
+    @param pk: the primary key which identifies the post
+    @return redirect to the referer if present, to the post's page otherwise
+    """
     post = Post.objects.get(pk=pk).original_or_self()
     if post.favorites.filter(pk=request.user.pk).exists():
         post.favorites.remove(request.user)
