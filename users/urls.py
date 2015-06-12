@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package users.urls
 Users urlspatterns file.
 
 @author 7Pros

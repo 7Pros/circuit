@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package circuit.views
 Main project views file.
 
 @author 7Pros

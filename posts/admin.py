@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package posts.admin
 Admin site from Posts' app.
 
 @author     7Pros

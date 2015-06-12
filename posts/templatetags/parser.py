@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package posts.templatetags.parser
 Extra template functions for posts.
 
 @author 7Pros

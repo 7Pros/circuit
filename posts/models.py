@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package posts.models
 Post and Hashtag model file.
 
 @author 7Pros

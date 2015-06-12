@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package posts.urls
 Posts' app url patterns.
 
 @author     7Pros

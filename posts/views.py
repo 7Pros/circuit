@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package posts.views
 Post views file.
 
 @author 7Pros

@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package users.views
 Users views file.
 
 @author 7Pros

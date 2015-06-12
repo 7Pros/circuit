@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package users.models
 User model.
 
 @author     7Pros
@@ -12,7 +12,7 @@ from django.db import models
 
 
 def create_hash():
-    """@package docstring
+    """
     Calculate a hexadecimal value.
 
     @return string - the hexadecimal of blob
@@ -24,7 +24,7 @@ def create_hash():
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password):
-        """@package docstring
+        """
         Creates a new user.
 
         @param self: object - User's model object
