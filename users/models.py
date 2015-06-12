@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package users.models
 User model.
 
 @author     7Pros
@@ -86,6 +86,8 @@ class User(AbstractBaseUser):
     password_reset_token = models.CharField(default=create_hash, max_length=40)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # needed for using Django's admin panel
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
@@ -104,7 +106,9 @@ class User(AbstractBaseUser):
         return self.email
 
     def has_perm(self, perm_str):
+        """Needed for using Django's admin panel."""
         return self.is_superuser
 
     def has_module_perms(self, module_label):
+        """Needed for using Django's admin panel."""
         return self.is_superuser

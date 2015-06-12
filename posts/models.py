@@ -19,6 +19,13 @@ class Post(models.Model):
     favorites = models.ManyToManyField(User, related_name='favorites')
 
     def original_or_self(self):
+        """
+        Helper method for getting the original post of a repost.
+
+        Loops until the original is found to avoid database inconsistencies.
+
+        @return `self.original_post` if set, `self` otherwise
+        """
         p = self
         while p.original_post:
             p = p.original_post

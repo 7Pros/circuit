@@ -1,4 +1,4 @@
-"""@package docstring
+"""@package users.views
 Users views file.
 
 @author 7Pros
@@ -212,6 +212,9 @@ class UserProfileView(generic.DetailView):
 
 
 class UserUpdateView(generic.UpdateView):
+    """
+    Update a user's profile data.
+    """
     model = User
     fields = [
         'username',
@@ -222,6 +225,14 @@ class UserUpdateView(generic.UpdateView):
     template_name = 'users/user_edit.html'
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        Check if the authenticated user is allowed to edit this profile.
+
+        @param request:
+        @param args: additional arguments, passed directly to parent
+        @param kwargs: additional arguments, passed directly to parent
+        @return parent's handler if allowed. Raises Http404 if not allowed.
+        """
         if request.user.is_authenticated() \
                 and str(request.user.pk) == kwargs['pk']:
             return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
@@ -233,6 +244,13 @@ class UserUpdateView(generic.UpdateView):
 
 
 def user_password(request):
+    """
+    Change a user's password.
+
+    @param request: the request to handle
+    @return redirect to the user's profile edit page if allowed,
+            raises Http404 if not allowed to change the password
+    """
     if request.method != "POST":
         raise Http404
 
