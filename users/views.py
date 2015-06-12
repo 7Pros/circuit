@@ -22,6 +22,8 @@ from users.models import User, create_hash
 
 
 class UserCreateView(CreateView):
+    """The django view responsible for signing a user up
+    """
     template_name = 'users/user_create.html'
     model = User
     fields = [
@@ -40,6 +42,7 @@ class UserCreateView(CreateView):
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        """Creates the user if all data is valid."""
         form.instance.set_password(form.cleaned_data['password'])
         user = form.save()
 
@@ -48,6 +51,13 @@ class UserCreateView(CreateView):
         return super(UserCreateView, self).form_valid(form)
 
     def send_confirm_mail(self, user):
+        """Sends a confirmation mail to the user's email address.
+
+        @param self: object
+        @param user: User - user
+
+        @return void
+        """
         template = loader.get_template('users/confirmation_email.html')
         context = Context({
             'user': user,
