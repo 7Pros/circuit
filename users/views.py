@@ -22,6 +22,8 @@ from users.models import User, create_hash
 
 
 class UserCreateView(CreateView):
+    """The django view responsible for signing a user up
+    """
     template_name = 'users/user_create.html'
     model = User
     fields = [
@@ -40,6 +42,7 @@ class UserCreateView(CreateView):
             return super(UserCreateView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        """Creates the user if all data is valid."""
         form.instance.set_password(form.cleaned_data['password'])
         user = form.save()
 
@@ -48,6 +51,13 @@ class UserCreateView(CreateView):
         return super(UserCreateView, self).form_valid(form)
 
     def send_confirm_mail(self, user):
+        """Sends a confirmation mail to the user's email address.
+
+        @param self: object
+        @param user: User - user
+
+        @return void
+        """
         template = loader.get_template('users/confirmation_email.html')
         context = Context({
             'user': user,
@@ -212,6 +222,9 @@ class UserProfileView(generic.DetailView):
 
 
 class UserUpdateView(generic.UpdateView):
+    """
+    Update a user's profile data.
+    """
     model = User
     fields = [
         'username',
@@ -222,6 +235,14 @@ class UserUpdateView(generic.UpdateView):
     template_name = 'users/user_edit.html'
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        Check if the authenticated user is allowed to edit this profile.
+
+        @param request:
+        @param args: additional arguments, passed directly to parent
+        @param kwargs: additional arguments, passed directly to parent
+        @return parent's handler if allowed. Raises Http404 if not allowed.
+        """
         if request.user.is_authenticated() \
                 and str(request.user.pk) == kwargs['pk']:
             return super(UserUpdateView, self).dispatch(request, *args, **kwargs)
@@ -233,6 +254,13 @@ class UserUpdateView(generic.UpdateView):
 
 
 def user_password(request):
+    """
+    Change a user's password.
+
+    @param request: the request to handle
+    @return redirect to the user's profile edit page if allowed,
+            raises Http404 if not allowed to change the password
+    """
     if request.method != "POST":
         raise Http404
 

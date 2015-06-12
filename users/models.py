@@ -12,10 +12,9 @@ from django.db import models
 
 
 def create_hash():
-    """
-    Calculate a hexadecimal value.
+    """Generate a random sha1 hash.
 
-    @return string - the hexadecimal of blob
+    @return string - the hash
     """
     hash = hashlib.sha1()
     hash.update(os.urandom(5))
@@ -23,9 +22,10 @@ def create_hash():
 
 
 class UserManager(BaseUserManager):
+    """The UserManager class which manages users
+    """
     def create_user(self, email, username, password):
-        """
-        Creates a new user.
+        """Creates and saves a User with the given email, username and password.
 
         @param self: object - User's model object
         @param email: email - user's email
@@ -54,6 +54,15 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, username, password):
+        """Creates and saves a superuser with the given email, username and password.
+
+        @param self: object - User's model object
+        @param email: email - user's email
+        @param username: string - user's username
+        @param password: string - user's password
+
+        @return object - created superuser
+        """
         if not email:
             raise ValueError('Superusers must have an email address')
 
@@ -77,6 +86,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    """The circuit User model
+    """
     username = models.CharField(unique=True, max_length=32)
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=50, default='', blank=True)
@@ -86,6 +97,8 @@ class User(AbstractBaseUser):
     password_reset_token = models.CharField(default=create_hash, max_length=40)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    # needed for using Django's admin panel
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
@@ -95,16 +108,24 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     def get_full_name(self):
+        """ Alias for get_name
+        @return: string - returns the name
+        """
         return self.name
 
     def get_short_name(self):
+        """ Alias for get_name
+        @return: string - returns the name
+        """
         return self.name
 
     def __str__(self):
         return self.email
 
     def has_perm(self, perm_str):
+        """Needed for using Django's admin panel."""
         return self.is_superuser
 
     def has_module_perms(self, module_label):
+        """Needed for using Django's admin panel."""
         return self.is_superuser
