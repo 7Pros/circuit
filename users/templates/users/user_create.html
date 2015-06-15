@@ -7,9 +7,7 @@
 
             <h2>Signup</h2>
 
-            {% if form.errors %}
-                <div class="alert alert-danger" role="alert">There was an error.</div>
-            {% endif %}
+            {% include '_messages_alerts.html' %}
 
             <form action="" method="post">
                 {% csrf_token %}

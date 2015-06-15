@@ -26,6 +26,8 @@
             <div class="panel panel-default panel-profile">
                 <div class="panel-body">
 
+                    {% include '_messages_alerts.html' %}
+
                     {% if request.user.is_authenticated and request.user.pk == user.pk %}
                         {% include 'posts/_post_create.html' %}
                         <hr/>

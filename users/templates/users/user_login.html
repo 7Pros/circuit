@@ -7,15 +7,7 @@
 
             <h2>Login</h2>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-dismissable alert-danger">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-
-            {% endif %}
+            {% include '_messages_alerts.html' %}
 
             <form action="" method="post">
                 {% csrf_token %}
