@@ -33,14 +33,14 @@
                             <textarea
                                     maxlength="256"
                                     name="content"
-                                    class="form-control floating-label {% if 'newPost' in form.errors %} has-error{% endif %}"
+                                    class="form-control floating-label {% if 'content' in form.errors %} has-error{% endif %}"
                                     rows="3"
                                     placeholder="Write something!"></textarea>
-                            <button class="btn btn-lg btn-raised btn-material-light-blue pull-right"
-                                    type="submit">Write
+                            <button class="btn btn-lg btn-raised btn-material-light-blue pull-right" type="submit">
+                                Write
                             </button>
+                            <div class="clearfix"></div>
                         </form>
-                        <div class="clearfix"></div>
                         <hr/>
                     {% endif %}
 
