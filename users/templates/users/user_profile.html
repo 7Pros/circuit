@@ -27,20 +27,7 @@
                 <div class="panel-body">
 
                     {% if request.user.is_authenticated and request.user.pk == user.pk %}
-                        <form action="{% url 'posts:create' %}" method="post">
-                            {% csrf_token %}
-                            <br/>
-                            <textarea
-                                    maxlength="256"
-                                    name="content"
-                                    class="form-control floating-label {% if 'content' in form.errors %} has-error{% endif %}"
-                                    rows="3"
-                                    placeholder="Write something!"></textarea>
-                            <button class="btn btn-lg btn-raised btn-material-light-blue pull-right" type="submit">
-                                Write
-                            </button>
-                            <div class="clearfix"></div>
-                        </form>
+                        {% include 'posts/_post_create.html' %}
                         <hr/>
                     {% endif %}
 
