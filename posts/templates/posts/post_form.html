@@ -7,34 +7,9 @@
 
             <h2>Edit this post</h2>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-dismissable
-                        {% if message.tags == 'error' %} alert-danger
-                        {% elif message.tags == 'success' %} alert-success {% endif %}">
-                        <button type="button" class="close" data-dismiss="alert">×</button>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% elif form.errors %}
-                <div class="alert alert-danger" role="alert">There was an error.</div>
-            {% endif %}
+            {% include '_messages_alerts.html' %}
 
-            <form action="" method="post">
-                {% csrf_token %}
-
-                <br/>
-                <textarea
-                        maxlength="256"
-                        name="content"
-                        class="form-control floating-label {% if 'content' in form.errors %} has-error{% endif %}"
-                        rows="3"
-                        placeholder="Write something!">{{ post.content | escape }}</textarea>
-
-                <button class="btn btn-lg btn-raised btn-material-light-blue pull-right" type="submit">Save</button>
-                <div class="clearfix"></div>
-
-            </form>
+            {% include 'posts/_post_create.html' %}
 
         </div>
     </div>

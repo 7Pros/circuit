@@ -3,44 +3,17 @@
 {% block content %}
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-4">
-            <div class="panel panel-default panel-profile">
-                <div class="panel-body">
-                    <div class="header"></div>
-                    <img src="http://0.gravatar.com/avatar/088e4fb4456157398d147c276c22dabc?s=50&d=mm" alt=""/>
-                    <strong>{{ user.name }}</strong>
-                    <a href="{% url 'users:profile' pk=user.pk %}">@{{ user.username }}</a>
-                    {% if request.user.is_authenticated and request.user.pk == user.pk %}
-                        <a class="mdi-content-create pull-right"
-                           style="color: rgba(0,0,0,0.84); text-decoration: none"
-                           href="{% url 'users:edit' pk=user.pk %}"></a>
-                    {% endif %}
-                    {% if user.description %}
-                        <br/><br/>
-                        <p>{{ user.description | escape }}</p>
-                    {% endif %}
-                </div>
-            </div>
+            {% include 'users/_user_card.html' %}
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-8">
             <div class="panel panel-default panel-profile">
                 <div class="panel-body">
 
+                    {% include '_messages_alerts.html' %}
+
                     {% if request.user.is_authenticated and request.user.pk == user.pk %}
-                        <form action="{% url 'posts:create' %}" method="post">
-                            {% csrf_token %}
-                            <br/>
-                            <textarea
-                                    maxlength="256"
-                                    name="content"
-                                    class="form-control floating-label {% if 'newPost' in form.errors %} has-error{% endif %}"
-                                    rows="3"
-                                    placeholder="Write something!"></textarea>
-                            <button class="btn btn-lg btn-raised btn-material-light-blue pull-right"
-                                    type="submit">Write
-                            </button>
-                        </form>
-                        <div class="clearfix"></div>
+                        {% include 'posts/_post_create.html' %}
                         <hr/>
                     {% endif %}
 
