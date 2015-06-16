@@ -3,6 +3,9 @@
 #
 
 /assets/vendor/
+/circuit/static/css/
+/circuit/static/fonts/
+/circuit/static/js/
 /db.sqlite3
 /node_modules
 
