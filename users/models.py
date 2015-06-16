@@ -107,6 +107,9 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
+    def gravatar_hash(self):
+        return hashlib.md5(self.email.strip().lower().encode()).hexdigest()
+
     def get_full_name(self):
         """ Alias for get_name
         @return: string - returns the name
