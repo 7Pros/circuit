@@ -1,7 +1,8 @@
 var gulp = require('gulp');
 var less = require('gulp-less');
-var concat = require('gulp-concat');
 var path = require('path');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
 
 gulp.task('default', [
     'copy',
@@ -11,7 +12,9 @@ gulp.task('default', [
 
 gulp.task('css', function () {
     return gulp.src('./assets/less/app.less')
+        .pipe(sourcemaps.init())
         .pipe(less())
+        .pipe(sourcemaps.write())
         .pipe(gulp.dest('./circuit/static/css'));
 });
 
