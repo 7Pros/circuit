@@ -5,6 +5,7 @@ Post and Hashtag model file.
 @copyright
 """
 from django.db import models
+from django.http import Http404
 
 from users.models import User
 
@@ -43,12 +44,12 @@ class Hashtag(models.Model):
     def __str__(self):
         return self.name
 
+    @staticmethod
     def filter_posts_by_hashtag(hashtag_name):
         """
         Filters posts by hashtag.
 
-        @param hashtag_name: string - the hashtag name with which be used for filtering by its name.
-        @return list - the posts that have used the hashtag_name
+        @param hashtag_name the hashtag name to filter with
+        @return the posts that have used this hashtag
         """
-        hashtagObject = Hashtag.objects.get(name=hashtag_name)
-        return hashtagObject.posts.all()
+        return Hashtag.objects.get(name=hashtag_name).posts.all()

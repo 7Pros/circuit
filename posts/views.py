@@ -165,7 +165,7 @@ class PostsListView(ListView):
         @return posts objects that contain the searched hashtag
         """
         try:
-            posts = Hashtag.filter_posts_by_hashtag(hashtag_name=self.kwargs['hashtag_name'])
+            posts = Hashtag.filter_posts_by_hashtag(self.kwargs['hashtag_name'])
         except Hashtag.DoesNotExist:
             raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
         return posts
