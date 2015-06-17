@@ -8,3 +8,9 @@ class Circle(models.Model):
     members  = models.ManyToManyField(User, related_name='members')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_members(self):
+        return self.members.all()
+
+    def __str__(self):
+        return self.name

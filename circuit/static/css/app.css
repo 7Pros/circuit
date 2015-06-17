@@ -24,7 +24,7 @@ body {
     border-radius: 50%;
 }
 
-.post-controls {
+.post-controls .circle-controls {
     font-size: 1.3em !important;
 }
 
