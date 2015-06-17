@@ -1,13 +1,15 @@
-<div class="panel panel-default">
-    <div class="panel-heading">Settings</div>
-    <div class="panel-body">
-        <ul class="list-group">
-            <li class="list-group-item">
-                <a href="#">Edit profile</a>
-            </li>
-            <li class="list-group-item">
-                <a href="#">Manage circles</a>
-            </li>
-        </ul>
+{% if request.user.is_authenticated and request.user.pk == user.pk %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Settings</div>
+        <div class="panel-body">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="#">Edit profile</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="#">Manage circles</a>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
+{% endif %}
