@@ -165,20 +165,10 @@ class PostsListView(ListView):
         @return posts objects that contain the searched hashtag
         """
         try:
-            self.posts = Hashtag.filter_posts_by_hashtag(hashtag_name=self.kwargs['hashtag_name'])
-        except:
-            raise Http404('Hashtag doesn\'t exist', self.kwargs['hashtag_name'])
-        return self.posts
-
-    def get_context_data(self, **kwargs):
-        """
-
-        @param kwargs: dictionary with keyword arguments given through the url
-        @return context to be shown in the template
-        """
-        context = super(PostsListView, self).get_context_data(**kwargs)
-        context['posts'] = self.posts
-        return context
+            posts = Hashtag.filter_posts_by_hashtag(hashtag_name=self.kwargs['hashtag_name'])
+        except Hashtag.DoesNotExist:
+            raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
+        return posts
 
 
 def post_favorite(request, pk=None):
