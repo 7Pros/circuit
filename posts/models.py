@@ -14,10 +14,11 @@ class Post(models.Model):
     content = models.CharField(max_length=256)
     author = models.ForeignKey(User)
     # the post of which this is a repost
-    original_post = models.ForeignKey('self', null=True, blank=True)
+    repost_original = models.ForeignKey('self', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
+    reply_original = models.ForeignKey('self')
 
     def original_or_self(self):
         """
@@ -25,11 +26,11 @@ class Post(models.Model):
 
         Loops until the original is found to avoid database inconsistencies.
 
-        @return `self.original_post` if set, `self` otherwise
+        @return `self.repost_original` if set, `self` otherwise
         """
         p = self
-        while p.original_post:
-            p = p.original_post
+        while p.repost_original:
+            p = p.repost_original
         return p
 
     def __str__(self):
