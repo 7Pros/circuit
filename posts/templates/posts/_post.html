@@ -51,6 +51,9 @@
                     <a class="mdi-action-delete"
                        href="{% url 'posts:delete' pk=post.original_or_self.pk %}"></a>
                 {% endif %}
+                {% if post.extra.can_be_replied %}
+                    <a class="" href="{% url 'posts:reply' pk=post.original_or_self.pk%}"></a>
+                {% endif %}
             </div>
             <div class="clearfix"></div>
         {% endif %}
