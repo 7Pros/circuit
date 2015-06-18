@@ -33,7 +33,7 @@ def check_repost(post, user):
     if user.pk == post.author.pk:
         return 'own_post'  # don't repost own post
 
-    existing_repost = Post.objects.filter(author=user, original_post=post).exists()
+    existing_repost = Post.objects.filter(author=user, repost_original=post).exists()
     if existing_repost:
         # don't repost more than once
         return 'already_reposted_as'
@@ -122,17 +122,17 @@ def post_repost(request, pk=None):
     @return redirect depending on the success
     """
     user = request.user
-    original_post = Post.objects.get(pk=pk).original_or_self()
+    repost_original = Post.objects.get(pk=pk).original_or_self()
 
-    check = check_repost(original_post, user)
+    check = check_repost(repost_original, user)
     if check == 'not_auth':
-        return redirect('posts:post', pk=original_post.pk)
+        return redirect('posts:post', pk=repost_original.pk)
     if check != 'ok':
         return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
-    repost = Post(content=original_post.content,
+    repost = Post(content=repost_original.content,
                   author=user,
-                  original_post=original_post)
+                  repost_original=repost_original)
     repost.save()
     return redirect('posts:post', pk=repost.pk)
 
