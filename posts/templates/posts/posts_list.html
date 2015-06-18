@@ -5,21 +5,20 @@
     <div class="row">
 
         <div class="col-xs-12 col-sm-6 col-md-8" style="margin-left: 20%">
-            <div class="panel panel-default panel-profile">
+            <div class="panel panel-default">
                 <div class="panel-body">
-                    {% if posts %}
+                    {% with posts=object_list %}
                         {% for post in posts|dictsortreversed:'created_at' %}
                             {% if forloop.counter != 1 %}
                                 <hr/>
                             {% endif %}
                             {% include 'posts/_post.html' %}
+                        {% empty %}
+                            <br/>
+                            <p class="text-muted lead" style="text-align: center;">
+                                No posts with this hashtag</p>
                         {% endfor %}
-                    {% else %}
-                        <br/>
-                        <p class="text-muted lead" style="color: #aaa; text-align: center;">
-                            This user has no posts<br/>
-                            #circuitzombie</p>
-                    {% endif %}
+                    {% endwith %}
                 </div>
             </div>
 

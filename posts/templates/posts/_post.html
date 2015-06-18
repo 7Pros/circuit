@@ -3,8 +3,8 @@
 
     {% if post.original_post %}
         <small>
-            <span class="mdi-av-repeat" style="font-size: inherit"></span>
-            <span class="post-subtle">
+            <span class="mdi-av-repeat"></span>
+            <span>
                 {% if post.author.name %}
                     <strong>{{ post.author.name }}</strong>
                 {% endif %}
@@ -22,10 +22,10 @@
         {% endif %}
         <a href="{% url 'users:profile' pk=post.original_or_self.author.pk %}">
             @{{ post.original_or_self.author.username }}</a>
-        <span class="pull-right post-subtle">
-            <a href="{% url 'posts:post' pk=post.original_or_self.pk %}">
+        <div class="pull-right">
+            <a class="date" href="{% url 'posts:post' pk=post.original_or_self.pk %}">
                 {{ post.original_or_self.created_at }}</a>
-        </span>
+        </div>
 
         <div class="clearfix"></div>
     </small>
@@ -34,27 +34,26 @@
         {% filter parse_post_content %}{% autoescape off %}<p>{{ post.content }}</p>{% endautoescape %}{% endfilter %}
     </div>
 
-    <small class="post-subtle">
+    <div class="actions">
         {% if request.user.is_authenticated %}
-            <a class="mdi-action-grade post-controls{% if post.extra.is_favorited %} post-favorited{% endif %}"
-               style="font-size: inherit"
+            <a class="mdi-action-grade{% if post.extra.is_favorited %} favorite{% endif %}"
                href="{% url 'posts:favorite' pk=post.original_or_self.pk %}"></a>
             {% if post.extra.can_be_reposted %}
-                <a class="mdi-av-repeat post-controls"
+                <a class="mdi-av-repeat"
                    href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
             {% endif %}
-            <span class="pull-right">
+            <div class="pull-right">
                 {% if post.extra.can_be_edited %}
-                    <a class="mdi-editor-mode-edit post-controls"
+                    <a class="mdi-editor-mode-edit"
                        href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
                 {% endif %}
                 {% if post.extra.can_be_deleted %}
-                    <a class="mdi-action-delete post-controls"
+                    <a class="mdi-action-delete"
                        href="{% url 'posts:delete' pk=post.original_or_self.pk %}"></a>
                 {% endif %}
-            </span>
+            </div>
             <div class="clearfix"></div>
         {% endif %}
-    </small>
+    </div>
 
 </div>

@@ -16,6 +16,9 @@ from posts.models import Hashtag
 from posts.models import Post
 
 
+def post_content_is_valid(content):
+    return 0 < len(content) <= 256
+
 def check_repost(post, user):
     """
     Check if a post can be reposted by a user.
@@ -58,7 +61,8 @@ def set_post_extra(post, request):
 
 
 def post_create(request):
-    if (len(request.POST['content']) <= 256):
+    if request.user.is_authenticated \
+            and post_content_is_valid(request.POST['content']):
         parsedString = parse_content(request.POST['content'])
         post = Post(content=request.POST['content'], author=request.user)
         post.save()
@@ -93,10 +97,10 @@ class PostEditView(generic.UpdateView):
         @return `form_valid` if accepted, `form_invalid` if not
         """
         if not self.request.user.is_authenticated:
-            return super(PostEditView, self).form_invalid(form)
+            return self.form_invalid(form)
 
-        if len(self.request.POST['content']) > 256:
-            return super(PostEditView, self).form_invalid(form)
+        if post_content_is_valid(self.request.POST['content']):
+            return self.form_invalid(form)
 
         return super(PostEditView, self).form_valid(form)
 
@@ -161,20 +165,10 @@ class PostsListView(ListView):
         @return posts objects that contain the searched hashtag
         """
         try:
-            self.posts = Hashtag.filter_posts_by_hashtag(hashtag_name=self.kwargs['hashtag_name'])
-        except:
-            raise Http404('Hashtag doesn\'t exist', self.kwargs['hashtag_name'])
-        return self.posts
-
-    def get_context_data(self, **kwargs):
-        """
-
-        @param kwargs: dictionary with keyword arguments given through the url
-        @return context to be shown in the template
-        """
-        context = super(PostsListView, self).get_context_data(**kwargs)
-        context['posts'] = self.posts
-        return context
+            posts = Hashtag.filter_posts_by_hashtag(self.kwargs['hashtag_name'])
+        except Hashtag.DoesNotExist:
+            raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
+        return posts
 
 
 def post_favorite(request, pk=None):
