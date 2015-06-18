@@ -16,6 +16,9 @@ from posts.models import Hashtag
 from posts.models import Post
 
 
+def post_content_is_valid(content):
+    return 0 < len(content) <= 256
+
 def check_repost(post, user):
     """
     Check if a post can be reposted by a user.
@@ -58,7 +61,8 @@ def set_post_extra(post, request):
 
 
 def post_create(request):
-    if (len(request.POST['content']) <= 256):
+    if request.user.is_authenticated \
+            and post_content_is_valid(request.POST['content']):
         parsedString = parse_content(request.POST['content'])
         post = Post(content=request.POST['content'], author=request.user)
         post.save()
@@ -95,7 +99,7 @@ class PostEditView(generic.UpdateView):
         if not self.request.user.is_authenticated:
             return super(PostEditView, self).form_invalid(form)
 
-        if len(self.request.POST['content']) > 256:
+        if post_content_is_valid(self.request.POST['content']):
             return super(PostEditView, self).form_invalid(form)
 
         return super(PostEditView, self).form_valid(form)
