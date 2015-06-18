@@ -7,7 +7,7 @@
             class="form-control floating-label {% if 'content' in form.errors %} has-error{% endif %}"
             rows="3"
             placeholder="Write something!">{{ post.content | escape }}</textarea>
-    <button class="btn btn-lg btn-raised btn-material-light-blue pull-right" type="submit">
+    <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
         {% if post %}Save{% else %}Write{% endif %}
     </button>
     <div class="clearfix"></div>

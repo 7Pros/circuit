@@ -22,11 +22,15 @@ We use [Bootstrap](http://www.getbootstrap.com/) for the frontend.
 To pull in all Bootstrap dependencies we use [bower](http://bower.io/).  
 At this point you should already have node installed, so run the following to get bower, if not installed.
 
-    npm install -g bower
+    npm install -g bower gulp
 
 Now you can use bower to fetch all dependencies
 
     bower install
+
+At last we need gulp to compile all our assets. Simply run gulp
+
+    gulp
 
 You're ready to start the django webserver with
 

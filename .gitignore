@@ -2,9 +2,12 @@
 # Project
 #
 
-/circuit/static/vendor/
+/assets/vendor/
+/circuit/static/css/
+/circuit/static/fonts/
+/circuit/static/js/
 /db.sqlite3
-
+/node_modules
 
 #
 # https://github.com/github/gitignore/blob/master/Python.gitignore
