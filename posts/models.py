@@ -18,7 +18,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
-    reply_original = models.ForeignKey('self')
+    reply_original = models.ForeignKey('self', null=True, blank=True)
 
     def original_or_self(self):
         """
