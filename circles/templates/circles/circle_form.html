@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            {% include 'users/_user_card.html' %}
+            {% include 'users/_user_settings_card.html' %}
+        </div>
+
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    {% include '_messages_alerts.html' %}
+
+                    <h2>Edit this circle</h2>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+                        <br/>
+                        <input type="text"
+                               name="name"
+                               class="form-control floating-label {% if 'name' in form.errors %} has-error{% endif %}"
+                               placeholder="Circle name"
+                               value="{{ circle.name }}"
+                               required>
+                        <button class="btn btn-raised btn-material-light-blue" type="submit">Save</button>
+                        <a class="btn btn-raised btn-danger"
+                           href="{% url 'circles:delete' pk=circle.pk %}">Delete</a>
+                    </form>
+
+                    {% for member in circle.get_members %}
+                        <a href="{% url 'users:profile' pk=member.pk %}">@{{ member.username }}</a>
+                    {% empty %}
+                        <span class="text-muted">This circle is empty.</span>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
