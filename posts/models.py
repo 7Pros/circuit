@@ -16,7 +16,7 @@ class Post(models.Model):
     author = models.ForeignKey(User)
     # the post of which this is a repost
     repost_original = models.ForeignKey('self', null=True, blank=True)
-    reply_original = models.ForeignKey('self', null=True, blank=True)
+    # reply_original = models.ForeignKey(self, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
