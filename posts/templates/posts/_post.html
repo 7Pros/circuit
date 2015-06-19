@@ -21,7 +21,8 @@
             <strong>{{ post.original_or_self.author.name }}</strong>
         {% endif %}
         <a href="{% url 'users:profile' pk=post.original_or_self.author.pk %}">
-            @{{ post.original_or_self.author.username }}</a>
+            @{{ post.original_or_self.author.username }}
+        </a>
         <div class="pull-right">
             <a class="date" href="{% url 'posts:post' pk=post.original_or_self.pk %}">
                 {{ post.original_or_self.created_at }}
