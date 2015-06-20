@@ -58,16 +58,18 @@ class CircleEdit(generic.UpdateView):
         return reverse('circles:manage', kwargs={'user_pk': self.request.user.pk})
 
 
-class CircleDelete(generic.RedirectView):
+class CircleDelete(generic.DeleteView):
     """
     Deletes a circle.
 
     TODO:
-    - delete button on circle list page
     - confirm deletion
     - delete circle in database
     - check if relationship to users/posts is deleted
     """
 
-    def get_redirect_url(self, *args, **kwargs):
-        return reverse('landingpage')
+    model = Circle
+
+    def get_success_url(self):
+        user = self.request.user
+        return reverse('circles:manage', kwargs={'user_pk': user.pk})
