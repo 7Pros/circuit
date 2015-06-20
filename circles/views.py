@@ -61,11 +61,6 @@ class CircleEdit(generic.UpdateView):
 class CircleDelete(generic.DeleteView):
     """
     Deletes a circle.
-
-    TODO:
-    - confirm deletion
-    - delete circle in database
-    - check if relationship to users/posts is deleted
     """
 
     model = Circle
