@@ -1,24 +1,26 @@
-"""@package posts.models
+"""@package posts
 Post and Hashtag model file.
 
 @author 7Pros
 @copyright
 """
 from django.db import models
+from django.http import Http404
 
 from users.models import User
 
 class Post(models.Model):
-    """Post model that stores all information of a post
+    """
+    Post model that stores all information of a post
     """
     content = models.CharField(max_length=256)
     author = models.ForeignKey(User)
     # the post of which this is a repost
-    repost_original = models.ForeignKey('self', null=True, blank=True)
+    repost_original = models.ForeignKey('self', null=True, blank=True, related_name='repost')
+    reply_original = models.ForeignKey('self', null=True, blank=True, related_name='reply')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
-    reply_original = models.ForeignKey('self', null=True, blank=True)
 
     def original_or_self(self):
         """
@@ -44,12 +46,12 @@ class Hashtag(models.Model):
     def __str__(self):
         return self.name
 
+    @staticmethod
     def filter_posts_by_hashtag(hashtag_name):
         """
         Filters posts by hashtag.
 
-        @param hashtag_name: string - the hashtag name with which be used for filtering by its name.
-        @return list - the posts that have used the hashtag_name
+        @param hashtag_name the hashtag name to filter with
+        @return the posts that have used this hashtag
         """
-        hashtagObject = Hashtag.objects.get(name=hashtag_name)
-        return hashtagObject.posts.all()
+        return Hashtag.objects.get(name=hashtag_name).posts.all()
