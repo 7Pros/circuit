@@ -19,7 +19,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
-    file = models.FileField(upload_to='photos/{}/%Y/%m/%d/')
+    image = models.FileField(upload_to='images/{}/%Y/%m/%d/')
 
     def original_or_self(self):
         """

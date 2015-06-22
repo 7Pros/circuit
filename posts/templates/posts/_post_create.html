@@ -1,4 +1,4 @@
-<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post">
+<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" enctype="multipart/form-data" method="post">
     {% csrf_token %}
     <br/>
     <textarea
@@ -13,3 +13,6 @@
     <button class="btn mdi-editor-attach-file" href=""></button>
     <div class="clearfix"></div>
 </form>
+
+<!-- enctype="multipart/form-data" added -->
+
