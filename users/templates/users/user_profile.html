@@ -24,6 +24,9 @@
                                 <hr/>
                             {% endif %}
                             {% include 'posts/_post.html' %}
+                            {% for post in posts.reply_original %}
+                                {% include 'posts/_post.html' %}
+                            {% endfor %}
                         {% endfor %}
                     {% else %}
                         <br/>

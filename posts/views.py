@@ -136,6 +136,27 @@ def post_repost(request, pk=None):
     repost.save()
     return redirect('posts:post', pk=repost.pk)
 
+def post_reply(request, pk=None):
+    """
+    Reply to a post.
+
+    Redirects to the post page.
+
+    @param request:
+    @param pk:
+
+    @return:
+    """
+    user = request.user
+    reply_original = Post.objects.get(pk=pk)
+    reply = Post(content=request.POST['content'],
+                 author=user,
+                 reply_original=reply_original)
+
+    reply.save()
+    reply_original.reply_original_set.add(reply)
+
+    return redirect('posts:post', pk=reply_original.pk)
 
 def parse_content(content):
     hashtags = re.findall(r"#(\w+)", content)
