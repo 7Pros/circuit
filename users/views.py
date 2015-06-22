@@ -17,7 +17,7 @@ from django.views.generic import CreateView
 
 from circuit import settings
 from posts.models import Post
-from posts.views import set_post_extra
+from posts.views import set_post_extra, set_post_replies
 from users.models import User, create_hash
 
 
@@ -217,6 +217,7 @@ class UserProfileView(generic.DetailView):
             .select_related('author', 'repost_original', 'reply_original')
         for post in posts:
             set_post_extra(post, self.request)
+            set_post_replies(post, self.request)
         context.update(posts=posts)
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
