@@ -59,16 +59,18 @@ def set_post_extra(post, request):
         'can_be_deleted': can_be_deleted,
     })
 
-def check_reply(post, user):
+def check_reply(user):
     """
     Checks if a post can be replied to
 
-    @param post:
-    @param user:
+    @param user: the user that wants to reply to a post.
 
-    @return:
-    @todo: check if its allow to reply
+    @return: 'not_auth' in case the user isn't authenticated, 'ok' otherwise.
     """
+    if not user.is_authenticated():
+        return 'not_auth'
+
+    return 'ok'
 
 def post_create(request):
     if request.user.is_authenticated \
@@ -163,6 +165,11 @@ def post_reply(request, pk=None):
     """
     user = request.user
     reply_original = Post.objects.get(pk=pk)
+
+    check = check_reply(user)
+    if check == 'not_auth':
+        return redirect('posts:post', pk=reply_original.pk)
+
     reply = Post(content=request.POST['content_reply'],
                  author=user,
                  reply_original=reply_original)
