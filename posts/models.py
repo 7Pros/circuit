@@ -19,6 +19,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
+    file = models.FileField(upload_to='photos/{}/%Y/%m/%d/')
 
     def original_or_self(self):
         """
@@ -53,3 +54,4 @@ class Hashtag(models.Model):
         @return the posts that have used this hashtag
         """
         return Hashtag.objects.get(name=hashtag_name).posts.all()
+
