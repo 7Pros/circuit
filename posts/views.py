@@ -69,6 +69,8 @@ def post_create(request):
         save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
+def set_post_replies(post, request):
+    setattr(post, 'replies', post.reply.all())
 
 class PostDetailView(DetailView):
     template_name = 'posts/post_detail.html'
@@ -76,6 +78,8 @@ class PostDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
+        set_post_replies(context['post'], self.request)
+
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
 
@@ -149,12 +153,12 @@ def post_reply(request, pk=None):
     """
     user = request.user
     reply_original = Post.objects.get(pk=pk)
-    reply = Post(content=request.POST['content'],
+    reply = Post(content=request.POST['content_reply'],
                  author=user,
                  reply_original=reply_original)
 
     reply.save()
-    reply_original.reply_original_set.add(reply)
+    reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
 
