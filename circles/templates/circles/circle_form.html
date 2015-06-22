@@ -24,10 +24,10 @@
                                placeholder="Circle name"
                                value="{{ circle.name }}"
                                required>
-                        <button class="btn btn-raised btn-material-light-blue" type="submit">Save</button>
-                        <a class="btn btn-raised btn-danger"
-                           href="{% url 'circles:delete' pk=circle.pk %}">Delete</a>
+                        <button class="btn btn-raised btn-primary pull-right" type="submit">Save</button>
                     </form>
+
+                    <div class="clearfix"></div>
 
                     {% for member in circle.get_members %}
                         <a href="{% url 'users:profile' pk=member.pk %}">@{{ member.username }}</a>

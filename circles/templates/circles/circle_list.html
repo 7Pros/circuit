@@ -23,8 +23,10 @@
                                class="form-control floating-label {% if 'name' in form.errors %} has-error{% endif %}"
                                placeholder="Circle name"
                                required>
-                        <button class="btn btn-lg btn-raised btn-material-light-blue" type="submit">Add</button>
+                        <button class="btn btn-raised btn-primary pull-right" type="submit">Create</button>
                     </form>
+
+                    <div class="clearfix"></div>
 
                     {% for circle in object_list|dictsortreversed:'updated_at' %}
                         <hr/>
