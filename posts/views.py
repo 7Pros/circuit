@@ -65,17 +65,17 @@ def post_create(request):
 
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
-        #handle_uploaded_file(request.FILES['image'],request)
+        handle_uploaded_file(request.FILES['image'],request)
         parsedString = parse_content(request.POST['content'])
-        post = Post(content=request.POST['content'], author=request.user)
+        post = Post(content=request.POST['content'], author=request.user, image=request.FILES['image'])
         post.save()
         save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
-# def handle_uploaded_file(f,request):
-#     with open('media/{}/{}.txt'.format(request.user), 'wb+') as destination:
-#         for chunk in f.chunks():
-#             destination.write(chunk)
+def handle_uploaded_file(f,request):
+    with open('media/{}/{}.txt'.format(request.user,request.POST.pk), 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 
 class PostDetailView(DetailView):
