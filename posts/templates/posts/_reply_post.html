@@ -6,7 +6,7 @@
         <div class="col-xs-10 col-sm-10 col-md-9 col-lg-9">
             <textarea
                     maxlength="256"
-                    name="content"
+                    name="content_reply"
                     class="form-control floating-label"
                     rows="3"
                     placeholder="Reply to @{{ post.author.username }}">{% filter force_escape %}@{{ post.original_or_self.author.username }} {% endfilter %}</textarea>
@@ -16,7 +16,6 @@
                 Reply
             </button>
         </div>
-
 
     </div>
     <div class="clearfix"></div>

@@ -56,8 +56,18 @@
             <div class="clearfix"></div>
         {% endif %}
     </div>
-    <div class="collapse" id="reply-area-{{ post.pk }}">
+    <div class="collapse{% if display_collapse %} in{% endif %}" id="reply-area-{{ post.pk }}">
+        <hr/>
         {% include 'posts/_reply_post.html' %}
+        <hr/>
+        {% if post.replies %}
+            {% filter parse_post_content %}{% autoescape off %}<p>Replies to the post of @{{ post.author.username }}</p>{% endautoescape %}{% endfilter %}
+        {% endif %}
+        <div class="replies">
+            {% for post_reply in post.replies|dictsortreversed:'created_at' %}
+                {% include 'posts/_replied_posts.html' %}
+            {% endfor %}
+        </div>
     </div>
 
 </div>
