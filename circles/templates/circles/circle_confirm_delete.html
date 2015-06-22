@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-push-0 col-sm-push-2 col-md-push-2 col-xs-12 col-sm-8 col-md-8">
+            <h3>Delete the circle "{{ circle.name }}"?</h3>
+
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="submit" value="DELETE" class="btn btn-danger btn-raised">
+                <a href="{% url 'circles:manage' user_pk=request.user.pk %}" class="btn btn-default btn-raised">Cancel</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
