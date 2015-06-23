@@ -13,6 +13,7 @@
   "description": "circuit is a social network that gives you control over your posts visibility by grouping people in circles.",
   "dependencies": {
     "bootstrap-material-design": "~0.3.0",
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "vue": "~0.12.1"
   }
 }
