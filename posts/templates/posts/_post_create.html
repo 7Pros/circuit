@@ -1,4 +1,4 @@
-<form id="post-reply-{{ post.pk }}" action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post">
+<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post">
     {% csrf_token %}
     <br/>
     <textarea
@@ -6,6 +6,8 @@
             name="content"
             class="form-control floating-label {% if 'content' in form.errors %} has-error{% endif %}"
             rows="3"
+            v-model="content"
+            data-hint="(% 256 - content.length%)"
             placeholder="Write something!">{{ post.content | escape }}</textarea>
     <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
         {% if post %}Save{% else %}Write{% endif %}

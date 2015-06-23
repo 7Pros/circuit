@@ -24,6 +24,7 @@ gulp.task('js', function () {
         './assets/vendor/bootstrap/dist/js/bootstrap.js',
         './assets/vendor/bootstrap-material-design/dist/js/material.js',
         './assets/vendor/bootstrap-material-design/dist/js/ripples.js',
+        './assets/vendor/vue/dist/vue.js',
         './assets/js/app.js'
     ])
         .pipe(concat('app.js'))
