@@ -21,7 +21,7 @@
                     {% if posts %}
                         {% for post in posts|dictsortreversed:'created_at' %}
                             {% if forloop.counter != 1 %}
-                                <hr />
+                                <hr/>
                             {% endif %}
                             {% include 'posts/_post.html' %}
                         {% endfor %}
