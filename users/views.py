@@ -217,7 +217,7 @@ class UserProfileView(generic.DetailView):
             .select_related('author', 'repost_original', 'reply_original')
         for post in posts:
             set_post_extra(post, self.request)
-            set_post_replies(post, self.request)
+            set_post_replies(post)
         context.update(posts=posts)
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 

@@ -95,7 +95,7 @@ class PostDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
-        set_post_replies(context['post'], self.request)
+        set_post_replies(context['post'])
 
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
