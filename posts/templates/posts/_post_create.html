@@ -1,4 +1,4 @@
-<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post">
+<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post" id="post_create">
     {% csrf_token %}
     <br/>
     <textarea
