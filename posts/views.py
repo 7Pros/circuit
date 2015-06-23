@@ -57,6 +57,7 @@ def set_post_extra(post, request):
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
+        'replies': post.reply.all()
     })
 
 def check_reply(user):
@@ -81,21 +82,12 @@ def post_create(request):
         save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
-def set_post_replies(post):
-    """
-    Loads the replies of a post and adds it to the post model.
-
-    @param post: PostObject - current post object.
-    """
-    setattr(post, 'replies', post.reply.all())
-
 class PostDetailView(DetailView):
     template_name = 'posts/post_detail.html'
     model = Post
 
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
-        set_post_replies(context['post'])
 
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
