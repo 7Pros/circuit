@@ -81,7 +81,12 @@ def post_create(request):
         save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
-def set_post_replies(post, request):
+def set_post_replies(post):
+    """
+    Loads the replies of a post and adds it to the post model.
+
+    @param post: PostObject - current post object.
+    """
     setattr(post, 'replies', post.reply.all())
 
 class PostDetailView(DetailView):
