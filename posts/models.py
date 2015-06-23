@@ -19,7 +19,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
-    image = models.ImageField(upload_to='juan/tata/', null=True, blank=True) # todo:put right directory in here
+    image = models.ImageField(upload_to='tmp/', null=True, blank=True) # TODO:put right directory in here
 
     def original_or_self(self):
         """

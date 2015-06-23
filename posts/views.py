@@ -15,6 +15,8 @@ from django.views import generic
 from posts.models import Hashtag
 from posts.models import Post
 from PIL import Image
+from django.core.exceptions import ValidationError
+
 
 
 
@@ -23,8 +25,14 @@ def post_content_is_valid(content):
     return 0 < len(content) <= 256
 
 def post_image_is_valid(image):
-    this_image = Image.open(image)
-    this_image.verify()
+    try:
+        this_image = Image.open(image)
+        if this_image:
+            if this_image.format in ('BMP', 'PNG', 'JPEG', 'PPM'):
+                return True
+            raise ValidationError("unsupported image type")
+    except OSError as error:
+        return False
 
 def check_repost(post, user):
     """
@@ -70,8 +78,8 @@ def set_post_extra(post, request):
 def post_create(request):
 
     if request.user.is_authenticated \
-            and post_content_is_valid(request.POST['content']):
-                #and post_image_is_valid(request.POST['image'])
+            and post_content_is_valid(request.POST['content'])\
+                and post_image_is_valid(request.FILES['image']):
 
         #handle_uploaded_file(request.FILES['image'],request)
         parsedString = parse_content(request.POST['content'])
