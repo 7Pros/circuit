@@ -8,6 +8,7 @@ from django.db import models
 from django.http import Http404
 
 from users.models import User
+from circles.models import Circle
 
 class Post(models.Model):
     """
@@ -21,6 +22,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
+    circles = models.ManyToManyField(Circle, blank=True, related_name='circles')
 
     def original_or_self(self):
         """
