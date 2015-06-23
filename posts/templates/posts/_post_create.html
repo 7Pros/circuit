@@ -7,10 +7,15 @@
             class="form-control floating-label {% if 'content' in form.errors %} has-error{% endif %}"
             rows="3"
             v-model="content"
-            data-hint="(% 256 - content.length%)"
+            data-hint="(% 256 - content.length %)"
             placeholder="Write something!">{{ post.content | escape }}</textarea>
     <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
         {% if post %}Save{% else %}Write{% endif %}
     </button>
+    <select class="btn btn-lg btn-raise btn-primary pull-right">
+        {% for circle in post.extras.circles %}
+            <option value="{{ circle.name }}"></option>
+        {% endfor %}
+    </select>
     <div class="clearfix"></div>
 </form>

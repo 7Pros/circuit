@@ -57,6 +57,7 @@ def set_post_extra(post, request):
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
+        'circles' : request.user.circle_set.all()
     })
 
 
