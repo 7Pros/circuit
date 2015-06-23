@@ -14,11 +14,17 @@ from django.views import generic
 
 from posts.models import Hashtag
 from posts.models import Post
+from PIL import Image
+
 
 
 
 def post_content_is_valid(content):
     return 0 < len(content) <= 256
+
+def post_image_is_valid(image):
+    this_image = Image.open(image)
+    this_image.verify()
 
 def check_repost(post, user):
     """
@@ -65,17 +71,14 @@ def post_create(request):
 
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
-        handle_uploaded_file(request.FILES['image'],request)
+                #and post_image_is_valid(request.POST['image'])
+
+        #handle_uploaded_file(request.FILES['image'],request)
         parsedString = parse_content(request.POST['content'])
         post = Post(content=request.POST['content'], author=request.user, image=request.FILES['image'])
         post.save()
         save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
-
-def handle_uploaded_file(f,request):
-    with open('media/{}/{}.txt'.format(request.user,request.POST.pk), 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
 
 
 class PostDetailView(DetailView):
