@@ -22,7 +22,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
-    circles = models.ManyToManyField(Circle, blank=True, related_name='circles')
+    circles = models.ForeignKey(Circle, null=True, blank=True, related_name='circles')
 
     def original_or_self(self):
         """
