@@ -28,7 +28,7 @@ def post_image_is_valid(image):
     try:
         this_image = Image.open(image)
         if this_image:
-            if this_image.format in ('BMP', 'PNG', 'JPEG', 'PPM'):
+            if this_image.format in ('BMP', 'PNG', 'JPEG', 'PPM', 'JPG'):
                 return True
             raise ValidationError("unsupported image type")
     except OSError as error:
