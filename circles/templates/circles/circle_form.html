@@ -20,31 +20,78 @@
                         <br/>
                         <input type="text"
                                name="name"
-                               class="form-control floating-label {% if 'name' in form.errors %} has-error{% endif %}"
-                               placeholder="Circle name"
+                               class="form-control input-lg floating-label {% if 'name' in form.errors %} has-error{% endif %}"
+                               placeholder="Name"
                                value="{{ circle.name }}"
                                required>
+
+                        <br/><br/>
+
+                        <div id="circle-edit">
+
+                            <input type="hidden" name="members" value="(% members | json %)" />
+
+                            <div class="form-group">
+                                <label class="control-label" for="circle">Add a user to your circle</label>
+                                <input type="text" class="form-control autocomplete" id="circle">
+                            </div>
+
+                            <div class="pull-left" v-repeat="members" v-on="click: removeMember(this)">
+                                <img src="http://0.gravatar.com/avatar/(% gravatar %)?s=50&d=retro"
+                                     alt="(% username %)"
+                                     data-toggle="tooltip"
+                                     data-placement="top"
+                                     title="(% username %)"
+                                     data-original-title="Tooltip on top"/>
+                            </div>
+
+                            <div class="clearfix"></div>
+                            <pre>(% members | json %)</pre>
+                        </div>
+
+                        <div class="clearfix"></div>
+
                         <button class="btn btn-raised btn-primary pull-right" type="submit">Save</button>
                     </form>
-
-                    <div class="clearfix"></div>
-
-                    <div class="form-group">
-                        <label class="control-label" for="circle">Add a user to your circle</label>
-                        <input type="text" class="form-control autocomplete" id="circle">
-                    </div>
-
-                    <br/><br/>
-
-                    {% for member in circle.get_members %}
-                        <a href="{% url 'users:profile' pk=member.pk %}">@{{ member.username }}</a>
-                    {% empty %}
-                        <span class="text-muted">This circle is empty.</span>
-                    {% endfor %}
 
                 </div>
             </div>
         </div>
+
+        <script>
+            window.onload = function () {
+                $('.autocomplete').autocomplete({
+                    serviceUrl: '/users/search',
+                    onSelect: function (suggestion) {
+                        user = {pk: suggestion.data, username: suggestion.value, gravatar: suggestion.gravatar};
+                        CircleEdit.addMember(user)
+                    }
+                });
+
+                var CircleEdit = new Vue({
+                    el: '#circle-edit',
+                    data: {
+                        members: [
+                            {pk: 1, username: 'MetalMatze', gravatar: 'fbbcf771a630a0e452083fdc08cfaa6c'},
+                            {pk: 3, username: 'Juan', gravatar: '7038663cc684aa330956752c7e6fe7d4'}
+                        ]
+                    },
+                    methods: {
+                        addMember: function (member) {
+                            this.members.push(member);
+                        },
+                        removeMember: function (removeableMember) {
+                            members = this.members;
+                            members.forEach(function (member, index) {
+                                if (member.pk == removeableMember.pk) {
+                                    removeableMember.$remove(index)
+                                }
+                            })
+                        }
+                    }
+                });
+            }
+        </script>
 
     </div>
 {% endblock %}
