@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, Http404, render
 from django.template import loader, Context
 from django.views import generic
@@ -288,3 +288,16 @@ def user_password(request):
 class UserDeleteView(generic.DeleteView):
     model = User
     success_url = reverse_lazy('landingpage')
+
+
+def user_search(request):
+    q = request.GET['query']
+    users = User.objects.filter(username__contains=q)[:5]
+
+    users_data = []
+
+    for user in users:
+        user_data = {'value': user.username, 'data': user.pk}
+        users_data.append(user_data)
+
+    return JsonResponse({'suggestions': users_data}, safe=False)

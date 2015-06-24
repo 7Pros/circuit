@@ -15,6 +15,7 @@ from users.views import (
 )
 
 urlpatterns = [
+    url(r'^search$', views.user_search),
     url(r'^signup/$', UserCreateView.as_view(), name='signup'),
     url(r'^signup/confirm/(?P<token>\w+)/$', views.user_create_confirm, name='signup_confirm'),
     url(r'^login/$', views.user_login, name='login'),
