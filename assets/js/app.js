@@ -11,9 +11,3 @@ var PostCreate = new Vue({
     }
 });
 
-$('.autocomplete').autocomplete({
-     serviceUrl: '/users/search',
-    onSelect: function (suggestion) {
-        alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-    }
-});
