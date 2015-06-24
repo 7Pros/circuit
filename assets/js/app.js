@@ -11,14 +11,8 @@ var PostCreate = new Vue({
     }
 });
 
-var users = [
-    { value: 'MetalMatze', data: '1' },
-    { value: 'Gjum', data: '2' },
-    { value: 'Juan', data: '3' }
-];
-
 $('.autocomplete').autocomplete({
-    lookup: users,
+     serviceUrl: '/users/search',
     onSelect: function (suggestion) {
         alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
     }
