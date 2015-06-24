@@ -297,7 +297,7 @@ def user_search(request):
     users_data = []
 
     for user in users:
-        user_data = {'value': user.username, 'data': user.pk}
+        user_data = {'value': user.username, 'data': user.pk, 'gravatar': user.gravatar_hash()}
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
