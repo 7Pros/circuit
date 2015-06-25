@@ -77,8 +77,17 @@
                         ]
                     },
                     methods: {
-                        addMember: function (member) {
-                            this.members.push(member);
+                        addMember: function (newMember) {
+                            var unique = true;
+                            this.members.forEach(function (member) {
+                                if(member.pk == newMember.pk) {
+                                    unique = false;
+                                }
+                            });
+
+                            if(unique) {
+                                this.members.push(newMember);
+                            }
                         },
                         removeMember: function (removeableMember) {
                             members = this.members;
