@@ -78,14 +78,19 @@ def set_post_extra(post, request):
 def post_create(request):
 
     if request.user.is_authenticated \
-            and post_content_is_valid(request.POST['content'])\
-                and post_image_is_valid(request.FILES['image']):
+            and post_content_is_valid(request.POST['content']):
 
-        #handle_uploaded_file(request.FILES['image'],request)
-        parsedString = parse_content(request.POST['content'])
-        post = Post(content=request.POST['content'], author=request.user, image=request.FILES['image'])
-        post.save()
-        save_hashtags(parsedString['hashtags'], post)
+        if 'image' in request.FILES:
+            if post_image_is_valid(request.FILES['image']):
+                parsedString = parse_content(request.POST['content'])
+                post = Post(content=request.POST['content'], author=request.user, image=request.FILES['image'])
+                post.save()
+                save_hashtags(parsedString['hashtags'], post)
+        else:
+            parsedString = parse_content(request.POST['content'])
+            post = Post(content=request.POST['content'], author=request.user)
+            post.save()
+            save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
 

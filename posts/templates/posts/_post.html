@@ -34,9 +34,11 @@
         {% filter parse_post_content %}{% autoescape off %}<p>{{ post.content }}</p>{% endautoescape %}{% endfilter %}
     </div>
 
+    {% if  post.image  %}
     <div>
         <img src="{{ post.image.url }}" style="width:250px;height:150px;""/>
     </div>
+    {% endif %}
 
 
     <div class="actions">
