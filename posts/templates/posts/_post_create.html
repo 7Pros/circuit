@@ -13,13 +13,16 @@
         {% if post %}Save{% else %}Write{% endif %}
     </button>
     {% if user.circles %}
-        <div class="form-group col-md-5 col-xs-6 col-sm-6 col-lg-4 pull-right">
-            <select class="form-control" name="circle">
-                <option disabled selected="selected">Select a circle</option>
-                {% for circle in user.circles|dictsort:'name' %}
-                    <option value="{{ circle.pk }}">{{ circle.name }}</option>
-                {% endfor %}
-            </select>
+        <br/>
+        <div class="row">
+            <div class="form-group col-md-5 col-xs-6 col-sm-6 col-lg-4">
+                <select class="form-control" name="circle">
+                    <option disabled selected="selected">Select a circle</option>
+                    {% for circle in user.circles|dictsort:'name' %}
+                        <option value="{{ circle.pk }}">{{ circle.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
     {% endif %}
     <div class="clearfix"></div>
