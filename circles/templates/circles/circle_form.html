@@ -84,7 +84,7 @@
                             members = this.members;
                             members.forEach(function (member, index) {
                                 if (member.pk == removeableMember.pk) {
-                                    removeableMember.$remove(index)
+                                    members.$remove(index)
                                 }
                             })
                         }
