@@ -63,7 +63,7 @@
                 $('.autocomplete').autocomplete({
                     serviceUrl: '/users/search',
                     onSelect: function (suggestion) {
-                        user = {pk: suggestion.data, username: suggestion.value, gravatar: suggestion.gravatar};
+                        var user = {pk: suggestion.data, username: suggestion.value, gravatar: suggestion.gravatar};
                         CircleEdit.addMember(user)
                     }
                 });

@@ -49,7 +49,9 @@ class CircleEdit(generic.UpdateView):
     """Updates a circle."""
 
     model = Circle
-    fields = ['name']
+    fields = [
+        'name',
+    ]
 
     def form_valid(self, form):
         return super(CircleEdit, self).form_valid(form)

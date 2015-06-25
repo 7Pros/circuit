@@ -10,4 +10,3 @@ var PostCreate = new Vue({
         content: null
     }
 });
-
