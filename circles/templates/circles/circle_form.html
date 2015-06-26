@@ -36,13 +36,16 @@
                                 <input type="text" class="form-control autocomplete" id="circle">
                             </div>
 
-                            <div class="pull-left" v-repeat="members" v-on="click: removeMember(this)">
+                            <div class="pull-left" style="margin: 8px;"
+                                 v-repeat="members" v-on="click: removeMember(this)">
                                 <img src="http://0.gravatar.com/avatar/(% gravatar %)?s=50&d=retro"
                                      alt="(% username %)"
                                      data-toggle="tooltip"
                                      data-placement="top"
                                      title="(% username %)"
                                      data-original-title="Tooltip on top"/>
+                                <br/>
+                                <a href="{% url 'users:profile_username' username='(% username %)' %}">@(% username %)</a>
                             </div>
                             <div class="clearfix"></div>
                         </div>
