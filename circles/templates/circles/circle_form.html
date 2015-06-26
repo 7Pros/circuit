@@ -71,10 +71,7 @@
                 var CircleEdit = new Vue({
                     el: '#circle-edit',
                     data: {
-                        members: [
-                            {pk: 1, username: 'MetalMatze', gravatar: 'fbbcf771a630a0e452083fdc08cfaa6c'},
-                            {pk: 3, username: 'Juan', gravatar: '7038663cc684aa330956752c7e6fe7d4'}
-                        ]
+                        members: {% autoescape off %}{{ circle.members_json }}{% endautoescape %}
                     },
                     methods: {
                         addMember: function (newMember) {
