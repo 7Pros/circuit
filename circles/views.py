@@ -58,7 +58,9 @@ class CircleEdit(generic.UpdateView):
         circle = form.save()
         circle.members.clear()
         for member in json.loads(self.request.POST['members']):
-            circle.members.add(member['pk'])
+            member_pk = int(member['pk'])
+            if self.request.user.pk != member_pk:
+                circle.members.add(member_pk)
         return super(CircleEdit, self).form_valid(form)
 
     def get_success_url(self):
