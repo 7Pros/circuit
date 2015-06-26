@@ -8,7 +8,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-8">
-            <div class="panel panel-default panel-profile">
+            <div class="panel panel-default">
                 <div class="panel-body">
 
                     {% include '_messages_alerts.html' %}
@@ -20,10 +20,12 @@
 
                     {% if posts %}
                         {% for post in posts|dictsortreversed:'created_at' %}
-                            {% if forloop.counter != 1 %}
-                                <hr/>
+                            {% if post.extra.can_be_seen %}
+                                {% if forloop.counter != 1 %}
+                                    <hr/>
+                                {% endif %}
+                                {% include 'posts/_post.html' %}
                             {% endif %}
-                            {% include 'posts/_post.html' %}
                         {% endfor %}
                     {% else %}
                         <br/>

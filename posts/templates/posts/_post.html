@@ -1,7 +1,7 @@
 {% load parser %}
 <div class="post {% if not posts %} lead{% endif %}">
 
-    {% if post.original_post %}
+    {% if post.repost_original %}
         <small>
             <span class="mdi-av-repeat"></span>
             <span>
@@ -21,10 +21,12 @@
             <strong>{{ post.original_or_self.author.name }}</strong>
         {% endif %}
         <a href="{% url 'users:profile' pk=post.original_or_self.author.pk %}">
-            @{{ post.original_or_self.author.username }}</a>
+            @{{ post.original_or_self.author.username }}
+        </a>
         <div class="pull-right">
             <a class="date" href="{% url 'posts:post' pk=post.original_or_self.pk %}">
-                {{ post.original_or_self.created_at }}</a>
+                {{ post.original_or_self.created_at }}
+            </a>
         </div>
 
         <div class="clearfix"></div>
@@ -34,26 +36,51 @@
         {% filter parse_post_content %}{% autoescape off %}<p>{{ post.content }}</p>{% endautoescape %}{% endfilter %}
     </div>
 
+    {% if  post.image  %}
+    <div>
+        <img src="{{ post.image.url }}" style="max-width: 100%;"/>
+    </div>
+    {% endif %}
+
+
     <div class="actions">
         {% if request.user.is_authenticated %}
             <a class="mdi-action-grade{% if post.extra.is_favorited %} favorite{% endif %}"
-               href="{% url 'posts:favorite' pk=post.original_or_self.pk %}"></a>
+               href="{% url 'posts:favorite' pk=post.original_or_self.pk %}">
+            </a>
             {% if post.extra.can_be_reposted %}
-                <a class="mdi-av-repeat"
-                   href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
+                <a class="mdi-av-repeat" href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
             {% endif %}
+            <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" data-toggle="collapse"></a>
             <div class="pull-right">
+                {% if post.extra.can_show_circle and post.circles %}
+{#                    TODO#}
+{#                    <div class="col-md-4 col-xs-6 col-sm-6 col-lg-3">#}
+{#                        <input class="form-group form-control" type="text" disabled value="{{ post.circles.name }}"/>#}
+{#                    </div>#}
+                {% endif %}
                 {% if post.extra.can_be_edited %}
-                    <a class="mdi-editor-mode-edit"
-                       href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
+                    <a class="mdi-editor-mode-edit" href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
                 {% endif %}
                 {% if post.extra.can_be_deleted %}
-                    <a class="mdi-action-delete"
-                       href="{% url 'posts:delete' pk=post.original_or_self.pk %}"></a>
+                    <a class="mdi-action-delete" href="{% url 'posts:delete' pk=post.original_or_self.pk %}"></a>
                 {% endif %}
             </div>
             <div class="clearfix"></div>
         {% endif %}
+    </div>
+    <div class="collapse{% if display_collapse %} in{% endif %}" id="reply-area-{{ post.pk }}">
+        <hr/>
+        {% include 'posts/_reply_post.html' %}
+        <hr/>
+        {% if post.extra.replies %}
+            {% filter parse_post_content %}{% autoescape off %}<p>Replies to the post of @{{ post.author.username }}</p>{% endautoescape %}{% endfilter %}
+        {% endif %}
+        <div class="replies">
+            {% for post_reply in post.extra.replies|dictsortreversed:'created_at' %}
+                {% include 'posts/_replied_posts.html' %}
+            {% endfor %}
+        </div>
     </div>
 
 </div>

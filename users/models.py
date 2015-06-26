@@ -110,6 +110,14 @@ class User(AbstractBaseUser):
     def gravatar_hash(self):
         return hashlib.md5(self.email.strip().lower().encode()).hexdigest()
 
+    def get_circles(self):
+        """
+        Returns the circles this user is at.
+
+        @return: ForeingKeyObject - contains the circles he is at.
+        """
+        return self.members.all()
+
     def get_full_name(self):
         """ Alias for get_name
         @return: string - returns the name

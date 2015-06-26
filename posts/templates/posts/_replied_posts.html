@@ -1,0 +1,44 @@
+{% load parser %}
+<small>
+    {% if post_reply.original_or_self.author.name %}
+        <strong>{{ post_reply.original_or_self.author.name }}</strong>
+    {% endif %}
+    <a href="{% url 'users:profile' pk=post_reply.original_or_self.author.pk %}">
+        @{{ post_reply.original_or_self.author.username }}
+    </a>
+    <div class="pull-right">
+        <a class="date" href="{% url 'posts:post' pk=post_reply.original_or_self.pk %}">
+            {{ post_reply.original_or_self.created_at }}
+        </a>
+    </div>
+
+    <div class="clearfix"></div>
+</small>
+<div>
+    {% filter parse_post_content %}{% autoescape off %}<p>{{ post_reply.content }}</p>{% endautoescape %}{% endfilter %}
+</div>
+
+<div class="actions">
+    {% if request.user.is_authenticated %}
+        <a class="mdi-action-grade{% if post_reply.extra.is_favorited %} favorite{% endif %}"
+           href="{% url 'posts:favorite' pk=post_reply.original_or_self.pk %}">
+        </a>
+        {% if post_reply.extra.can_be_reposted %}
+            <a class="mdi-av-repeat" href="{% url 'posts:repost' pk=post_reply.original_or_self.pk %}"></a>
+        {% endif %}
+        {% if request.user.pk != post.author.pk %}
+            <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" onclick="$('#reply-area-{{ post.pk }} textarea').text('@{{ post.author.username }} @{{ post_reply.author.username }}').focus()"></a>
+        {% else %}
+            <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" onclick="$('#reply-area-{{ post.pk }} textarea').text('@{{ post.author.username }}').focus()"></a>
+        {% endif %}
+        <div class="pull-right">
+            {% if post_reply.extra.can_be_edited %}
+                <a class="mdi-editor-mode-edit" href="{% url 'posts:edit' pk=post_reply.original_or_self.pk %}"></a>
+            {% endif %}
+            {% if post_reply.extra.can_be_deleted %}
+                <a class="mdi-action-delete" href="{% url 'posts:delete' pk=post_reply.original_or_self.pk %}"></a>
+            {% endif %}
+        </div>
+        <div class="clearfix"></div>
+    {% endif %}
+</div>
