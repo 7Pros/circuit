@@ -28,6 +28,22 @@
                         <br/><br/>
 
                         <div id="circle-edit">
+                            <style>
+                                .circle-member {
+                                    position: relative;
+                                }
+
+                                .circle-delete-member {
+                                    display: none;
+                                }
+
+                                .circle-member:hover .circle-delete-member {
+                                    display: inline;
+                                    position: absolute;
+                                    top: 0;
+                                    left: 30px;
+                                }
+                            </style>
 
                             <input type="hidden" name="members" value="(% members | json %)" />
 
@@ -36,7 +52,7 @@
                                 <input type="text" class="form-control autocomplete" id="circle">
                             </div>
 
-                            <div class="pull-left" style="margin: 8px;"
+                            <div class="pull-left circle-member" style="margin: 8px;"
                                  v-repeat="members" v-on="click: removeMember(this)">
                                 <img src="http://0.gravatar.com/avatar/(% gravatar %)?s=50&d=retro"
                                      alt="(% username %)"
@@ -44,6 +60,7 @@
                                      data-placement="top"
                                      title="(% username %)"
                                      data-original-title="Tooltip on top"/>
+                                 <span class="mdi-action-delete circle-delete-member"></span>
                                 <br/>
                                 <a href="{% url 'users:profile_username' username='(% username %)' %}">@(% username %)</a>
                             </div>
