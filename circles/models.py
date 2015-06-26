@@ -1,3 +1,9 @@
+"""@package circles.models
+Circles models file.
+
+@author 7Pros
+@copyright
+"""
 import json
 from django.db import models
 from users.models import User
