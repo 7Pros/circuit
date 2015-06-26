@@ -46,6 +46,11 @@
             {% endif %}
             <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" data-toggle="collapse"></a>
             <div class="pull-right">
+                {% if post.extra.can_show_circle and post.circles %}
+                    <div class="col-md-4 col-xs-6 col-sm-6 col-lg-3">
+                        <input class="form-group form-control" type="text" disabled value="{{ post.circles.name }}"/>
+                    </div>
+                {% endif %}
                 {% if post.extra.can_be_edited %}
                     <a class="mdi-editor-mode-edit" href="{% url 'posts:edit' pk=post.original_or_self.pk %}"></a>
                 {% endif %}

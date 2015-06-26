@@ -1,4 +1,4 @@
-"""@package posts.views
+"""@package posts
 Post views file.
 
 @author 7Pros
@@ -14,10 +14,12 @@ from django.views import generic
 
 from posts.models import Hashtag
 from posts.models import Post
+from circles.models import Circle
 
 
 def post_content_is_valid(content):
     return 0 < len(content) <= 256
+
 
 def check_repost(post, user):
     """
@@ -52,13 +54,30 @@ def set_post_extra(post, request):
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
+    can_show_circle = post.author.pk == request.user.pk
+
+    if post.circles:
+        if not can_show_circle:
+            if request.user.is_authenticated():
+                request_user_circles = request.user.get_circles()
+                can_be_seen = post.circles in request_user_circles
+            else:
+                can_be_seen = False
+        else:
+            can_be_seen = True
+    else:
+        can_be_seen = True
+
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
-        'replies': post.reply.all()
+        'can_show_circle': can_show_circle,
+        'can_be_seen': can_be_seen,
+        'replies': post.reply.all(),
     })
+
 
 def check_reply(user):
     """
@@ -73,14 +92,18 @@ def check_reply(user):
 
     return 'ok'
 
+
 def post_create(request):
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
         parsedString = parse_content(request.POST['content'])
-        post = Post(content=request.POST['content'], author=request.user)
+        post = Post(content=request.POST['content'], author=request.user,
+                    circles=Circle.objects.get(pk=request.POST['circle']))
         post.save()
+        # post.circles.add(Circle.objects.get(pk=request.POST['circle']))
         save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
+
 
 class PostDetailView(DetailView):
     template_name = 'posts/post_detail.html'
@@ -149,6 +172,7 @@ def post_repost(request, pk=None):
     repost.save()
     return redirect('posts:post', pk=repost.pk)
 
+
 def post_reply(request, pk=None):
     """
     Reply to a post.
@@ -175,6 +199,7 @@ def post_reply(request, pk=None):
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
+
 
 def parse_content(content):
     hashtags = re.findall(r"#(\w+)", content)
