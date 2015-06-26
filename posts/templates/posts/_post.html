@@ -44,6 +44,7 @@
             {% if post.extra.can_be_reposted %}
                 <a class="mdi-av-repeat" href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
             {% endif %}
+            <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" data-toggle="collapse"></a>
             <div class="pull-right">
                 {% if post.extra.can_show_circle and post.circles %}
                     <div class="col-md-4 col-xs-6 col-sm-6 col-lg-3">
@@ -56,12 +57,22 @@
                 {% if post.extra.can_be_deleted %}
                     <a class="mdi-action-delete" href="{% url 'posts:delete' pk=post.original_or_self.pk %}"></a>
                 {% endif %}
-                {% if post.extra.can_be_replied %}
-                    <a class="" href="{% url 'posts:reply' pk=post.original_or_self.pk%}"></a>
-                {% endif %}
             </div>
             <div class="clearfix"></div>
         {% endif %}
+    </div>
+    <div class="collapse{% if display_collapse %} in{% endif %}" id="reply-area-{{ post.pk }}">
+        <hr/>
+        {% include 'posts/_reply_post.html' %}
+        <hr/>
+        {% if post.extra.replies %}
+            {% filter parse_post_content %}{% autoescape off %}<p>Replies to the post of @{{ post.author.username }}</p>{% endautoescape %}{% endfilter %}
+        {% endif %}
+        <div class="replies">
+            {% for post_reply in post.extra.replies|dictsortreversed:'created_at' %}
+                {% include 'posts/_replied_posts.html' %}
+            {% endfor %}
+        </div>
     </div>
 
 </div>

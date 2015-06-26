@@ -20,6 +20,7 @@ from circles.models import Circle
 def post_content_is_valid(content):
     return 0 < len(content) <= 256
 
+
 def check_repost(post, user):
     """
     Check if a post can be reposted by a user.
@@ -67,23 +68,37 @@ def set_post_extra(post, request):
     else:
         can_be_seen = True
 
-
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
         'can_show_circle': can_show_circle,
-        'can_be_seen': can_be_seen
+        'can_be_seen': can_be_seen,
+        'replies': post.reply.all(),
     })
 
+
+def check_reply(user):
+    """
+    Checks if a post can be replied to
+
+    @param user: the user that wants to reply to a post.
+
+    @return: 'not_auth' in case the user isn't authenticated, 'ok' otherwise.
+    """
+    if not user.is_authenticated():
+        return 'not_auth'
+
+    return 'ok'
 
 
 def post_create(request):
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
         parsedString = parse_content(request.POST['content'])
-        post = Post(content=request.POST['content'], author=request.user, circles=Circle.objects.get(pk=request.POST['circle']))
+        post = Post(content=request.POST['content'], author=request.user,
+                    circles=Circle.objects.get(pk=request.POST['circle']))
         post.save()
         # post.circles.add(Circle.objects.get(pk=request.POST['circle']))
         save_hashtags(parsedString['hashtags'], post)
@@ -96,6 +111,7 @@ class PostDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
+
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
 
@@ -155,6 +171,34 @@ def post_repost(request, pk=None):
                   repost_original=repost_original)
     repost.save()
     return redirect('posts:post', pk=repost.pk)
+
+
+def post_reply(request, pk=None):
+    """
+    Reply to a post.
+
+    Redirects to the post page.
+
+    @param request:
+    @param pk:
+
+    @return:
+    """
+    user = request.user
+    reply_original = Post.objects.get(pk=pk)
+
+    check = check_reply(user)
+    if check == 'not_auth':
+        return redirect('posts:post', pk=reply_original.pk)
+
+    reply = Post(content=request.POST['content_reply'],
+                 author=user,
+                 reply_original=reply_original)
+
+    reply.save()
+    reply_original.reply.add(reply)
+
+    return redirect('posts:post', pk=reply_original.pk)
 
 
 def parse_content(content):
