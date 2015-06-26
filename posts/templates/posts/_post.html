@@ -36,6 +36,13 @@
         {% filter parse_post_content %}{% autoescape off %}<p>{{ post.content }}</p>{% endautoescape %}{% endfilter %}
     </div>
 
+    {% if  post.image  %}
+    <div>
+        <img src="{{ post.image.url }}" style="max-width: 100%;"/>
+    </div>
+    {% endif %}
+
+
     <div class="actions">
         {% if request.user.is_authenticated %}
             <a class="mdi-action-grade{% if post.extra.is_favorited %} favorite{% endif %}"

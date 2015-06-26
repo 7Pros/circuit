@@ -14,11 +14,25 @@ from django.views import generic
 
 from posts.models import Hashtag
 from posts.models import Post
+from PIL import Image
+from django.core.exceptions import ValidationError
+
 from circles.models import Circle
 
 
 def post_content_is_valid(content):
     return 0 < len(content) <= 256
+
+
+def post_image_is_valid(image):
+    try:
+        this_image = Image.open(image)
+        if this_image:
+            if this_image.format in ('BMP', 'PNG', 'JPEG', 'PPM', 'JPG'):
+                return True
+            raise ValidationError("unsupported image type")
+    except OSError as error:
+        return False
 
 
 def check_repost(post, user):
@@ -96,12 +110,25 @@ def check_reply(user):
 def post_create(request):
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
+
+        if 'image' in request.FILES:
+            if post_image_is_valid(request.FILES['image']):
+                parsedString = parse_content(request.POST['content'])
+                post = Post(content=request.POST['content'], author=request.user, image=request.FILES['image'])
+                post.save()
+                save_hashtags(parsedString['hashtags'], post)
+        else:
+            parsedString = parse_content(request.POST['content'])
+            post = Post(content=request.POST['content'], author=request.user)
+            post.save()
+            save_hashtags(parsedString['hashtags'], post)
         parsedString = parse_content(request.POST['content'])
         post = Post(content=request.POST['content'], author=request.user,
                     circles=Circle.objects.get(pk=request.POST['circle']))
         post.save()
         # post.circles.add(Circle.objects.get(pk=request.POST['circle']))
         save_hashtags(parsedString['hashtags'], post)
+
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
 

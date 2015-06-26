@@ -10,6 +10,7 @@ from django.http import Http404
 from users.models import User
 from circles.models import Circle
 
+
 class Post(models.Model):
     """
     Post model that stores all information of a post
@@ -23,6 +24,8 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
     circles = models.ForeignKey(Circle, null=True, blank=True, related_name='circles')
+    image = models.ImageField(upload_to='tmp/', null=True, blank=True, height_field=None,
+                              width_field=None)  # TODO:put right directory in here
 
     def original_or_self(self):
         """

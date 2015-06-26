@@ -1,4 +1,5 @@
-<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post" id="post_create">
+<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post" id="post_create"
+      enctype="multipart/form-data">
     {% csrf_token %}
     <br/>
     <textarea
@@ -9,13 +10,11 @@
             v-model="content"
             data-hint="(% 256 - content.length %)"
             placeholder="Write something!">{{ post.content | escape }}</textarea>
-    <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
-        {% if post %}Save{% else %}Write{% endif %}
-    </button>
-    {% if user.circles %}
-        <br/>
-        <div class="row">
-            <div class="form-group col-md-5 col-xs-6 col-sm-6 col-lg-4">
+    <br/>
+
+    <div class="row">
+        {% if user.circles %}
+            <div class="form-group col-xs-12 col-md-4">
                 <select class="form-control" name="circle">
                     <option disabled selected="selected">Select a circle</option>
                     {% for circle in user.circles|dictsort:'name' %}
@@ -23,7 +22,13 @@
                     {% endfor %}
                 </select>
             </div>
+        {% endif %}
+        <div class="col-xs-12 col-md-4">
+            <input class="" name="image" type="file"/>
         </div>
-    {% endif %}
+        <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
+            {% if post %}Save{% else %}Write{% endif %}
+        </button>
+    </div>
     <div class="clearfix"></div>
 </form>
