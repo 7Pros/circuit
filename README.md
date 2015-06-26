@@ -23,6 +23,8 @@ To pull in all Bootstrap dependencies we use [bower](http://bower.io/).
 At this point you should already have node installed, so run the following to get bower, if not installed.
 
     npm install -g bower gulp
+    
+    npm install
 
 Now you can use bower to fetch all dependencies
 

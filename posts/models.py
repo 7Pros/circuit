@@ -1,4 +1,4 @@
-"""@package posts.models
+"""@package posts
 Post and Hashtag model file.
 
 @author 7Pros
@@ -8,18 +8,24 @@ from django.db import models
 from django.http import Http404
 
 from users.models import User
+from circles.models import Circle
+
 
 class Post(models.Model):
-    """Post model that stores all information of a post
+    """
+    Post model that stores all information of a post
     """
     content = models.CharField(max_length=256)
     author = models.ForeignKey(User)
     # the post of which this is a repost
-    original_post = models.ForeignKey('self', null=True, blank=True)
+    repost_original = models.ForeignKey('self', null=True, blank=True, related_name='repost')
+    reply_original = models.ForeignKey('self', null=True, blank=True, related_name='reply')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     favorites = models.ManyToManyField(User, related_name='favorites')
-    image = models.ImageField(upload_to='tmp/', null=True, blank=True, height_field=None, width_field=None) # TODO:put right directory in here
+    circles = models.ForeignKey(Circle, null=True, blank=True, related_name='circles')
+    image = models.ImageField(upload_to='tmp/', null=True, blank=True, height_field=None,
+                              width_field=None)  # TODO:put right directory in here
 
     def original_or_self(self):
         """
@@ -27,11 +33,11 @@ class Post(models.Model):
 
         Loops until the original is found to avoid database inconsistencies.
 
-        @return `self.original_post` if set, `self` otherwise
+        @return `self.repost_original` if set, `self` otherwise
         """
         p = self
-        while p.original_post:
-            p = p.original_post
+        while p.repost_original:
+            p = p.repost_original
         return p
 
     def __str__(self):
@@ -54,4 +60,3 @@ class Hashtag(models.Model):
         @return the posts that have used this hashtag
         """
         return Hashtag.objects.get(name=hashtag_name).posts.all()
-

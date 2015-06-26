@@ -1,4 +1,5 @@
-<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" enctype="multipart/form-data" method="post">
+<form action="{% if not post %}{% url 'posts:create' %}{% endif %}" method="post" id="post_create"
+      enctype="multipart/form-data">
     {% csrf_token %}
     <br/>
     <textarea
@@ -6,13 +7,25 @@
             name="content"
             class="form-control floating-label {% if 'content' in form.errors %} has-error{% endif %}"
             rows="3"
+            v-model="content"
+            data-hint="(% 256 - content.length %)"
             placeholder="Write something!">{{ post.content | escape }}</textarea>
     <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
         {% if post %}Save{% else %}Write{% endif %}
     </button>
-    <input class="btn mdi-editor-attach-file" name="image" type="file" />
+    <input class="btn mdi-editor-attach-file" name="image" type="file"/>
+    {% if user.circles %}
+        <br/>
+        <div class="row">
+            <div class="form-group col-md-5 col-xs-6 col-sm-6 col-lg-4">
+                <select class="form-control" name="circle">
+                    <option disabled selected="selected">Select a circle</option>
+                    {% for circle in user.circles|dictsort:'name' %}
+                        <option value="{{ circle.pk }}">{{ circle.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    {% endif %}
     <div class="clearfix"></div>
 </form>
-
-<!-- enctype="multipart/form-data" added -->
-

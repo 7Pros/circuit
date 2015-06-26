@@ -1,4 +1,4 @@
-"""@package users.views
+"""@package users
 Users views file.
 
 @author 7Pros
@@ -200,7 +200,7 @@ def user_profile_by_username(request, username):
         raise Http404("Username doesn't exist", username)
 
     posts = Post.objects.filter(author=user.pk) \
-        .select_related('author', 'original_post')
+        .select_related('author', 'repost_original', 'reply_original')
     for post in posts:
         set_post_extra(post, request)
     context = {'posts': posts, 'user': user}
@@ -214,7 +214,9 @@ class UserProfileView(generic.DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         posts = Post.objects.filter(author=self.object.pk) \
-            .select_related('author', 'original_post')
+            .select_related('author', 'repost_original', 'reply_original')
+        setattr(context['user'], 'circles', context['user'].circle_set.all())
+
         for post in posts:
             set_post_extra(post, self.request)
         context.update(posts=posts)

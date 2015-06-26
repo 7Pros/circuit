@@ -1,4 +1,4 @@
-"""@package posts.views
+"""@package posts
 Post views file.
 
 @author 7Pros
@@ -17,12 +17,12 @@ from posts.models import Post
 from PIL import Image
 from django.core.exceptions import ValidationError
 
-
-
+from circles.models import Circle
 
 
 def post_content_is_valid(content):
     return 0 < len(content) <= 256
+
 
 def post_image_is_valid(image):
     try:
@@ -33,6 +33,7 @@ def post_image_is_valid(image):
             raise ValidationError("unsupported image type")
     except OSError as error:
         return False
+
 
 def check_repost(post, user):
     """
@@ -48,7 +49,7 @@ def check_repost(post, user):
     if user.pk == post.author.pk:
         return 'own_post'  # don't repost own post
 
-    existing_repost = Post.objects.filter(author=user, original_post=post).exists()
+    existing_repost = Post.objects.filter(author=user, repost_original=post).exists()
     if existing_repost:
         # don't repost more than once
         return 'already_reposted_as'
@@ -67,16 +68,46 @@ def set_post_extra(post, request):
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
+    can_show_circle = post.author.pk == request.user.pk
+
+    if post.circles:
+        if not can_show_circle:
+            if request.user.is_authenticated():
+                request_user_circles = request.user.get_circles()
+                can_be_seen = post.circles in request_user_circles
+            else:
+                can_be_seen = False
+        else:
+            can_be_seen = True
+    else:
+        can_be_seen = True
+
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
+        'can_show_circle': can_show_circle,
+        'can_be_seen': can_be_seen,
+        'replies': post.reply.all(),
     })
 
 
-def post_create(request):
+def check_reply(user):
+    """
+    Checks if a post can be replied to
 
+    @param user: the user that wants to reply to a post.
+
+    @return: 'not_auth' in case the user isn't authenticated, 'ok' otherwise.
+    """
+    if not user.is_authenticated():
+        return 'not_auth'
+
+    return 'ok'
+
+
+def post_create(request):
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
 
@@ -91,6 +122,13 @@ def post_create(request):
             post = Post(content=request.POST['content'], author=request.user)
             post.save()
             save_hashtags(parsedString['hashtags'], post)
+        parsedString = parse_content(request.POST['content'])
+        post = Post(content=request.POST['content'], author=request.user,
+                    circles=Circle.objects.get(pk=request.POST['circle']))
+        post.save()
+        # post.circles.add(Circle.objects.get(pk=request.POST['circle']))
+        save_hashtags(parsedString['hashtags'], post)
+
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
 
@@ -100,6 +138,7 @@ class PostDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
+
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
 
@@ -146,19 +185,47 @@ def post_repost(request, pk=None):
     @return redirect depending on the success
     """
     user = request.user
-    original_post = Post.objects.get(pk=pk).original_or_self()
+    repost_original = Post.objects.get(pk=pk).original_or_self()
 
-    check = check_repost(original_post, user)
+    check = check_repost(repost_original, user)
     if check == 'not_auth':
-        return redirect('posts:post', pk=original_post.pk)
+        return redirect('posts:post', pk=repost_original.pk)
     if check != 'ok':
         return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
-    repost = Post(content=original_post.content,
+    repost = Post(content=repost_original.content,
                   author=user,
-                  original_post=original_post)
+                  repost_original=repost_original)
     repost.save()
     return redirect('posts:post', pk=repost.pk)
+
+
+def post_reply(request, pk=None):
+    """
+    Reply to a post.
+
+    Redirects to the post page.
+
+    @param request:
+    @param pk:
+
+    @return:
+    """
+    user = request.user
+    reply_original = Post.objects.get(pk=pk)
+
+    check = check_reply(user)
+    if check == 'not_auth':
+        return redirect('posts:post', pk=reply_original.pk)
+
+    reply = Post(content=request.POST['content_reply'],
+                 author=user,
+                 reply_original=reply_original)
+
+    reply.save()
+    reply_original.reply.add(reply)
+
+    return redirect('posts:post', pk=reply_original.pk)
 
 
 def parse_content(content):
@@ -221,6 +288,3 @@ class PostDeleteView(generic.DeleteView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.request.user.pk})
-
-
-
