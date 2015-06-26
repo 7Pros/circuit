@@ -4,6 +4,7 @@ Circles views file.
 @author 7Pros
 @copyright
 """
+import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import Http404
@@ -49,9 +50,17 @@ class CircleEdit(generic.UpdateView):
     """Updates a circle."""
 
     model = Circle
-    fields = ['name']
+    fields = [
+        'name',
+    ]
 
     def form_valid(self, form):
+        circle = form.save()
+        circle.members.clear()
+        for member in json.loads(self.request.POST['members']):
+            member_pk = int(member['pk'])
+            if self.request.user.pk != member_pk:
+                circle.members.add(member_pk)
         return super(CircleEdit, self).form_valid(form)
 
     def get_success_url(self):
