@@ -1,4 +1,4 @@
-"""@package posts.views
+"""@package posts
 Post views file.
 
 @author 7Pros
@@ -14,6 +14,7 @@ from django.views import generic
 
 from posts.models import Hashtag
 from posts.models import Post
+from circles.models import Circle
 
 
 def post_content_is_valid(content):
@@ -33,7 +34,7 @@ def check_repost(post, user):
     if user.pk == post.author.pk:
         return 'own_post'  # don't repost own post
 
-    existing_repost = Post.objects.filter(author=user, original_post=post).exists()
+    existing_repost = Post.objects.filter(author=user, repost_original=post).exists()
     if existing_repost:
         # don't repost more than once
         return 'already_reposted_as'
@@ -52,20 +53,39 @@ def set_post_extra(post, request):
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
+    can_show_circle = post.author.pk == request.user.pk
+
+    if post.circles:
+        if not can_show_circle:
+            if request.user.is_authenticated():
+                request_user_circles = request.user.get_circles()
+                can_be_seen = post.circles in request_user_circles
+            else:
+                can_be_seen = False
+        else:
+            can_be_seen = True
+    else:
+        can_be_seen = True
+
+
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
+        'can_show_circle': can_show_circle,
+        'can_be_seen': can_be_seen
     })
+
 
 
 def post_create(request):
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
         parsedString = parse_content(request.POST['content'])
-        post = Post(content=request.POST['content'], author=request.user)
+        post = Post(content=request.POST['content'], author=request.user, circles=Circle.objects.get(pk=request.POST['circle']))
         post.save()
+        # post.circles.add(Circle.objects.get(pk=request.POST['circle']))
         save_hashtags(parsedString['hashtags'], post)
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -122,17 +142,17 @@ def post_repost(request, pk=None):
     @return redirect depending on the success
     """
     user = request.user
-    original_post = Post.objects.get(pk=pk).original_or_self()
+    repost_original = Post.objects.get(pk=pk).original_or_self()
 
-    check = check_repost(original_post, user)
+    check = check_repost(repost_original, user)
     if check == 'not_auth':
-        return redirect('posts:post', pk=original_post.pk)
+        return redirect('posts:post', pk=repost_original.pk)
     if check != 'ok':
         return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
-    repost = Post(content=original_post.content,
+    repost = Post(content=repost_original.content,
                   author=user,
-                  original_post=original_post)
+                  repost_original=repost_original)
     repost.save()
     return redirect('posts:post', pk=repost.pk)
 
