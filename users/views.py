@@ -303,3 +303,4 @@ def user_search(request):
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
+
