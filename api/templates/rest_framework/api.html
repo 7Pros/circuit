@@ -23,11 +23,9 @@
         <li><a href="{% url 'users:logout' %}">Logout</a></li>
     {% else %}
         <li><a href="{% url 'users:signup' %}">Sign up</a></li>
-        <li><a href="{% url 'users:login' %}">Login</a></li>
+        <li><a href="{% url 'api:login' %}">Login</a></li>
     {% endif %}
 {% endblock %}
-
-{% block bodyclass %}container-fluid{% endblock %}
 
 {% block script %}
     <script src="{% static "js/app.js" %}"></script>

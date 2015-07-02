@@ -18,24 +18,15 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                {% if request.user.is_authenticated %}
-                    <a class="navbar-brand" href="{% url 'users:profile' pk=request.user.pk %}">circuit</a>
-                {% else %}
-                    <a class="navbar-brand" href="{% url 'landingpage' %}">circuit</a>
-                {% endif %}
+                <a class="navbar-brand" href="{% url 'users:profile' pk=request.user.pk %}">circuit</a>
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <nav>
                     <ul class="nav navbar-nav">
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        {% if request.user.is_authenticated %}
-                            <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
-                            <li><a href="{% url 'users:logout' %}">Logout</a></li>
-                        {% else %}
-                            <li><a href="{% url 'users:signup' %}">Sign up</a></li>
-                            <li><a href="{% url 'users:login' %}">Login</a></li>
-                        {% endif %}
+                        <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
+                        <li><a href="{% url 'users:logout' %}">Logout</a></li>
                     </ul>
                 </nav>
             </div>
@@ -48,7 +39,6 @@
         <div class="panel panel-default panel-body">
             <form action="{% url 'api:create' %}" method="post" id="post_create"
                   enctype="multipart/form-data">
-                {% csrf_token %}
                 <br/>
                 {% if message %}
                         <div class="alert alert-{% if message.status %}danger{% else %}success{% endif %} alert-dismissable">{{ message.content }}</div>
