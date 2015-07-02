@@ -7,11 +7,12 @@ Circles views file.
 import json
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import Http404
 from django.views import generic
 from circles.models import Circle
-from users.views import email_notification_for_user
-
+from users.models import User
+import users.views
 
 
 class CircleList(generic.ListView):
@@ -57,8 +58,9 @@ class CircleEdit(generic.UpdateView):
     ]
 
     def form_valid(self, form):
+        members_old = [m.pk for m in self.object.members.all()]
+        mail_members = Q()
         circle = form.save()
-        members_old = [m.pk for m in circle.members]
         circle.members.clear()
         for member in json.loads(self.request.POST['members']):
             member_pk = int(member['pk'])
@@ -66,10 +68,12 @@ class CircleEdit(generic.UpdateView):
                 circle.members.add(member_pk)
                 if member_pk not in members_old:
                     # send notification email only to new users
-                    context = {
-                        'content' : "%s added you to a circle".format(self.request.user.username),
-                    }
-                    email_notification_for_user(member, "You were added to a circle", 'notification_for_new_circle_email.html', context)
+                    mail_members = mail_members|Q(pk=member_pk)
+        context = {
+            'content' : "%s added you to a circle"%(self.request.user.username),
+        }
+        for member in User.objects.filter(mail_members):
+            users.views.email_notification_for_user(member, "You were added to a circle", 'users/notification_for_new_circle_email.html', context)
         return super(CircleEdit, self).form_valid(form)
 
     def get_success_url(self):
