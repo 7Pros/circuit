@@ -1,5 +1,5 @@
-"""
---Brief Description--
+"""@package api
+API views controllers.
 
 @author 7Pros
 @copyright 
@@ -102,12 +102,34 @@ def user_login(request):
                 except:
                     token = Token.objects.create(user=user)
 
-                print(token.key)
+                user_circles = user.circle_set.all()
+                user_circles_json = dict()
+                for circle in user_circles:
+                    user_circles_json.pop(circle.pk, circle.name)
                 return Response(data={
                     'message':
                         {
                             'content':'Login succesful. To create a post please use post URL and give with it the given token to authenticate yourself!',
                             'token':token.key
+                        },
+                    'post-required-values':
+                        {
+                            'content':
+                            {
+                                'Description':'Can contain mentions and hashtags.',
+                                'Restrictions':'Text max length 256 characters and min length 1 character.',
+                            },
+                            'circle':
+                            {
+                                'Description':'Determines from who the post can be seen.',
+                                'Restrictions':'Select one, if one is selected than is going to be in the circle \'Me\'',
+                                'Values':user_circles_json,
+                            },
+                            'image':
+                            {
+                                'Description':'It can be a file uploaded, desafortunately not via json',
+                                'Restrictions':'If none given, please write None'
+                            }
                         }
                 }, status=status.HTTP_202_ACCEPTED)
 
@@ -138,16 +160,20 @@ def post_create(request):
     @return: Response rendering a template in case the request was made with a form or a json in case it was a application/json type.
     """
     if request.method == 'POST' and 'multipart/form-data' in request.content_type:
+        # authentication
         if request.user.is_authenticated:
+            # post validation
             if post_content_is_valid(request.data['content']):
 
                 parsedString = parse_content(request.data['content'])
                 post = Post(content=request.data['content'], author=request.user)
 
+                # non required fields
                 if request.data['image'] and post_image_is_valid(request.data['image']):
                     post.image = request.data['image']
 
                 # TODO: fix circles
+                # non required fields
                 if 'circle' in request.data and request.data['circle'] != '0':
                     post.circles = Circle.objects.get(pk=request.data['circle'])
 
@@ -161,8 +187,10 @@ def post_create(request):
                             'status':0,
                             'content':'Post created'
                         },
+
                     'user':request.user
                 }, template_name='api/post_create.html', status=status.HTTP_201_CREATED)
+        #Authentification failed response
         return Response(data={
                         'message':
                             {
@@ -188,13 +216,36 @@ def post_create(request):
                 post.save()
                 save_hashtags(parsedString['hashtags'], post)
 
+                user_circles = request.user.circle_set.all()
+                user_circles_json = dict()
+                for circle in user_circles:
+                    user_circles_json.pop(circle.pk, circle.name)
                 token = request.auth
 
                 return Response(data={
                     'message':
                         {
-                            'content':'Post created',
-                            'token':token.key
+                            'action-feedback':'Post created',
+                            'user-authentication-token':token.key
+                        },
+                    'post-required-values':
+                        {
+                            'content':
+                            {
+                                'Description':'Can contain mentions and hashtags.',
+                                'Restrictions':'Text max length 256 characters and min length 1 character.',
+                            },
+                            'circle':
+                            {
+                                'Description':'Determines from who the post can be seen.',
+                                'Restrictions':'Select one, if one is selected than is going to be in the circle \'Me\'',
+                                'Values':user_circles_json,
+                            },
+                            'image':
+                            {
+                                'Description':'It can be a file uploaded, desafortunately not via json',
+                                'Restrictions':'If none given, please write None'
+                            }
                         }
                 }, template_name='api/post_create.html', status=status.HTTP_201_CREATED)
         return Response(data={
@@ -204,6 +255,7 @@ def post_create(request):
                     'content':'Not authenticated or content is not valid!'
                 }
         },template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
+    #Authentification failed response
     return Response(data={
             'message':
                 {
