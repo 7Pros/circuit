@@ -154,7 +154,7 @@ class PostEditView(generic.UpdateView):
         if not self.request.user.is_authenticated:
             return self.form_invalid(form)
 
-        if post_content_is_valid(self.request.POST['content']):
+        if not post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
 
         return super(PostEditView, self).form_valid(form)
