@@ -171,8 +171,22 @@ class PostEditView(generic.UpdateView):
 
         if not post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
-
-        
+        old_post = self.object
+        parsed_content_old = parse_content(old_post)
+        post = form.save()
+        parsed_content_new = parse_content(post)
+        for user in parsed_content_new['mentions']:
+            if user not in parsed_content_old:
+                context = {
+                     'content' : "%s mentioned you in his post".format(self.request.user.username),
+                     'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
+                }
+            else:
+                context = {
+                     'content' : "%s changed his post you were metioned in".format(self.request.user.username),
+                     'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
+                }
+            email_notification_for_user(user, "You were mentioned", 'notification_for_post_email.html', context)
 
         return super(PostEditView, self).form_valid(form)
 
@@ -206,6 +220,11 @@ def post_repost(request, pk=None):
                   author=user,
                   repost_original=repost_original)
     repost.save()
+    context = {
+         'content' : "There is a new repost to a post of you made by %s".format(user.username),
+         'link_to_subject' : reverse("posts:post", kwargs={'pk': repost.pk})
+    }
+    email_notification_for_user(repost_original.author, "There is a new repost to your post", 'notification_for_post_email.html', context)
 
     return redirect('posts:post', pk=repost.pk)
 
@@ -287,6 +306,11 @@ def post_favorite(request, pk=None):
     else:
         post.favorites.add(request.user)
     post.save()
+    context = {
+         'content' : "%s favorited your post".format(request.user.username),
+         'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
+    }
+    email_notification_for_user(post.author, "There is a new repost to your post", 'notification_for_post_email.html', context)
 
     referer = request.META['HTTP_REFERER']
     if referer:
