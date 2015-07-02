@@ -33,8 +33,10 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
                             <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
+                            <li><a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md">Help</a></li>
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
                         {% else %}
+                            <li><a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md">Help</a></li>
                             <li><a href="{% url 'users:signup' %}">Sign up</a></li>
                             <li><a href="{% url 'users:login' %}">Login</a></li>
                         {% endif %}
