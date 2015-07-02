@@ -18,6 +18,8 @@ from PIL import Image
 from django.core.exceptions import ValidationError
 
 from circles.models import Circle
+from users.views import email_notification_for_user
+
 
 
 def post_content_is_valid(content):
@@ -120,6 +122,12 @@ def post_create(request):
             post.save()
             parsedString = parse_content(request.POST['content'])
             save_hashtags(parsedString['hashtags'], post)
+            for user in parsedString['mentions']:
+                context = {
+                     'content' : "%s mentioned you in his post".format(request.user.username),
+                     'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
+                }
+                email_notification_for_user(user, "You were mentioned", 'notification_for_post_email.html', context)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -157,6 +165,8 @@ class PostEditView(generic.UpdateView):
         if post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
 
+        
+
         return super(PostEditView, self).form_valid(form)
 
     def get_success_url(self):
@@ -189,6 +199,7 @@ def post_repost(request, pk=None):
                   author=user,
                   repost_original=repost_original)
     repost.save()
+
     return redirect('posts:post', pk=repost.pk)
 
 
@@ -222,7 +233,9 @@ def post_reply(request, pk=None):
 
 def parse_content(content):
     hashtags = re.findall(r"#(\w+)", content)
-    return {'hashtags': hashtags}
+    mentions = re.findall(r"@(\w+)", content)
+    return {'hashtags': hashtags, 'mentions' : mentions}
+
 
 
 def save_hashtags(hashtags, post):

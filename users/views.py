@@ -303,3 +303,21 @@ def user_search(request):
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
+
+
+def email_notification_for_user(user, text, subject):
+    template = loader.get_template('users/notification_email.html')
+    context = Context({
+        'user': user,
+        'content': text
+    })
+    html = template.render(context)
+
+    send_mail(
+        subject=subject,
+        message='notification',
+        from_email='notifications@circuit.io',
+        recipient_list=[user.email],
+        fail_silently=False,
+        html_message=html
+    )
