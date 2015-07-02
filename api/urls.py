@@ -1,5 +1,5 @@
-"""
---Brief Description--
+"""@package api
+Url patterns for API
 
 @author 7Pros
 @copyright 
