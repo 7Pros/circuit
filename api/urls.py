@@ -11,5 +11,5 @@ from rest_framework.routers import DefaultRouter
 urlpatterns = [
     url(r'^$', RootView.as_view(), name='api_root'),
     url(r'^login/$', user_login, name='login'),
-    url(r'^create/$', post_create, name='create')
+    url(r'^post-create/$', post_create, name='post-create')
 ]

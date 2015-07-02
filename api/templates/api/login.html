@@ -1,6 +1,6 @@
 {% extends 'rest_framework/login_base.html' %}
 
-{% block title %}circuit{% endblock %}
+{% block title %}circuit | API{% endblock %}
 
 {% load static %}
 
@@ -44,6 +44,7 @@
                     {% endif %}
 
                 <form action="{% url 'api:login' %}" method="post">
+                    {% csrf_token %}
                     <br/>
                     <div class="form-group">
                         <input type="email"
