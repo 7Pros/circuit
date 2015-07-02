@@ -214,7 +214,7 @@ class UserProfileView(generic.DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         posts = Post.objects.filter(author=self.object.pk) \
-            .select_related('author', 'repost_original', 'reply_original')
+            .select_related('author', 'repost_original', 'reply_original').all()
         setattr(context['user'], 'circles', context['user'].circle_set.all())
 
         for post in posts:
