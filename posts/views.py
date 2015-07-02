@@ -5,6 +5,7 @@ Post views file.
 @copyright
 """
 import re
+from django.contrib import messages
 
 from django.shortcuts import redirect, Http404
 from django.views.generic import ListView, DetailView
@@ -110,24 +111,30 @@ def check_reply(user):
 
 
 def post_create(request):
-    if request.user.is_authenticated \
-            and post_content_is_valid(request.POST['content']):
-        has_img = 'image' in request.FILES
-        has_invalid_img = has_img and not post_image_is_valid(request.FILES['image'])
-        if not has_invalid_img:
-            circles = Circle.objects.get(pk=request.POST['circle'])
-            post = Post(content=request.POST['content'], author=request.user, circles=circles)
-            if has_img:
-                post.image = request.FILES['image']
-            post.save()
-            parsedString = parse_content(request.POST['content'])
-            save_hashtags(parsedString['hashtags'], post)
-            for user in parsedString['mentions']:
-                context = {
-                     'content' : "%s mentioned you in his post".format(request.user.username),
-                     'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
-                }
-                email_notification_for_user(user, "You were mentioned", 'notification_for_post_email.html', context)
+    has_img = 'image' in request.FILES
+    if not request.user.is_authenticated:
+        messages.error(request, 'Not logged in')
+    elif 'content' not in request.POST \
+            or not post_content_is_valid(request.POST['content']):
+        messages.error(request, 'Invalid post content')
+    elif has_img and not post_image_is_valid(request.FILES['image']):
+        messages.error(request, 'Invalid image format')
+    elif 'circle' not in request.POST:
+        messages.error(request, 'No circle selected')
+    else:
+        circles = Circle.objects.get(pk=request.POST['circle'])
+        post = Post(content=request.POST['content'], author=request.user, circles=circles)
+        if has_img:
+            post.image = request.FILES['image']
+        post.save()
+        parsedString = parse_content(request.POST['content'])
+        save_hashtags(parsedString['hashtags'], post)
+        for user in parsedString['mentions']:
+            context = {
+                 'content' : "%s mentioned you in his post".format(request.user.username),
+                 'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
+            }
+            email_notification_for_user(user, "You were mentioned", 'notification_for_post_email.html', context)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -162,7 +169,7 @@ class PostEditView(generic.UpdateView):
         if not self.request.user.is_authenticated:
             return self.form_invalid(form)
 
-        if post_content_is_valid(self.request.POST['content']):
+        if not post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
 
         
