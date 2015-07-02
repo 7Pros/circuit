@@ -110,24 +110,16 @@ def check_reply(user):
 def post_create(request):
     if request.user.is_authenticated \
             and post_content_is_valid(request.POST['content']):
-
-        if 'image' in request.FILES:
-            if post_image_is_valid(request.FILES['image']):
-                parsedString = parse_content(request.POST['content'])
-                post = Post(content=request.POST['content'], author=request.user, image=request.FILES['image'])
-                post.save()
-                save_hashtags(parsedString['hashtags'], post)
-        else:
-            parsedString = parse_content(request.POST['content'])
-            post = Post(content=request.POST['content'], author=request.user)
+        has_img = 'image' in request.FILES
+        has_invalid_img = has_img and not post_image_is_valid(request.FILES['image'])
+        if not has_invalid_img:
+            circles = Circle.objects.get(pk=request.POST['circle'])
+            post = Post(content=request.POST['content'], author=request.user, circles=circles)
+            if has_img:
+                post.image = request.FILES['image']
             post.save()
+            parsedString = parse_content(request.POST['content'])
             save_hashtags(parsedString['hashtags'], post)
-        parsedString = parse_content(request.POST['content'])
-        post = Post(content=request.POST['content'], author=request.user,
-                    circles=Circle.objects.get(pk=request.POST['circle']))
-        post.save()
-        # post.circles.add(Circle.objects.get(pk=request.POST['circle']))
-        save_hashtags(parsedString['hashtags'], post)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
