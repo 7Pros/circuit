@@ -13,16 +13,15 @@
     <br/>
 
     <div class="row">
-        {% if user.circles %}
-            <div class="form-group col-xs-12 col-md-4">
-                <select class="form-control" name="circle">
-                    <option disabled selected="selected">Select a circle</option>
-                    {% for circle in user.circles|dictsort:'name' %}
-                        <option value="{{ circle.pk }}">{{ circle.name }}</option>
+        <div class="form-group">
+            <div class="col-xs-12 col-md-4">
+                <select class="form-control" name="circle">                        <span class="mdi-image-panorama-fisheye"></span>
+                    {% for circle in user.circles|dictsortreversed:'pk' %}
+                        <option value="{{ circle.pk }}" {% if circle.name == 'Me' %}selected="selected"{% endif %}>{{ circle.name }}</option>
                     {% endfor %}
                 </select>
             </div>
-        {% endif %}
+        </div>
         <div class="col-xs-12 col-md-4">
             <input class="" name="image" type="file"/>
         </div>
