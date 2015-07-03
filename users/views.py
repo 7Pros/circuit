@@ -19,6 +19,7 @@ from circuit import settings
 from posts.models import Post
 from posts.views import set_post_extra
 from users.models import User, create_hash
+from circles.models import Circle
 
 
 class UserCreateView(CreateView):
@@ -154,6 +155,15 @@ def user_create_confirm(request, token):
         user.confirm_token = ''
         user.is_active = True
         user.save()
+        user.circle_set.create(
+            name='Me',
+            is_editable=False
+        )
+        user.circle_set.create(
+            name='Public',
+            is_editable=False
+        )
+        user.circle_set.get(name='Public').members = User.objects.all()
         return redirect('users:login')
 
 
@@ -201,6 +211,8 @@ def user_profile_by_username(request, username):
 
     posts = Post.objects.filter(author=user.pk) \
         .select_related('author', 'repost_original', 'reply_original')
+    setattr(user, 'circles', user.circle_set.all())
+
     for post in posts:
         set_post_extra(post, request)
     context = {'posts': posts, 'user': user}
