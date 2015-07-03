@@ -10,7 +10,6 @@ import os
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
-
 def create_hash():
     """Generate a random sha1 hash.
 
@@ -140,3 +139,15 @@ class User(AbstractBaseUser):
     def has_module_perms(self, module_label):
         """Needed for using Django's admin panel."""
         return self.is_superuser
+
+class Notification(models.Model):
+    message = models.CharField(max_length=255)
+    status = models.BooleanField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+
+    @staticmethod
+    def get_number_of_unseen_notifications(self, user):
+        return Notification.objects.get(user=user).filter(status=False)
+
