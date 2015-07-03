@@ -68,17 +68,14 @@ def set_post_extra(post, request):
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
-    can_show_circle = post.author.pk == request.user.pk
+    is_circle_owner = post.author.pk == request.user.pk
 
-    if post.circles:
-        if not can_show_circle:
-            if request.user.is_authenticated():
-                request_user_circles = request.user.get_circles()
-                can_be_seen = post.circles in request_user_circles
-            else:
-                can_be_seen = False
+    if not is_circle_owner:
+        if request.user.is_authenticated():
+            request_user_circles = request.user.get_circles()
+            can_be_seen = post.circles in request_user_circles
         else:
-            can_be_seen = True
+            can_be_seen = False
     else:
         can_be_seen = True
 
@@ -87,7 +84,7 @@ def set_post_extra(post, request):
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
-        'can_show_circle': can_show_circle,
+        'can_show_circle': is_circle_owner,
         'can_be_seen': can_be_seen,
         'replies': post.reply.all(),
     })
@@ -126,7 +123,7 @@ def post_create(request):
         post = Post(content=request.POST['content'], author=request.user,
                     circles=Circle.objects.get(pk=request.POST['circle']))
         post.save()
-        # post.circles.add(Circle.objects.get(pk=request.POST['circle']))
+        post.circles = Circle.objects.get(pk=request.POST['circle'])
         save_hashtags(parsedString['hashtags'], post)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
