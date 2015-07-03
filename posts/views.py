@@ -19,8 +19,8 @@ from PIL import Image
 from django.core.exceptions import ValidationError
 
 from circles.models import Circle
+from users.models import User
 import users.views
-
 
 
 def post_content_is_valid(content):
@@ -127,14 +127,20 @@ def post_create(request):
         if has_img:
             post.image = request.FILES['image']
         post.save()
-        parsedString = parse_content(request.POST['content'])
-        save_hashtags(parsedString['hashtags'], post)
-        for user in parsedString['mentions']:
-            context = {
-                 'content' : "%s mentioned you in his post".format(request.user.username),
-                 'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
-            }
-            users.views.email_notification_for_user(user, "You were mentioned", 'users/notification_for_post_email.html', context)
+        parsed_content = parse_content(request.POST['content'])
+        save_hashtags(parsed_content['hashtags'], post)
+        for mentionedUser in User.objects.filter(username__in=parsed_content['mentions']):
+            mentionedUser_is_in_circle = False
+            for member in post.circles.members.all():
+                if mentionedUser == member:
+                    mentionedUser_is_in_circle = True
+            if mentionedUser_is_in_circle:
+                context = {
+                    'content': "%s mentioned you in his post" % (request.user.username),
+                    'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
+                }
+                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
+                                                        'users/notification_for_post_email.html', context)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -172,21 +178,26 @@ class PostEditView(generic.UpdateView):
         if not post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
         old_post = self.object
-        parsed_content_old = parse_content(old_post)
+        parsed_content_old = parse_content(old_post.content)
         post = form.save()
-        parsed_content_new = parse_content(post)
-        for user in parsed_content_new['mentions']:
-            if user not in parsed_content_old:
-                context = {
-                     'content' : "%s mentioned you in his post".format(self.request.user.username),
-                     'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
-                }
-            else:
-                context = {
-                     'content' : "%s changed his post you were metioned in".format(self.request.user.username),
-                     'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
-                }
-            users.views.email_notification_for_user(user, "You were mentioned", 'users/notification_for_post_email.html', context)
+        parsed_content_new = parse_content(post.content)
+        for mentionedUser in User.objects.filter(username__in=parsed_content_new['mentions']):
+            mentionedUser_is_in_circle = False
+            for member in post.circles.members.all():
+                if mentionedUser == member:
+                    mentionedUser_is_in_circle = True
+                if mentionedUser.username in parsed_content_old['mentions']:
+                    context = {
+                        'content': "%s changed his post you were metioned in" % (self.request.user.username),
+                        'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
+                    }
+                else:
+                    context = {
+                        'content': "%s mentioned you in his post" % (self.request.user.username),
+                        'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
+                    }
+                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
+                                                        'users/notification_for_post_email.html', context)
 
         return super(PostEditView, self).form_valid(form)
 
@@ -221,10 +232,11 @@ def post_repost(request, pk=None):
                   repost_original=repost_original)
     repost.save()
     context = {
-         'content' : "There is a new repost to a post of you made by %s".format(user.username),
-         'link_to_subject' : reverse("posts:post", kwargs={'pk': repost.pk})
+        'content': "There is a new repost to a post of you made by %s" % (user.username),
+        'link_to_subject': reverse("posts:post", kwargs={'pk': repost.pk})
     }
-    users.views.email_notification_for_user(repost_original.author, "There is a new repost to your post", 'users/notification_for_post_email.html', context)
+    users.views.email_notification_for_user(repost_original.author, "There is a new repost to your post",
+                                            'users/notification_for_post_email.html', context)
 
     return redirect('posts:post', pk=repost.pk)
 
@@ -242,6 +254,7 @@ def post_reply(request, pk=None):
     """
     user = request.user
     reply_original = Post.objects.get(pk=pk)
+    author = reply_original.author
 
     check = check_reply(user)
     if check == 'not_auth':
@@ -252,6 +265,12 @@ def post_reply(request, pk=None):
                  reply_original=reply_original)
 
     reply.save()
+    context = {
+        'content': "There is a new reply to a post of you made by %s" % (user.username),
+        'link_to_subject': reverse("posts:post", kwargs={'pk': reply.pk})
+    }
+    users.views.email_notification_for_user(author, "There is a new reply to your post",
+                                            'users/notification_for_post_email.html', context)
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
@@ -260,8 +279,7 @@ def post_reply(request, pk=None):
 def parse_content(content):
     hashtags = re.findall(r"#(\w+)", content)
     mentions = re.findall(r"@(\w+)", content)
-    return {'hashtags': hashtags, 'mentions' : mentions}
-
+    return {'hashtags': hashtags, 'mentions': mentions}
 
 
 def save_hashtags(hashtags, post):
@@ -307,10 +325,11 @@ def post_favorite(request, pk=None):
         post.favorites.add(request.user)
     post.save()
     context = {
-         'content' : "%s favorited your post".format(request.user.username),
-         'link_to_subject' : reverse("posts:post", kwargs={'pk': post.pk})
+        'content': "%s favorited your post" % (request.user.username),
+        'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
     }
-    users.views.email_notification_for_user(post.author, "There is a new repost to your post", 'users/notification_for_post_email.html', context)
+    users.views.email_notification_for_user(post.author, "There is a new repost to your post",
+                                            'users/notification_for_post_email.html', context)
 
     referer = request.META['HTTP_REFERER']
     if referer:
