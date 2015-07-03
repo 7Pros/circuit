@@ -135,6 +135,7 @@ class PostDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         set_post_extra(context['post'], self.request)
+        post = context['post']
 
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
@@ -158,7 +159,6 @@ class PostEditView(generic.UpdateView):
         """
         if not self.request.user.is_authenticated:
             return self.form_invalid(form)
-
         if post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
 
