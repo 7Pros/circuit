@@ -136,10 +136,10 @@ def post_create(request):
                     mentionedUser_is_in_circle = True
             if mentionedUser_is_in_circle:
                 context = {
-                    'content': "%s mentioned you in his post" % (request.user.username),
+                    'content': "%s mentioned you in his post!" % (request.user.username),
                     'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                 }
-                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
+                users.views.send_notifications(mentionedUser, "You were mentioned!",
                                                         'users/notification_for_post_email.html', context)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
@@ -188,15 +188,15 @@ class PostEditView(generic.UpdateView):
                     mentionedUser_is_in_circle = True
                 if mentionedUser.username in parsed_content_old['mentions']:
                     context = {
-                        'content': "%s changed his post you were metioned in" % (self.request.user.username),
+                        'content': "%s changed his post and you were metioned in!" % (self.request.user.username),
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
                 else:
                     context = {
-                        'content': "%s mentioned you in his post" % (self.request.user.username),
+                        'content': "%s mentioned you in his post!" % (self.request.user.username),
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
-                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
+                users.views.send_notifications(mentionedUser, "You were mentioned!",
                                                         'users/notification_for_post_email.html', context)
 
         return super(PostEditView, self).form_valid(form)
