@@ -18,7 +18,7 @@ from django.views.generic import CreateView
 from circuit import settings
 from posts.models import Post
 from posts.views import set_post_extra
-from users.models import User, create_hash
+from users.models import User, Notification, create_hash
 
 
 class UserCreateView(CreateView):
@@ -282,3 +282,9 @@ def email_notification_for_user(user, subject, templateFile, context={}):
         fail_silently=False,
         html_message=html
     )
+
+def send_notifications(user, email_subject, email_template, context):
+    email_notification_for_user(user, email_subject, email_template, context)
+    new_notification = Notification(message=context['content'], status=False).add(user)
+    new_notification.save()
+
