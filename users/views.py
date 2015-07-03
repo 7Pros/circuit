@@ -45,34 +45,8 @@ class UserCreateView(CreateView):
         """Creates the user if all data is valid."""
         form.instance.set_password(form.cleaned_data['password'])
         user = form.save()
-
-        self.send_confirm_mail(user)
-
+        email_notification_for_user(user,"Welcome to circuit",'users/confirmation_email.html')
         return super(UserCreateView, self).form_valid(form)
-
-    def send_confirm_mail(self, user):
-        """Sends a confirmation mail to the user's email address.
-
-        @param self: object
-        @param user: User - user
-
-        @return void
-        """
-        template = loader.get_template('users/confirmation_email.html')
-        context = Context({
-            'user': user,
-            'site_url': settings.SITE_URL,
-        })
-        html = template.render(context)
-
-        send_mail(
-            subject='Welcome to circuit',
-            message='hi',
-            from_email='hello@circuit.io',
-            recipient_list=[user.email],
-            fail_silently=False,
-            html_message=html
-        )
 
 
 def user_request_reset_password(request):
@@ -89,24 +63,10 @@ def user_request_reset_password(request):
             user.save()
 
             # send password reset email with token
-            template = loader.get_template('users/password_reset_email.html')
-            context = Context({
-                'user': user,
-                'site_url': settings.SITE_URL,
-            })
-            html = template.render(context)
-
-            send_mail(
-                subject='Password reset',
-                message='hi',
-                from_email='hello@circuit.io',
-                recipient_list=[user.email],
-                fail_silently=False,
-                html_message=html
-            )
+            subject_toDo='password_reset'
+            email_notification_for_user(user,subject_toDo,'users/password_reset_email.html')
 
             messages.success(request, 'Password reset email send.')
-
             return redirect('users:login')
 
         except ObjectDoesNotExist:
@@ -303,3 +263,22 @@ def user_search(request):
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
+
+
+def email_notification_for_user(user, subject, templateFile, context={}):
+
+    template = loader.get_template(templateFile)
+    context.update({
+        'user': user,
+        'site_url': settings.SITE_URL,
+    })
+    html = template.render(context)
+
+    send_mail(
+        subject=subject,
+        message='notification',
+        from_email='noreply@circuit.io',
+        recipient_list=[user.email],
+        fail_silently=False,
+        html_message=html
+    )
