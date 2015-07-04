@@ -7,6 +7,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static "css/app.css" %}"/>
+    <link rel="stylesheet" href="{% static "css/animate.css" %}"/>
 </head>
 <body>
 
@@ -37,7 +38,6 @@
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
                         {% else %}
                             <li><a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md">Help</a></li>
-                            <li><a href="{% url 'users:signup' %}">Sign up</a></li>
                             <li><a href="{% url 'users:login' %}">Login</a></li>
                         {% endif %}
                         <li><a href="{% url 'Impressum' %}">Impressum</a></li>
@@ -55,5 +55,9 @@
 
 <footer></footer>
 <script src="{% static "js/app.js" %}"></script>
+<script src="{% static "js/wow.js" %}"></script>
+<script>
+ new WOW().init();
+</script>
 </body>
 </html>

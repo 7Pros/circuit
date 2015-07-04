@@ -26,9 +26,11 @@ gulp.task('js', function () {
         './assets/vendor/bootstrap-material-design/dist/js/ripples.js',
         './assets/vendor/vue/dist/vue.js',
         './assets/vendor/devbridge-autocomplete/dist/jquery.autocomplete.js',
-        './assets/js/app.js'
+        './assets/js/app.js',
+		'./assets/vendor/wow/dist/wow.js'
     ])
         .pipe(concat('app.js'))
+		.pipe(concat('wow.js'))
         .pipe(gulp.dest('./circuit/static/js'))
 });
 
