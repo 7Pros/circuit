@@ -5,10 +5,10 @@
     <link rel="stylesheet" href="{% static "css/app.css" %}"/>
 {% endblock %}
 
-{% block title%}circuit | API{% endblock %}
-{% block branding%}
+{% block title %}circuit | API{% endblock %}
+{% block branding %}
     <button type="button" class="navbar-toggle" data-toggle="collapse"
-                        data-target=".navbar-responsive-collapse">
+            data-target=".navbar-responsive-collapse">
     </button>
     {% if request.user.is_authenticated %}
         <a class="navbar-brand" href="{% url 'users:profile' pk=request.user.pk %}">circuit</a>
@@ -16,7 +16,7 @@
         <a class="navbar-brand" href="{% url 'landingpage' %}">circuit</a>
     {% endif %}
 {% endblock %}
-{% block userlinks%}
+{% block userlinks %}
     {{ block.super }}
     {% if request.user.is_authenticated %}
         <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>

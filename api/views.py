@@ -18,6 +18,22 @@ from posts.views import post_content_is_valid, parse_content, save_hashtags, pos
 from circles.models import Circle
 from posts.models import Post
 
+post_required_values = lambda user_circles_json: {
+    'content': {
+        'Description': 'Can contain mentions and hashtags.',
+        'Restrictions': 'max length 256 unicode characters and min length 1 character',
+    },
+    'circle': {
+        'Description': 'Determines who can see the post.',
+        'Restrictions': 'Select exactly one, if set to 1 then it is going to be in the circle \'Me\'',
+        'Values': user_circles_json,
+    },
+    'image': {
+        'Description': 'An image file can be uploaded, unfortunately not via JSON',
+        'Restrictions': 'If none given, please write None',
+    },
+}
+
 
 class RootView(APIView):
     """
@@ -25,48 +41,42 @@ class RootView(APIView):
 
     This can be requested from anyone and renders the requests from JSON and Forms.
     """
-    renderer_classes = (renderers.BrowsableAPIRenderer, renderers.JSONRenderer, )
+    renderer_classes = (renderers.BrowsableAPIRenderer, renderers.JSONRenderer,)
     permissions_classes = permissions.AllowAny
     parser_classes = parsers.JSONParser, parsers.FormParser
 
     def get(self, request, *args, **kwargs):
         # TODO: add about page
         return Response({
-            'API options':
-                {
-                    'login':
-                        {
-                        'URL':'/api/login/',
-                        'Methods Allowed':'GET, POST',
-                        'Required data':
-                            {
-                                'email':'The registered email for the user\'s account',
-                                'password':'The password for the account'
-                            }
-                        },
-                    'create':
-                        {
-                        'url':'/api/create/',
-                        'Methods Allowed':'POST',
-                        'Required data':
-                            {
-                                'content':'Maximum length of 256 characters. It is the post content and it can contain text, mentions, and hashtags',
-                                'image':'An uploaded image or None if non will be given',
-                                'circles':'The int value of a circle. Default values are:\n 0 -> Me circle \n 1 -> Public circle'
-                            }
-
-                        },
-                    'Documentation':'Please read our Manual here: https://github.com/7Pros/circuit/blob/develop/MANUAL.md',
-                    'Contact':'Please go to our About page: '
-                }
+            'API options': {
+                'login': {
+                    'URL': '/api/login/',
+                    'Methods Allowed': 'GET, POST',
+                    'Required data': {
+                        'email': 'The registered email for the user\'s account',
+                        'password': 'The password for the account',
+                    },
+                },
+                'create': {
+                    'url': '/api/create/',
+                    'Methods Allowed': 'POST',
+                    'Required data': {
+                        'content': 'Maximum length of 256 unicode characters. It is the post content and it can contain text, mentions, and hashtags',
+                        'image': 'An uploaded image or None',
+                        'circles': 'The int value of a circle. Default values are:\n 0 -> Me circle \n 1 -> Public circle',
+                    },
+                },
+                'Documentation': 'Please read our Manual here: https://github.com/7Pros/circuit/blob/develop/MANUAL.md',
+                'Contact': 'Please open an issue on our issue tracker: https://github.com/7Pros/circuit/issues/new',
+            },
         })
 
 
 @api_view(['GET', 'POST'])
-@renderer_classes((renderers.TemplateHTMLRenderer, renderers.JSONRenderer, ))
-@authentication_classes((SessionAuthentication, TokenAuthentication, ))
+@renderer_classes((renderers.TemplateHTMLRenderer, renderers.JSONRenderer,))
+@authentication_classes((SessionAuthentication, TokenAuthentication,))
 @throttle_classes([throttling.AnonRateThrottle, throttling.UserRateThrottle])
-@permission_classes((permissions.AllowAny, ))
+@permission_classes((permissions.AllowAny,))
 @parser_classes((parsers.JSONParser, parsers.MultiPartParser))
 @csrf_exempt
 def user_login(request):
@@ -87,14 +97,13 @@ def user_login(request):
         if user is not None:
             login(request, user)
             if 'application/x-www-form-urlencoded' in request.content_type:
-                setattr(user,'circles', user.circle_set.all())
+                setattr(user, 'circles', user.circle_set.all())
                 return Response(data={
-                    'message':
-                        {
-                            'status':0,
-                            'content':'Login successful'
-                        },
-                    'user':user
+                    'message': {
+                        'status': 0,
+                        'content': 'Login successful',
+                    },
+                    'user': user,
                 }, template_name='api/post_create.html', status=status.HTTP_202_ACCEPTED)
             elif 'application/json' in request.content_type:
                 try:
@@ -107,45 +116,25 @@ def user_login(request):
                 for circle in user_circles:
                     user_circles_json.pop(circle.pk, circle.name)
                 return Response(data={
-                    'message':
-                        {
-                            'content':'Login succesful. To create a post please use post URL and give with it the given token to authenticate yourself!',
-                            'token':token.key
-                        },
-                    'post-required-values':
-                        {
-                            'content':
-                            {
-                                'Description':'Can contain mentions and hashtags.',
-                                'Restrictions':'Text max length 256 characters and min length 1 character.',
-                            },
-                            'circle':
-                            {
-                                'Description':'Determines from who the post can be seen.',
-                                'Restrictions':'Select one, if one is selected than is going to be in the circle \'Me\'',
-                                'Values':user_circles_json,
-                            },
-                            'image':
-                            {
-                                'Description':'It can be a file uploaded, desafortunately not via json',
-                                'Restrictions':'If none given, please write None'
-                            }
-                        }
+                    'message': {
+                        'content': 'Login succesful. To create a post please use post URL and give with it the given token to authenticate yourself!',
+                        'token': token.key,
+                    },
+                    'post-required-values': post_required_values(user_circles_json),
                 }, status=status.HTTP_202_ACCEPTED)
 
         return Response(data={
-                            'message':
-                                {
-                                    'status':1,
-                                    'content':'Login failed'
-                                }
-                        }, template_name='api/login.html', status=status.HTTP_401_UNAUTHORIZED)
+            'message': {
+                'status': 1,
+                'content': 'Login failed',
+            },
+        }, template_name='api/login.html', status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(['POST'])
-@renderer_classes((renderers.TemplateHTMLRenderer, renderers.JSONRenderer, ))
-@authentication_classes((SessionAuthentication, TokenAuthentication, ))
-@permission_classes((permissions.IsAuthenticated, ))
+@renderer_classes((renderers.TemplateHTMLRenderer, renderers.JSONRenderer,))
+@authentication_classes((SessionAuthentication, TokenAuthentication,))
+@permission_classes((permissions.IsAuthenticated,))
 @throttle_classes([throttling.AnonRateThrottle, throttling.UserRateThrottle])
 @parser_classes((parsers.JSONParser, parsers.MultiPartParser))
 @csrf_exempt
@@ -179,25 +168,22 @@ def post_create(request):
 
                 post.save()
                 save_hashtags(parsedString['hashtags'], post)
-                setattr(request.user,'circles', request.user.circle_set.all())
+                setattr(request.user, 'circles', request.user.circle_set.all())
 
                 return Response(data={
-                    'message':
-                        {
-                            'status':0,
-                            'content':'Post created'
-                        },
-
-                    'user':request.user
+                    'message': {
+                        'status': 0,
+                        'content': 'Post created'
+                    },
+                    'user': request.user
                 }, template_name='api/post_create.html', status=status.HTTP_201_CREATED)
-        #Authentification failed response
+        # Authentification failed response
         return Response(data={
-                        'message':
-                            {
-                                'status':1,
-                                'content':'Not authenticated or content is not valid!'
-                            }
-                    },template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
+            'message': {
+                'status': 1,
+                'content': 'Not authenticated or content is not valid!',
+            },
+        }, template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
 
     elif request.method == 'POST' and 'application/json' in request.content_type:
         if request.user.is_authenticated:
@@ -223,43 +209,22 @@ def post_create(request):
                 token = request.auth
 
                 return Response(data={
-                    'message':
-                        {
-                            'action-feedback':'Post created',
-                            'user-authentication-token':token.key
-                        },
-                    'post-required-values':
-                        {
-                            'content':
-                            {
-                                'Description':'Can contain mentions and hashtags.',
-                                'Restrictions':'Text max length 256 characters and min length 1 character.',
-                            },
-                            'circle':
-                            {
-                                'Description':'Determines from who the post can be seen.',
-                                'Restrictions':'Select one, if one is selected than is going to be in the circle \'Me\'',
-                                'Values':user_circles_json,
-                            },
-                            'image':
-                            {
-                                'Description':'It can be a file uploaded, desafortunately not via json',
-                                'Restrictions':'If none given, please write None'
-                            }
-                        }
+                    'message': {
+                        'action-feedback': 'Post created',
+                        'user-authentication-token': token.key,
+                    },
+                    'post-required-values': post_required_values(user_circles_json),
                 }, template_name='api/post_create.html', status=status.HTTP_201_CREATED)
         return Response(data={
-            'message':
-                {
-                    'status':1,
-                    'content':'Not authenticated or content is not valid!'
-                }
-        },template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
-    #Authentification failed response
+            'message': {
+                'status': 1,
+                'content': 'Not authenticated or content is not valid!',
+            },
+        }, template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
+    # Authentification failed response
     return Response(data={
-            'message':
-                {
-                    'status':1,
-                    'content':'Something went wrong!'
-                }
-        },template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
+        'message': {
+            'status': 1,
+            'content': 'Something went wrong!',
+        },
+    }, template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)

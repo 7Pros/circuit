@@ -43,17 +43,17 @@
 
                 <br/>
                 {% if message %}
-                        <div class="alert alert-{% if message.status %}danger{% else %}success{% endif %} alert-dismissable">{{ message.content }}</div>
+                    <div class="alert alert-{% if message.status %}danger{% else %}success{% endif %} alert-dismissable">{{ message.content }}</div>
                 {% endif %}
                 <div class="col-md-8">
-                    <textarea
-                            maxlength="256"
-                            name="content"
-                            class="form-control floating-label"
-                            rows="3"
-                            v-model="content"
-                            data-hint="(% 256 - content.length %)"
-                            placeholder="Write something!"></textarea>
+                <textarea
+                        maxlength="256"
+                        name="content"
+                        class="form-control floating-label"
+                        rows="3"
+                        v-model="content"
+                        data-hint="(% 256 - content.length %)"
+                        placeholder="Write something!"></textarea>
                 </div>
                 <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
                     Write
@@ -61,16 +61,16 @@
                 <br/>
 
                 <div class="row">
-                        <div class="form-group col-xs-12 col-md-4">
-                            <select class="form-control" name="circle">
-                                <option value="0" selected="selected">Select a circle</option>
-                                    {% if user.circles %}
-                                        {% for circle in user.circles|dictsort:'name' %}
-                                            <option value="{{ circle.pk }}">{{ circle.name }}</option>
-                                        {% endfor %}
-                                    {% endif %}
-                            </select>
-                        </div>
+                    <div class="form-group col-xs-12 col-md-4">
+                        <select class="form-control" name="circle">
+                            <option value="0" selected="selected">Select a circle</option>
+                            {% if user.circles %}
+                                {% for circle in user.circles|dictsort:'name' %}
+                                    <option value="{{ circle.pk }}">{{ circle.name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
                     <div class="col-xs-12 col-md-6">
                         <label></label>
                         <input class="" name="image" type="file"/>
@@ -89,7 +89,7 @@
     <script src="{% static "js/app.js" %}"></script>
     <script type="application/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
     <script>
-        $("form").on( "submit", function(){
+        $("form").on("submit", function () {
             $(this).serialize();
         });
     </script>
