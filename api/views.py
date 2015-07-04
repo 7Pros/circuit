@@ -45,13 +45,13 @@ class RootView(APIView):
                     'url': '/api/create/',
                     'Methods Allowed': 'POST',
                     'Required data': {
-                        'content': 'Maximum length of 256 characters. It is the post content and it can contain text, mentions, and hashtags',
-                        'image': 'An uploaded image or None if non will be given',
+                        'content': 'Maximum length of 256 unicode characters. It is the post content and it can contain text, mentions, and hashtags',
+                        'image': 'An uploaded image or None',
                         'circles': 'The int value of a circle. Default values are:\n 0 -> Me circle \n 1 -> Public circle',
                     },
                 },
                 'Documentation': 'Please read our Manual here: https://github.com/7Pros/circuit/blob/develop/MANUAL.md',
-                'Contact': 'Please go to our About page: ',
+                'Contact': 'Please open an issue on our issue tracker: https://github.com/7Pros/circuit/issues/new',
             },
         })
 
