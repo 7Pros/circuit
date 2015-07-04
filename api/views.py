@@ -18,6 +18,22 @@ from posts.views import post_content_is_valid, parse_content, save_hashtags, pos
 from circles.models import Circle
 from posts.models import Post
 
+post_required_values = lambda user_circles_json: {
+    'content': {
+        'Description': 'Can contain mentions and hashtags.',
+        'Restrictions': 'max length 256 unicode characters and min length 1 character',
+    },
+    'circle': {
+        'Description': 'Determines who can see the post.',
+        'Restrictions': 'Select exactly one, if set to 1 then it is going to be in the circle \'Me\'',
+        'Values': user_circles_json,
+    },
+    'image': {
+        'Description': 'An image file can be uploaded, unfortunately not via JSON',
+        'Restrictions': 'If none given, please write None',
+    },
+}
+
 
 class RootView(APIView):
     """
@@ -104,21 +120,7 @@ def user_login(request):
                         'content': 'Login succesful. To create a post please use post URL and give with it the given token to authenticate yourself!',
                         'token': token.key,
                     },
-                    'post-required-values': {
-                        'content': {
-                            'Description': 'Can contain mentions and hashtags.',
-                            'Restrictions': 'Text max length 256 characters and min length 1 character.',
-                        },
-                        'circle': {
-                            'Description': 'Determines from who the post can be seen.',
-                            'Restrictions': 'Select one, if one is selected than is going to be in the circle \'Me\'',
-                            'Values': user_circles_json,
-                        },
-                        'image': {
-                            'Description': 'It can be a file uploaded, desafortunately not via json',
-                            'Restrictions': 'If none given, please write None',
-                        },
-                    },
+                    'post-required-values': post_required_values(user_circles_json),
                 }, status=status.HTTP_202_ACCEPTED)
 
         return Response(data={
@@ -211,21 +213,7 @@ def post_create(request):
                         'action-feedback': 'Post created',
                         'user-authentication-token': token.key,
                     },
-                    'post-required-values': {
-                        'content': {
-                            'Description': 'Can contain mentions and hashtags.',
-                            'Restrictions': 'Text max length 256 characters and min length 1 character.',
-                        },
-                        'circle': {
-                            'Description': 'Determines from who the post can be seen.',
-                            'Restrictions': 'Select one, if one is selected than is going to be in the circle \'Me\'',
-                            'Values': user_circles_json,
-                        },
-                        'image': {
-                            'Description': 'It can be a file uploaded, desafortunately not via json',
-                            'Restrictions': 'If none given, please write None',
-                        },
-                    },
+                    'post-required-values': post_required_values(user_circles_json),
                 }, template_name='api/post_create.html', status=status.HTTP_201_CREATED)
         return Response(data={
             'message': {
