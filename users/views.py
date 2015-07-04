@@ -285,8 +285,8 @@ def email_notification_for_user(user, subject, templateFile, context={}):
         html_message=html
     )
 
-def send_notifications(user, email_subject, email_template, context):
+def send_notifications(user, email_subject, email_template, context, post=None):
     # email_notification_for_user(user, email_subject, email_template, context)
-    new_notification = Notification(message=context['content'], status=False, user=user)
+    new_notification = Notification(message=context['content'], status=False, user=user, post=post)
     new_notification.save()
 
