@@ -7,6 +7,7 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static "css/app.css" %}"/>
+    <link href="{% static "css/pnotify.core.min.css" %}" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
@@ -33,6 +34,35 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
+{#                             TODO: Make it sticky#}
+                            <li class="dropdown">
+                            {% comment %}TODO: format code {% endcomment %}
+                                <a id="notifications-badge" href="#" data-toggle="dropdown" role="button">
+                                    Notifications
+
+                                    <span class="badge" id="badge">{{ user.unseen_notifications }}</span>
+                                </a>
+
+                                <div id="notifications" class="dropdown-menu list-group" aria-labelledby="notifications-badge">
+                                    {% for notification in user.notifications %}
+                                        <button class="list-group-item{% if not notification.status %} list-group-item-info{% endif %}" type="button">
+                                            <div class="row">
+                                                <div class="col-xs-1 vcenter">
+                                                    {% if not notification.status %}
+                                                        <span class="badge label-info">
+                                                         ·
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="col-xs-10">
+                                                    {{ notification.message }}
+                                                </div>
+                                            </div>
+                                        </button>
+                                         <hr />
+                                    {% endfor %}
+                                </div>
+                            </li>
                             <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
                             <li><a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md">Help</a></li>
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
@@ -49,11 +79,6 @@
 </header>
 
 <main class="container">
-    <ul id="notifications">
-        {% for notification in object_list %}
-                <li>{{ notification.message }}</li>
-        {% endfor %}
-    </ul>
     {% block content %}
     {% endblock %}
 </main>
@@ -62,6 +87,7 @@
 {% swampdragon_settings %}
 <script src="{% static 'swampdragon/js/dist/swampdragon.min.js' %}"></script>
 <script src="{% static "js/app.js" %}"></script>
+<script src="{% static "js/pnotify.core.min.js" %}"></script>
 <script src="{% static "js/notifications.js" %}"></script>
 </body>
 </html>
