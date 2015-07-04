@@ -149,6 +149,7 @@ class Notification(SelfPublishModel, models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
     serializer_class = NotificationSerializer
+    post = models.ForeignKey('posts.Post', blank=True, null=True)
 
     @staticmethod
     def get_number_of_unseen_notifications(self, user):
