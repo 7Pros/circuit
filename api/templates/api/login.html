@@ -39,13 +39,14 @@
             <div class="panel panel-default panel-body">
 
                 <h2>Login</h2>
-                    {% if message %}
-                        <div class="alert alert-{% if message.status %}danger{% else %}success{% endif %} alert-dismissable">{{ message.content }}</div>
-                    {% endif %}
+                {% if message %}
+                    <div class="alert alert-{% if message.status %}danger{% else %}success{% endif %} alert-dismissable">{{ message.content }}</div>
+                {% endif %}
 
                 <form action="{% url 'api:login' %}" method="post">
                     {% csrf_token %}
                     <br/>
+
                     <div class="form-group">
                         <input type="email"
                                name="email"
@@ -76,7 +77,7 @@
 {% block script %}
     <script type="application/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
     <script>
-        $("form").on( "submit", function(){
+        $("form").on("submit", function () {
             $(this).serialize();
         });
     </script>
