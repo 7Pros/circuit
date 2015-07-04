@@ -16,7 +16,7 @@ class NotificationRouter(ModelPubRouter):
     route_name = 'notifications'
     model = Notification
     serializer_class = NotificationSerializer
-    #
+
     # @login_required
     # def subscribe(self, **kwargs):
     #     super().subscribe(**kwargs)

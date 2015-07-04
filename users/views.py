@@ -176,6 +176,8 @@ class UserProfileView(generic.DetailView):
         posts = Post.objects.filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
         setattr(context['user'], 'circles', context['user'].circle_set.all())
+        setattr(context['user'], 'unseen_notifications', len(context['user'].notification_set.filter(status=False)))
+        setattr(context['user'], 'notifications', context['user'].notification_set.all().order_by('-updated_at')[:20])
 
         for post in posts:
             set_post_extra(post, self.request)
