@@ -329,7 +329,7 @@ def post_favorite(request, pk=None):
         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
     }
     users.views.send_notifications(post.author, "There is a new repost to your post",
-                                            'users/notification_for_post_email.html', context)
+                                            'users/notification_for_post_email.html', context, post)
 
     referer = request.META['HTTP_REFERER']
     if referer:
