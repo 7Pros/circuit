@@ -235,7 +235,7 @@ def post_repost(request, pk=None):
         'content': "There is a new repost to a post of you made by %s" % (user.username),
         'link_to_subject': reverse("posts:post", kwargs={'pk': repost.pk})
     }
-    users.views.email_notification_for_user(repost_original.author, "There is a new repost to your post",
+    users.views.send_notifications(repost_original.author, "There is a new repost to your post",
                                             'users/notification_for_post_email.html', context)
 
     return redirect('posts:post', pk=repost.pk)
@@ -269,7 +269,7 @@ def post_reply(request, pk=None):
         'content': "There is a new reply to a post of you made by %s" % (user.username),
         'link_to_subject': reverse("posts:post", kwargs={'pk': reply.pk})
     }
-    users.views.email_notification_for_user(author, "There is a new reply to your post",
+    users.views.send_notifications(author, "There is a new reply to your post",
                                             'users/notification_for_post_email.html', context)
     reply_original.reply.add(reply)
 
@@ -328,7 +328,7 @@ def post_favorite(request, pk=None):
         'content': "%s favorited your post" % (request.user.username),
         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
     }
-    users.views.email_notification_for_user(post.author, "There is a new repost to your post",
+    users.views.send_notifications(post.author, "There is a new repost to your post",
                                             'users/notification_for_post_email.html', context)
 
     referer = request.META['HTTP_REFERER']
