@@ -16,6 +16,5 @@
     "gulp-concat": "^2.5.2",
     "gulp-less": "^3.0.3",
     "gulp-sourcemaps": "^1.5.2",
-    "pnotify": "^2.0.1"
   }
 }
