@@ -313,4 +313,3 @@ def mark_all_as_read(request):
 def show_all_notifications(request):
     return render(request, 'users/user_notifications.html', {'notifications':request.user.notification_set.all()})
 
-
