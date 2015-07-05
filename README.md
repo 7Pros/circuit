@@ -4,7 +4,7 @@
 
 ## Installation
 
-First make sure that you have [python](https://www.python.org/), [django](https://docs.djangoproject.com/en/1.8/intro/install/) & [Node.js](https://nodejs.org/) installed.
+First make sure that you have [python](https://www.python.org/), [django](https://docs.djangoproject.com/en/1.8/intro/install/), [redis](http://redis.io/topics/quickstart) & [Node.js](https://nodejs.org/) installed.
 
 Now clone this project to your machine
 
@@ -50,7 +50,7 @@ While developing you will need to run a smtp server, once you try to sign up.
     
 This will start a smtp server in your command line which django will send emails to.
 
-Don't forget to have your redis-server running. If you have forget how to do that, just go to your favorite Command Line and type:
+Don't forget to have your redis-server running. If you don't know how to do that, just go to your favorite command line program and type:
 
     redis-server
 
