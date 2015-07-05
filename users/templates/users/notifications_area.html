@@ -1,0 +1,36 @@
+{% load notifications %}
+
+{% set_notifications_attributes request.user as user%}
+<li class="dropdown">
+    <a id="notifications-badge" href="#" data-toggle="dropdown" role="button">
+        Notifications
+
+        <span class="badge" id="badge">{{ user.unseen_notifications }}</span>
+    </a>
+
+    <div id="notifications" class="dropdown-menu list-group">
+        <button class="list-group-item" type="button"><small class="pull-right"><a href="{% url 'users:mark_notifications_as_read' %}" class="text-right" style="color: #03A9F4">Mark all as read</a></small></button>
+        <hr />
+        {% for notification in user.notifications %}
+            <button class="list-group-item" onclick="window.location.replace('{% url 'users:see_notification' notification.pk %}')" type="button">
+                <div class="row{% if not notification.status %} bg-info{% endif %}">
+                    {% if not notification.status %}
+                        <div class="col-xs-1">
+                            <span class="badge label-info">
+                             ·
+                            </span>
+                        </div>
+                    {% endif %}
+                    <div class="col-xs-10">
+                        {{ notification.message }}
+                    </div>
+                </div>
+                <div class="row{% if not notification.status %} bg-info{% endif %}">
+                    <small class="{% if not notification.status %}col-xs-offset-2 {% endif %}col-xs-10 text-right"><p>{{ notification.created_at }}</p></small>
+                </div>
+            </button>
+            <hr />
+        {% endfor %}
+        <button class="list-group-item" type="button"><small class="text-center"><a class="center-block" href="{% url 'users:show_all_notifications' %}" style="color: #03A9F4">Show all</a></small></button>
+    </div>
+</li>
