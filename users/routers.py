@@ -12,7 +12,7 @@ from .serializers import NotificationSerializer
 
 
 class NotificationRouter(ModelPubRouter):
-    valid_verbs = ['subscribe', 'update']
+    valid_verbs = ['subscribe']
     route_name = 'notifications'
     model = Notification
     serializer_class = NotificationSerializer
