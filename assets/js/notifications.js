@@ -13,7 +13,7 @@ window.addEventListener('load', function () {
 // Subscribe once swampdragon is connected
 swampdragon.open(function () {
     var userId = $("#user_id").val();
-    swampdragon.subscribe('notifications', 'notifications-'+userId);
+    swampdragon.subscribe('notifications', 'notifications-' + userId);
 });
 
 // This is the list of notifications
@@ -23,7 +23,8 @@ var notificationsList = document.getElementById("notifications");
 // New channel message received
 swampdragon.onChannelMessage(function (channels, message) {
     var userId = $("#user_id").val();
-    if (message.action === "created" && message.data.user == userId/* && channels === 'notifications-'+userId*/) {
+
+    if (message.action === "created" && message.data.user === userId) {
         // Update badges
         upgradeBadge();
         // Add the notification
@@ -34,6 +35,29 @@ swampdragon.onChannelMessage(function (channels, message) {
 function upgradeBadge() {
     var badgeValue = document.getElementById('badge');
     badgeValue.innerHTML = parseInt(badgeValue.innerHTML) + 1;
+};
+
+function formatDate(date) {
+    var month = ['',
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'];
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'p.m.' : 'a.m.';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return month[date.getMonth() + 1] + " " + date.getDate() + ", " + date.getFullYear() + ", " + strTime;
 };
 
 // Add new notifications
@@ -57,23 +81,27 @@ function addNotification(notification) {
                 addclass: 'stack-topright',
                 stack: stack_topright
             });
-        browserNotification.get().click(function(e){
+        browserNotification.get().click(function (e) {
             if ($(e.target).is('.ui-pnotify-closer *, .ui-pnotify-sticker *')) {
-                 return;
+                return;
             }
-            window.location.replace('/users/notification/'+notification.pk+'/see/');
+            window.location.replace('/users/notification/' + notification.pk + '/see/');
         });
     }
 
     // Add the new notification elements
     var buttonNotification = document.createElement("button"),
-        divRow = document.createElement("div"),
+        divRowUp = document.createElement("div"),
+        divRowDown = document.createElement("div"),
         divStatus = document.createElement("div"),
         spanLabel = document.createElement("span"),
         hr = document.createElement("hr"),
         smallCreatedAt = document.createElement("small"),
         pCreatedAt = document.createElement("p"),
         divContent = document.createElement("div");
+
+    var creationDateUnformatted = new Date(notification.created_at),
+        creationDateFormatted = formatDate(creationDateUnformatted);
 
     //setting attributes to text content
     divContent.setAttribute('class', 'col-xs-10');
@@ -88,29 +116,37 @@ function addNotification(notification) {
     divStatus.insertBefore(spanLabel, divStatus.firstChild);
 
     //setting attributes to row and adding content and status label
-    divRow.setAttribute('class', 'row bg-info');
-    divRow.insertBefore(divContent, divRow.firstChild);
-    divRow.insertBefore(divStatus, divRow.firstChild);
+    divRowUp.setAttribute('class', 'row bg-info');
+    divRowUp.insertBefore(divContent, divRowUp.firstChild);
+    divRowUp.insertBefore(divStatus, divRowUp.firstChild);
 
-    pCreatedAt.innerHTML = notification.created_at;
+
+    pCreatedAt.innerHTML = creationDateFormatted;
     pCreatedAt.setAttribute('class', 'bg-info');
     //adding p to small for the creation date
+    smallCreatedAt.setAttribute('class', 'col-xs-offset-2 col-xs-10 text-right');
     smallCreatedAt.insertBefore(pCreatedAt, smallCreatedAt.firstChild);
+
+    divRowDown.setAttribute('class', 'row bg-info');
+    divRowDown.insertBefore(smallCreatedAt, divRowDown.firstChild);
 
     //setting attributes to button and adding elements
     buttonNotification.setAttribute('class', 'list-group-item list-group-item-info');
     buttonNotification.setAttribute('type', 'button');
-    buttonNotification.setAttribute('onclick', 'window.location.replace("/users/notification/'+notification.pk+'/see/")');
+    buttonNotification.setAttribute('onclick', 'window.location.replace("/users/notification/' + notification.pk + '/see/")');
 
     //insert everything to the right place
-    buttonNotification.insertBefore(divRow, buttonNotification.firstChild);
+    buttonNotification.insertBefore(divRowDown, buttonNotification.firstChild);
+    buttonNotification.insertBefore(divRowUp, buttonNotification.firstChild);
 
-    notificationsList.insertBefore(hr, notificationsList.childNodes[3]);
-    notificationsList.insertBefore(smallCreatedAt, notificationsList.childNodes[3]);
-    notificationsList.insertBefore(buttonNotification, notificationsList.childNodes[3]);
+    hr.style.marginTop = '0px';
+    hr.style.marginBottom = '0px';
+    notificationsList.insertBefore(hr, notificationsList.children[2]);
+    notificationsList.insertBefore(buttonNotification, notificationsList.children[2]);
 
     // Remove excess notifications
     while (notificationsList.getElementsByTagName("button").length > 22) {
         notificationsList.getElementsByTagName("button")[21].remove();
+        notificationsList.getElementsByTagName("button")[20].remove();
     }
 }
