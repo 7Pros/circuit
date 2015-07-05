@@ -34,6 +34,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
                             <input class="invisible" id="user_id" type="hidden" value="{{ request.user.pk }}"/>
+
                             {% include 'users/_notifications_area.html' %}
 
                             <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
