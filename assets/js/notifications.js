@@ -12,7 +12,7 @@ window.addEventListener('load', function () {
 
 // Subscribe once swampdragon is connected
 swampdragon.open(function () {
-	var userId = $("#user_id").val();
+    var userId = $("#user_id").val();
     swampdragon.subscribe('notifications', 'notifications-'+userId);
 });
 
@@ -22,7 +22,8 @@ var notificationsList = document.getElementById("notifications");
 
 // New channel message received
 swampdragon.onChannelMessage(function (channels, message) {
-    if (message.action === "created") {
+    var userId = $("#user_id").val();
+    if (message.action === "created" && message.data.user == userId/* && channels === 'notifications-'+userId*/) {
         // Update badges
         upgradeBadge();
         // Add the notification
