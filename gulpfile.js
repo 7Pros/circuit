@@ -11,7 +11,9 @@ gulp.task('default', [
 ]);
 
 gulp.task('css', function () {
-    return gulp.src('./assets/less/app.less')
+    return gulp.src(['./assets/less/app.less',
+        './assets/vendor/pnotify/pnotify.core.css',
+    ])
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(sourcemaps.write())
@@ -26,6 +28,8 @@ gulp.task('js', function () {
         './assets/vendor/bootstrap-material-design/dist/js/ripples.js',
         './assets/vendor/vue/dist/vue.js',
         './assets/vendor/devbridge-autocomplete/dist/jquery.autocomplete.js',
+        './assets/vendor/pnotify/pnotify.core.js',
+        './assets/js/notifications.js',
         './assets/js/app.js'
     ])
         .pipe(concat('app.js'))
