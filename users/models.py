@@ -143,15 +143,29 @@ class User(AbstractBaseUser):
         return self.is_superuser
 
 class Notification(SelfPublishModel, models.Model):
+    TYPE_OF_NOTIFICATIONS = (
+        (0, 'circle-related'),
+        (1, 'post-related')
+    )
+
     message = models.CharField(max_length=255)
     status = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User)
-    serializer_class = NotificationSerializer
     post = models.ForeignKey('posts.Post', blank=True, null=True)
+    type = models.IntegerField(default=1, choices=TYPE_OF_NOTIFICATIONS)
+    serializer_class = NotificationSerializer
 
     @staticmethod
-    def get_number_of_unseen_notifications(self, user):
-        return Notification.objects.get(user=user).filter(status=False)
+    def set_all_as_read(user):
+        user_notifications = Notification.objects.filter(user=user).filter(status=False)
+        if len(user_notifications) > 0:
+            for notification in user_notifications:
+                notification.status = True
+                notification.save()
+
+    @staticmethod
+    def get_number_of_unseen_notifications(user):
+        return len(Notification.objects.filter(user=user).filter(status=False))
 

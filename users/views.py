@@ -176,8 +176,6 @@ class UserProfileView(generic.DetailView):
         posts = Post.objects.filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
         setattr(context['user'], 'circles', context['user'].circle_set.all())
-        setattr(context['user'], 'unseen_notifications', len(context['user'].notification_set.filter(status=False)))
-        setattr(context['user'], 'notifications', context['user'].notification_set.all().order_by('-updated_at')[:20])
 
         for post in posts:
             set_post_extra(post, self.request)
@@ -285,8 +283,35 @@ def email_notification_for_user(user, subject, templateFile, context={}):
         html_message=html
     )
 
+def set_notifications_attribute(context_user):
+    setattr(context_user, 'notifications', context_user.notification_set.all())
+
 def send_notifications(user, email_subject, email_template, context, post=None):
     # email_notification_for_user(user, email_subject, email_template, context)
-    new_notification = Notification(message=context['content'], status=False, user=user, post=post)
+    if post is not None:
+        new_notification = Notification(message=context['content'], status=False, user=user, post=post, type=1)
+    else:
+        new_notification = Notification(message=context['content'], status=False, user=user, type=0)
+
     new_notification.save()
+
+def see_nofitication(request, **kwargs):
+    notification = Notification.objects.get(pk=kwargs['pk'])
+    notification.status = True
+    notification.save()
+
+    if notification.type == 1:
+        return redirect('posts:post', pk=notification.post.pk)
+    elif notification.type == 0:
+        return redirect(request.META['HTTP_REFERER'])
+
+def mark_all_as_read(request):
+    Notification.set_all_as_read(request.user)
+    return redirect(request.META['HTTP_REFERER'])
+
+# TODO: show all notifications
+# def show_all_notifications(request):
+#
+
+
 
