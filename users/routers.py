@@ -5,7 +5,7 @@
 @copyright 
 """
 from swampdragon import route_handler
-from swampdragon.route_handler import ModelPubRouter
+from swampdragon.route_handler import ModelPubRouter, get_publisher
 
 from .models import Notification
 from .serializers import NotificationSerializer
@@ -16,6 +16,5 @@ class NotificationRouter(ModelPubRouter):
     route_name = 'notifications'
     model = Notification
     serializer_class = NotificationSerializer
-
 
 route_handler.register(NotificationRouter)
