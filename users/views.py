@@ -310,8 +310,8 @@ def mark_all_as_read(request):
     return redirect(request.META['HTTP_REFERER'])
 
 # TODO: show all notifications
-# def show_all_notifications(request):
-#
+def show_all_notifications(request):
+    return render(request, 'users/user_notifications.html', {'notifications':request.user.notification_set.all()})
 
 
 
