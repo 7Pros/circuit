@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load notifications %}
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            {% include 'users/_user_card.html' %}
+            {% include 'users/_user_settings_card.html' %}
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-8">
+            {% if notifications %}
+                {% for notification in notifications|dictsortreversed:'created_at' %}
+{#                            {% if forloop.counter != 1 %}#}
+{#                                <hr style="margin-bottom: 0px; margin-top: 0px;"/>#}
+{#                            {% endif %}#}
+                    <button class="list-group-item {% if not notification.status %} list-group-item-info{% endif %}" onclick="window.location.replace('{% url 'users:see_notification' notification.pk %}')" type="button" style="padding-top: 20px">
+                        {% if not notification.status %}
+                            <div class="col-xs-1">
+                                <span class="badge label-info">
+                                 ·
+                                </span>
+                            </div>
+                        {% endif %}
+                        <div class="col-xs-7">
+                            {{ notification.message }}
+                        </div>
+                        <small class="text-right"><p>{{ notification.created_at }}</p></small>
+                    </button>
+                {% endfor %}
+            {% else %}
+                <br/>
+                <p class="text-muted lead" style="color: #aaa; text-align: center;">
+                    You have no notifications<br/>
+                    #circuitzombie</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
