@@ -140,7 +140,7 @@ def post_create(request):
                     'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                 }
                 users.views.send_notifications(mentionedUser, "You were mentioned!",
-                                                        'users/notification_for_post_email.html', context)
+                                                        'users/notification_for_post_email.html', context, post)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -197,7 +197,7 @@ class PostEditView(generic.UpdateView):
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
                 users.views.send_notifications(mentionedUser, "You were mentioned!",
-                                                        'users/notification_for_post_email.html', context)
+                                                        'users/notification_for_post_email.html', context, post)
 
         return super(PostEditView, self).form_valid(form)
 
@@ -236,7 +236,7 @@ def post_repost(request, pk=None):
         'link_to_subject': reverse("posts:post", kwargs={'pk': repost.pk})
     }
     users.views.send_notifications(repost_original.author, "There is a new repost to your post",
-                                            'users/notification_for_post_email.html', context)
+                                            'users/notification_for_post_email.html', context, repost)
 
     return redirect('posts:post', pk=repost.pk)
 
@@ -270,7 +270,7 @@ def post_reply(request, pk=None):
         'link_to_subject': reverse("posts:post", kwargs={'pk': reply.pk})
     }
     users.views.send_notifications(author, "There is a new reply to your post",
-                                            'users/notification_for_post_email.html', context)
+                                            'users/notification_for_post_email.html', context, reply)
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
