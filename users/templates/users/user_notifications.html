@@ -9,9 +9,6 @@
         <div class="col-xs-12 col-sm-6 col-md-8">
             {% if notifications %}
                 {% for notification in notifications|dictsortreversed:'created_at' %}
-{#                            {% if forloop.counter != 1 %}#}
-{#                                <hr style="margin-bottom: 0px; margin-top: 0px;"/>#}
-{#                            {% endif %}#}
                     <button class="list-group-item {% if not notification.status %} list-group-item-info{% endif %}" onclick="window.location.replace('{% url 'users:see_notification' notification.pk %}')" type="button" style="padding-top: 20px">
                         {% if not notification.status %}
                             <div class="col-xs-1">
