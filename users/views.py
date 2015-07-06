@@ -159,8 +159,11 @@ def user_create_confirm(request, token):
 
 def user_login(request):
     if request.method == "GET":
-        template = loader.get_template('users/user_login.html')
-        return HttpResponse(template.render(request=request))
+        if not request.user.is_authenticated():
+            template = loader.get_template('users/user_login.html')
+            return HttpResponse(template.render(request=request))
+        else:
+            return redirect('users:profile', pk=request.user.pk)
 
     if request.method == "POST":
         email = request.POST['email']
