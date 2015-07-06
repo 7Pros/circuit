@@ -24,7 +24,7 @@ class CircleList(generic.ListView):
             raise Http404('Not logged in')
         if int(self.kwargs['user_pk']) != user.pk:
             raise Http404('User not found')
-        circles = Circle.objects.filter(owner=user, is_editable=True)
+        circles = Circle.objects.filter(owner=user)
         return list(circles)
 
 
