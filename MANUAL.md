@@ -20,9 +20,9 @@
 
 + [Developers](#developers)
 
-+ [API](#api)
-
 + [Troubleshoot](#troubleshoot)
+
++ [FAQs](#faqs)
 
 ## Overview of Circuit
 
