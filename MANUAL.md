@@ -9,7 +9,7 @@ We are always welcoming new users! If you are new starting with us, the first th
 
 ### FAQs
 
-#### How can I change my profile picture?
+##### How can I change my profile picture?
 We are using [Gravatar]() as the profile picture manager, this enables you to have a centralized profile picture that you can use for a lot of internet sites. For more information visit their page.
 
 To change your profile picture, follow the next steps:
@@ -20,22 +20,22 @@ To change your profile picture, follow the next steps:
 
 And *ta-dam* you've got a new profile picture.
 
-#### How can I change the background image of my profile?
+##### How can I change the background image of my profile?
 This is very simple. All you have to do is to go to your profile, click on `Edit profile`, hover over the background image, click on the pencil icon, and upload your new picture!
 
-#### Who will be able to see my posts?
+##### Who will be able to see my posts?
 That's up to you! You can manage the visibility of your posts with your circles. This targets your posts only to the people you want them to see the posts. That means, while you're writing your post, just select a circle and the job is done!
 
-#### How can I add people to my circles?
+##### How can I add people to my circles?
 You can add people in two ways.
 
 - 1. The first one is to go directly to the profile of the person you want to add and just click to the `Add` and then select the circle you want.
 - 2. The second one is via your circle manager, that means, to go to your profile, click on `Manage circles`, then select a circle, and in the text area write the name of the people you want to add!
 
-#### I've already filled up the sign up form, but I don't get the confirmation email.
+##### I've already filled up the sign up form, but I don't get the confirmation email.
 Don't panic! You might have already received it, check up your junk email. If it isn't there, get in contact with our team and we will send it to you manually!
 
-#### Who can see my profile?
+##### Who can see my profile?
 Your profile is public, that means everybody can see your profile, just your posts can be private if you would want to.
 
 ### Signing up
