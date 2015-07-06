@@ -27,11 +27,16 @@ This is very simple. All you have to do is to go to your profile, click on `Edit
 That's up to you! You can manage the visibility of your posts with your circles. This targets your posts only to the people you want them to see the posts. That means, while you're writing your post, just select a circle and the job is done!
 
 #### How can I add people to my circles?
-You can add people 
+You can add people in two ways.
+
+- 1. The first one is to go directly to the profile of the person you want to add and just click to the `Add` and then select the circle you want.
+- 2. The second one is via your circle manager, that means, to go to your profile, click on `Manage circles`, then select a circle, and in the text area write the name of the people you want to add!
 
 #### I've already filled up the sign up form, but I don't get the confirmation email.
-#### Who can see my profile?
+Don't panic! You might have already received it, check up your junk email. If it isn't there, get in contact with our team and we will send it to you manually!
 
+#### Who can see my profile?
+Your profile is public, that means everybody can see your profile, just your posts can be private if you would want to.
 
 ### Signing up
 
