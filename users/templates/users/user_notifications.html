@@ -1,13 +1,16 @@
 {% extends 'base.html' %}
 {% load notifications %}
 {% block content %}
+    <input class="invisible" type="hidden" id="all_notifications_view" value="user_notifications"/>
+
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-4">
             {% include 'users/_user_card.html' %}
             {% include 'users/_user_settings_card.html' %}
         </div>
-        <div class="col-xs-12 col-sm-6 col-md-8">
+        <div id="notifications-list" class="col-xs-12 col-sm-6 col-md-8">
             {% if notifications %}
+                <button class="list-group-item" type="button"><small class="pull-right"><a href="{% url 'users:mark_notifications_as_read' %}" class="text-right" style="color: #03A9F4">Mark all as read</a></small></button>
                 {% for notification in notifications|dictsortreversed:'created_at' %}
                     <button class="list-group-item {% if not notification.status %} list-group-item-info{% endif %}" onclick="window.location.replace('{% url 'users:see_notification' notification.pk %}')" type="button" style="padding-top: 20px">
                         {% if not notification.status %}

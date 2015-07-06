@@ -22,15 +22,17 @@ var notificationsList = document.getElementById("notifications");
 
 // New channel message received
 swampdragon.onChannelMessage(function (channels, message) {
-    var userId = $("#user_id").val();
-    console.log(userId, message.data.user);
-    console.log(message.action);
+    var userId = $("#user_id").val(),
+        notificationArea = $("#all_notifications_view");
     if (message.action === "created" && message.data.user == userId) {
-        console.log('inside if');
         // Update badges
         upgradeBadge();
         // Add the notification
         addNotification((message.data));
+
+        if (notificationArea != undefined) {
+            addNotificationToAllList((message.data));
+        }
     }
 });
 
@@ -71,7 +73,6 @@ function addNotification(notification) {
     if (window.Notification && Notification.permission === "granted") {
         new Notification(notification.message);
     } else {
-        console.log('hier pnotify');
         // TODO: personalize
             var browserNotification = new PNotify({
                 text: notification.message,
@@ -89,7 +90,6 @@ function addNotification(notification) {
         });
     }
 
-    console.log('hier notification');
     // Add the new notification elements
     var buttonNotification = document.createElement("button"),
         divRowUp = document.createElement("div"),
@@ -150,4 +150,49 @@ function addNotification(notification) {
         notificationsList.getElementsByTagName("button")[41].remove();
         notificationsList.getElementsByTagName("button")[40].remove();
     }
+}
+
+function addNotificationToAllList(notification) {
+    //parent
+    var parent = document.getElementById("notifications-list");
+
+    // Add the new notification elements
+    var buttonNotification = document.createElement("button"),
+        divStatus = document.createElement("div"),
+        spanLabel = document.createElement("span"),
+        smallCreatedAt = document.createElement("small"),
+        pCreatedAt = document.createElement("p"),
+        divContent = document.createElement("div");
+
+    var creationDateUnformatted = new Date(notification.created_at),
+        creationDateFormatted = formatDate(creationDateUnformatted);
+
+    //setting attributes to text content
+    divContent.setAttribute('class', 'col-xs-7');
+    divContent.innerHTML = notification.message;
+
+    //setting attributes to label
+    spanLabel.setAttribute('class', 'badge label-info');
+    spanLabel.innerHTML = '·';
+
+    //setting attributes to status label's col and adding label to it
+    divStatus.setAttribute('class', 'col-xs-1');
+    divStatus.insertBefore(spanLabel, divStatus.firstChild);
+
+    pCreatedAt.innerHTML = creationDateFormatted;
+    pCreatedAt.setAttribute('class', 'bg-info');
+    //adding p to small for the creation date
+    smallCreatedAt.setAttribute('class', 'text-right');
+    smallCreatedAt.insertBefore(pCreatedAt, smallCreatedAt.firstChild);
+
+    //setting attributes to button and adding elements
+    buttonNotification.setAttribute('class', 'list-group-item list-group-item-info');
+    buttonNotification.setAttribute('type', 'button');
+    buttonNotification.setAttribute('onclick', 'window.location.replace("/users/notification/' + notification.pk + '/see/")');
+    buttonNotification.style.paddingTop = '20px';
+
+    buttonNotification.insertBefore(smallCreatedAt, buttonNotification.firstChild);
+    buttonNotification.insertBefore(divContent, buttonNotification.firstChild);
+    buttonNotification.insertBefore(divStatus, buttonNotification.firstChild);
+    parent.insertBefore(buttonNotification, parent.children[1]);
 }
