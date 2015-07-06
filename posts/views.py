@@ -69,14 +69,12 @@ def set_post_extra(post, request):
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
-    is_circle_owner = post.author.pk == request.user.pk
 
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
-        'can_show_circle': is_circle_owner,
         'replies': post.reply.all(),
     })
 
