@@ -10,14 +10,23 @@ gulp.task('default', [
     'js'
 ]);
 
-gulp.task('css', function () {
-    return gulp.src(['./assets/less/app.less',
-        './assets/vendor/pnotify/pnotify.core.css',
-    ])
+gulp.task('less', function () {
+    return gulp.src('./assets/less/app.less')
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest('./circuit/static/css'));
+});
+
+gulp.task('css', ['less'], function () {
+    return gulp.src([
+        './circuit/static/css/app.css',
+        './assets/vendor/pnotify/pnotify.core.css',
+        './assets/vendor/pnotify/pnotify.picons.css',
+        './assets/vendor/pnotify/pnotify.buttons.css'
+    ])
+        .pipe(concat('app.css'))
+        .pipe(gulp.dest('./circuit/static/css'))
 });
 
 gulp.task('js', function () {
@@ -29,6 +38,7 @@ gulp.task('js', function () {
         './assets/vendor/vue/dist/vue.js',
         './assets/vendor/devbridge-autocomplete/dist/jquery.autocomplete.js',
         './assets/vendor/pnotify/pnotify.core.js',
+        './assets/vendor/pnotify/pnotify.buttons.js',
         './assets/js/notifications.js',
         './assets/js/app.js'
     ])

@@ -70,17 +70,22 @@ function addNotification(notification) {
     // If we have permission to show browser notifications
     // we can show the notifiaction
     // TODO: fix double notifications
-    if (window.Notification && Notification.permission === "granted") {
-        new Notification(notification.message);
-    } else {
-        // TODO: personalize
+    //if (window.Notification && Notification.permission === "granted") {
+    //    new Notification(notification.message);
+    //} else {
+    //    // TODO: personalize
             var browserNotification = new PNotify({
                 text: notification.message,
                 type: 'info',
                 styling: 'bootstrap3',
                 hide: 'false',
                 delay: '5000',
-                opacity: .6
+                opacity: .8,
+                icon: 'mdi-action-info',
+                buttons: {
+                    sticker: false,
+                    close: true
+                }
             });
         browserNotification.get().click(function (e) {
             if ($(e.target).is('.ui-pnotify-closer *, .ui-pnotify-sticker *')) {
@@ -88,7 +93,7 @@ function addNotification(notification) {
             }
             window.location.replace('/users/notification/' + notification.pk + '/see/');
         });
-    }
+    //}
 
     // Add the new notification elements
     var buttonNotification = document.createElement("button"),
