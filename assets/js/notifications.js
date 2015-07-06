@@ -1,13 +1,13 @@
 // Ask the browser for permission to show notifications
 // Taken from https://developer.mozilla.org/en-US/docs/Web/API/Notification/Using_Web_Notifications
-//window.addEventListener('load', function () {
-//    Notification.requestPermission(function (status) {
-//        // This allows to use Notification.permission with Chrome/Safari
-//        if (Notification.permission !== status) {
-//            Notification.permission = status;
-//        }
-//    });
-//});
+window.addEventListener('load', function () {
+    Notification.requestPermission(function (status) {
+        // This allows to use Notification.permission with Chrome/Safari
+        if (Notification.permission !== status) {
+            Notification.permission = status;
+        }
+    });
+});
 
 
 // Subscribe once swampdragon is connected
@@ -68,9 +68,9 @@ function addNotification(notification) {
     // If we have permission to show browser notifications
     // we can show the notifiaction
     // TODO: fix double notifications
-    //if (window.Notification && Notification.permission === "granted") {
-    //    new Notification(notification.message);
-    //} else {
+    if (window.Notification && Notification.permission === "granted") {
+        new Notification(notification.message);
+    } else {
         console.log('hier pnotify');
         // TODO: personalize
             var browserNotification = new PNotify({
@@ -87,7 +87,7 @@ function addNotification(notification) {
             }
             window.location.replace('/users/notification/' + notification.pk + '/see/');
         });
-    //}
+    }
 
     console.log('hier notification');
     // Add the new notification elements
