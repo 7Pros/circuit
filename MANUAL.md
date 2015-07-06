@@ -1,6 +1,6 @@
 # Welcome to the Circuit user manual
 
-## Index of contents
+## Table of contents
 
 + [Overview of Circuit](#overview-of-circuit)
 
