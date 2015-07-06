@@ -19,6 +19,8 @@ from PIL import Image
 from django.core.exceptions import ValidationError
 
 from circles.models import Circle, PUBLIC_CIRCLE, ME_CIRCLE
+import datetime
+from django.db.models import Count
 
 
 def post_content_is_valid(content):
@@ -298,3 +300,8 @@ class PostDeleteView(generic.DeleteView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.request.user.pk})
+
+def top_hashtags():
+
+    return Hashtag.objects.filter(posts__created_at__gt = datetime.datetime.now() - datetime.timedelta(days=1))\
+        .annotate(itemcount=Count('name')).order_by('-itemcount')

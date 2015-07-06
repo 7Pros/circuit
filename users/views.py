@@ -16,7 +16,7 @@ from django.views import generic
 from django.views.generic import CreateView
 
 from circuit import settings
-from posts.views import set_post_extra, visible_posts_for
+from posts.views import set_post_extra, top_hashtags, visible_posts_for
 from users.models import User, create_hash
 
 
@@ -220,6 +220,7 @@ class UserProfileView(generic.DetailView):
         for post in posts:
             set_post_extra(post, self.request)
         context.update(posts=posts)
+        context.update(top_hashtags=top_hashtags())
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
@@ -303,3 +304,4 @@ def user_search(request):
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
+
