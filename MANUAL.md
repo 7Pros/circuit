@@ -220,7 +220,7 @@ As we want to keep our servers spam-free, we've limited the requests that can be
 
 #### HTML API
 You don't want to worry about handling information and all that boring stuff? We have a solution for you! Use our HTML API! All you have to do to begin is to send a request to
-    [http://127.0.0.1/api/login/](http://127.0.0.1/api/login/)
+    `[http://127.0.0.1/api/login/](http://127.0.0.1/api/login/)`
 as a form request and you'll get a form! With which all the required info will be sent.
 
 ##### Login
