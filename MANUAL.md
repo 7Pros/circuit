@@ -238,11 +238,17 @@ Want to come to visit the silicon chip of our circuit? Come to [visit us](http:/
 
 #### Admins
 Matze [@MetalMatze](http://github.com/MetalMatze)
+
 Julian [@Gjum](http://github.com/Gjum)
+
 Juan [@juanecabellob](http://github.com/juanecabellob)
+
 Kjell [@KjellPirschel](http://github.com/KjellPirschel)
+
 Jelisa [@Iotka](http://github.com/Iotka)
+
 Nico [@nrigheriu](http://github.com/nrigheriu)
+
 Levi [@LeviTU](http://github.com/LeviTU)
 
 
