@@ -1,19 +1,19 @@
 // Ask the browser for permission to show notifications
 // Taken from https://developer.mozilla.org/en-US/docs/Web/API/Notification/Using_Web_Notifications
-window.addEventListener('load', function () {
-    Notification.requestPermission(function (status) {
-        // This allows to use Notification.permission with Chrome/Safari
-        if (Notification.permission !== status) {
-            Notification.permission = status;
-        }
-    });
-});
+//window.addEventListener('load', function () {
+//    Notification.requestPermission(function (status) {
+//        // This allows to use Notification.permission with Chrome/Safari
+//        if (Notification.permission !== status) {
+//            Notification.permission = status;
+//        }
+//    });
+//});
 
 
 // Subscribe once swampdragon is connected
 swampdragon.open(function () {
     var userId = $("#user_id").val();
-    swampdragon.subscribe('notifications', 'notifications-' + userId);
+    swampdragon.subscribe('notifications', 'notifications');
 });
 
 // This is the list of notifications
@@ -23,8 +23,10 @@ var notificationsList = document.getElementById("notifications");
 // New channel message received
 swampdragon.onChannelMessage(function (channels, message) {
     var userId = $("#user_id").val();
-
-    if (message.action === "created" && message.data.user === userId) {
+    console.log(userId, message.data.user);
+    console.log(message.action);
+    if (message.action === "created" && message.data.user == userId) {
+        console.log('inside if');
         // Update badges
         upgradeBadge();
         // Add the notification
@@ -66,20 +68,18 @@ function addNotification(notification) {
     // If we have permission to show browser notifications
     // we can show the notifiaction
     // TODO: fix double notifications
-    if (window.Notification && Notification.permission === "granted") {
-        new Notification(notification.message);
-    } else {
+    //if (window.Notification && Notification.permission === "granted") {
+    //    new Notification(notification.message);
+    //} else {
+        console.log('hier pnotify');
         // TODO: personalize
-        var stack_topright = {"dir1": "up", "dir2": "right"},
-            browserNotification = new PNotify({
+            var browserNotification = new PNotify({
                 text: notification.message,
                 type: 'info',
                 styling: 'bootstrap3',
-                hide: 'true',
+                hide: 'false',
                 delay: '5000',
-                opacity: .6,
-                addclass: 'stack-topright',
-                stack: stack_topright
+                opacity: .6
             });
         browserNotification.get().click(function (e) {
             if ($(e.target).is('.ui-pnotify-closer *, .ui-pnotify-sticker *')) {
@@ -87,8 +87,9 @@ function addNotification(notification) {
             }
             window.location.replace('/users/notification/' + notification.pk + '/see/');
         });
-    }
+    //}
 
+    console.log('hier notification');
     // Add the new notification elements
     var buttonNotification = document.createElement("button"),
         divRowUp = document.createElement("div"),
@@ -145,8 +146,8 @@ function addNotification(notification) {
     notificationsList.insertBefore(buttonNotification, notificationsList.children[2]);
 
     // Remove excess notifications
-    while (notificationsList.getElementsByTagName("button").length > 22) {
-        notificationsList.getElementsByTagName("button")[21].remove();
-        notificationsList.getElementsByTagName("button")[20].remove();
+    while (notificationsList.getElementsByTagName("button").length > 42) {
+        notificationsList.getElementsByTagName("button")[41].remove();
+        notificationsList.getElementsByTagName("button")[40].remove();
     }
 }
