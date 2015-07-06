@@ -1,5 +1,6 @@
 (function () {
     $.material.init();
+    new WOW().init();
 })();
 
 Vue.config.delimiters = ['(%', '%)'];
