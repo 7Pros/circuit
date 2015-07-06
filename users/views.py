@@ -17,7 +17,7 @@ from django.views.generic import CreateView
 
 from circuit import settings
 from posts.models import Post
-from posts.views import set_post_extra
+from posts.views import set_post_extra, top_hashtags
 from users.models import User, Notification, create_hash
 
 
@@ -180,6 +180,7 @@ class UserProfileView(generic.DetailView):
         for post in posts:
             set_post_extra(post, self.request)
         context.update(posts=posts)
+        context.update(top_hashtags=top_hashtags())
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
