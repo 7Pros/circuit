@@ -113,11 +113,11 @@ class User(AbstractBaseUser):
 
     def get_circles(self):
         """
-        Returns the circles this user is at.
+        the circles created by the user
 
-        @return: ForeingKeyObject - contains the circles he is at.
+        @return: list of Circle instances
         """
-        return self.members.all()
+        return self.circle_set.all()
 
     def get_full_name(self):
         """ Alias for get_name

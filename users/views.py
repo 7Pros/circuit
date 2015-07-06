@@ -17,7 +17,7 @@ from django.views.generic import CreateView
 
 from circuit import settings
 from posts.models import Post
-from posts.views import set_post_extra
+from posts.views import set_post_extra, visible_posts_for
 from users.models import User, create_hash
 from circles.models import Circle
 
@@ -207,11 +207,11 @@ def user_profile_by_username(request, username):
     try:
         user = User.objects.get(username=username)
     except:
-        raise Http404("Username doesn't exist", username)
+        raise Http404("Username does not exist", username)
 
-    posts = Post.objects.filter(author=user.pk) \
+    posts = visible_posts_for(request.user) \
+        .filter(author=user.pk) \
         .select_related('author', 'repost_original', 'reply_original')
-    setattr(user, 'circles', user.circle_set.all())
 
     for post in posts:
         set_post_extra(post, request)
@@ -225,9 +225,8 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = Post.objects.filter(author=self.object.pk) \
+        posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
-        setattr(context['user'], 'circles', context['user'].circle_set.all())
 
         for post in posts:
             set_post_extra(post, self.request)

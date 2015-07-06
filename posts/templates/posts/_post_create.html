@@ -16,8 +16,10 @@
         <div class="form-group">
             <div class="col-xs-12 col-md-4">
                 <select class="form-control" name="circle">
-                    {% for circle in user.circles|dictsortreversed:'pk' %}
-                        <option value="{{ circle.pk }}" {% if circle.name == 'Me' %}selected="selected"{% endif %}>{{ circle.name }}</option>
+                    <option value="-2"{% if post.circles_id == -2 %} selected{% endif %}>Only visible to me</option>
+                    <option value="-1"{% if post.circles_id == -1 %} selected{% endif %}>Public</option>
+                    {% for circle in user.get_circles|dictsortreversed:'pk' %}
+                        <option value="{{ circle.pk }}"{% if post.circles_id == circle.pk %} selected{% endif %}>{{ circle.name }}</option>
                     {% endfor %}
                 </select>
             </div>

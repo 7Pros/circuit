@@ -8,7 +8,8 @@ import json
 from django.db import models
 from users.models import User
 
-GLOBAL_CIRCLE = -1
+ME_CIRCLE = -2
+PUBLIC_CIRCLE = -1
 
 class Circle(models.Model):
     name = models.CharField(max_length=50, blank=True)

@@ -18,7 +18,7 @@ from posts.models import Post
 from PIL import Image
 from django.core.exceptions import ValidationError
 
-from circles.models import Circle, GLOBAL_CIRCLE
+from circles.models import Circle, PUBLIC_CIRCLE, ME_CIRCLE
 
 
 def post_content_is_valid(content):
@@ -71,32 +71,26 @@ def set_post_extra(post, request):
     can_be_deleted = post.author.pk == request.user.pk
     is_circle_owner = post.author.pk == request.user.pk
 
-    if not is_circle_owner:
-        if request.user.is_authenticated():
-            request_user_circles = request.user.get_circles()
-            can_be_seen = post.circles in request_user_circles
-        else:
-            can_be_seen = False
-    else:
-        can_be_seen = True
-
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
         'can_show_circle': is_circle_owner,
-        'can_be_seen': can_be_seen,
         'replies': post.reply.all(),
     })
 
 
 def visible_posts_for(user):
-    only_me = Post.objects.filter(circles=None)
-    globally = Post.objects.filter(circles=GLOBAL_CIRCLE)
+    """
+    Returns a pre-filtered query object containing all posts visible for the specified user.
+    @param user: instance of the User model
+    """
+    own = Post.objects.filter(author=user)
+    public = Post.objects.filter(circles=PUBLIC_CIRCLE)
     my_circle = Post.objects.filter(circles__owner=user.pk)
     in_circle = Post.objects.filter(circles__members=user.pk)
-    return only_me | globally | my_circle | in_circle
+    return own | public | my_circle | in_circle
 
 
 def check_reply(user):
@@ -125,13 +119,13 @@ def post_create(request):
     elif 'circle' not in request.POST:
         messages.error(request, 'No circle selected')
     else:
-        circles = Circle.objects.get(pk=request.POST['circle'])
-        post = Post(content=request.POST['content'], author=request.user, circles=circles)
+        circle_pk = int(request.POST['circle'])
+        pseudo_circle = Circle(circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
+        post = Post(content=request.POST['content'], author=request.user, circles=pseudo_circle)
         if has_img:
             post.image = request.FILES['image']
         post.save()
         parsedString = parse_content(request.POST['content'])
-        post.circles = Circle.objects.get(pk=request.POST['circle'])
         save_hashtags(parsedString['hashtags'], post)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
@@ -148,10 +142,11 @@ class PostDetailView(DetailView):
 
 
 class PostEditView(generic.UpdateView):
-    """Edit a post's content."""
+    """Edit a post's content and/or circle."""
     model = Post
     fields = [
         'content',
+        'circles',
     ]
 
     def form_valid(self, form):
@@ -169,6 +164,18 @@ class PostEditView(generic.UpdateView):
 
         if not post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
+
+        circle_pk = int(self.request.POST['circle'])
+        if circle_pk not in (ME_CIRCLE, PUBLIC_CIRCLE):
+            circle_owner_id = Circle.objects.get(pk=circle_pk).owner_id
+            # Is the selected circle not one of the user's circles?
+            if circle_owner_id != self.request.user.pk:
+                return self.form_invalid(form)
+
+        post = form.save()
+
+        circle_pk = int(self.request.POST['circle'])
+        post.circles = Circle(circle_pk)
 
         return super(PostEditView, self).form_valid(form)
 
