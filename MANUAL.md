@@ -5,8 +5,33 @@
 **Circuit** is a social network where you can write posts with 256 characters to specified groups called *circles*.
 
 ## Get started with Circuit
-We a
+We are always welcoming new users! If you are new starting with us, the first thing you've got to do is to sign up, to sign up follow the steps in the **Sign up** section. After that it's easy peasy, because we have a _First steps_ tutorial, just follow them and you're ready to go!
+
 ### FAQs
+
+#### How can I change my profile picture?
+We are using [Gravatar]() as the profile picture manager, this enables you to have a centralized profile picture that you can use for a lot of internet sites. For more information visit their page.
+
+To change your profile picture, follow the next steps:
+
+- 1. Go to [Gravatar]().
+- 2. Register an account with the same e-mail address you've entered for circuit.
+- 3. Upload your profile picture.
+
+And *ta-dam* you've got a new profile picture.
+
+#### How can I change the background image of my profile?
+This is very simple. All you have to do is to go to your profile, click on `Edit profile`, hover over the background image, click on the pencil icon, and upload your new picture!
+
+#### Who will be able to see my posts?
+That's up to you! You can manage the visibility of your posts with your circles. This targets your posts only to the people you want them to see the posts. That means, while you're writing your post, just select a circle and the job is done!
+
+#### How can I add people to my circles?
+You can add people 
+
+#### I've already filled up the sign up form, but I don't get the confirmation email.
+#### Who can see my profile?
+
 
 ### Signing up
 
@@ -17,7 +42,7 @@ If you don't have a **Circuit** account, you can sign up for one in a few steps:
 3. Now fill out your email address, a username, a secure password and double-check all entries.
 5. Click the blue "SIGN UP"-button.
 6. Once you sign up, you'll need to confirm your email address.
-Therefor follow the link in the email you just received.
+Therefore follow the link in the email you just received.
 7. You are now on the login page. Please enter your username and password.
 8. Finally you can see your profile!
 
