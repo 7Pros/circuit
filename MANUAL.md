@@ -10,13 +10,13 @@ We are always welcoming new users! If you are new starting with us, the first th
 ### FAQs
 
 ##### How can I change my profile picture?
-We are using [Gravatar]() as the profile picture manager, this enables you to have a centralized profile picture that you can use for a lot of internet sites. For more information visit their page.
+We are using [Gravatar](https://en.gravatar.com/) as the profile picture manager, this enables you to have a centralized profile picture that you can use for a lot of internet sites. For more information visit their page.
 
 To change your profile picture, follow the next steps:
 
-- 1. Go to [Gravatar]().
-- 2. Register an account with the same e-mail address you've entered for circuit.
-- 3. Upload your profile picture.
+1. Go to [Gravatar](https://en.gravatar.com/).
+2. Register an account with the same e-mail address you've entered for circuit.
+3. Upload your profile picture.
 
 And *ta-dam* you've got a new profile picture.
 
@@ -29,14 +29,14 @@ That's up to you! You can manage the visibility of your posts with your circles.
 ##### How can I add people to my circles?
 You can add people in two ways.
 
-- 1. The first one is to go directly to the profile of the person you want to add and just click to the `Add` and then select the circle you want.
-- 2. The second one is via your circle manager, that means, to go to your profile, click on `Manage circles`, then select a circle, and in the text area write the name of the people you want to add!
+1. The first one is to go directly to the profile of the person you want to add and just click to the `Add` and then select the circle you want.
+2. The second one is via your circle manager, that means, to go to your profile, click on `Manage circles`, then select a circle, and in the text area write the name of the people you want to add!
 
 ##### I've already filled up the sign up form, but I don't get the confirmation email.
 Don't panic! You might have already received it, check up your junk email. If it isn't there, get in contact with our team and we will send it to you manually!
 
 ##### Who can see my profile?
-Your profile is public, that means everybody can see your profile, just your posts can be private if you would want to.
+Your profile is public, that means everybody can see your profile, only your posts can be private if you would want to.
 
 ### Signing up
 
@@ -65,12 +65,12 @@ Click the "Forgot password?"-button and enter your email address. The system wil
 
 Please enter a new password. Now you can login with your new password!
 
-
 ### How to post
 If you are logged in you can easily write a post in the field "Write something!".
 For further information what you can do with posts please take a look at **Posts** below.
 
 ### How to find people
+To find people you want to add, it is really simple. We have this lovely search function that you can find at the top of our navigation bar, and there you can just type the name of the person you want to look for and you'll get it, if it's a user with us!
 
 ### How to use circles
 In your profile you will find a button that is called `Manage circles`. There you can edit, create, and delete circles.
@@ -100,9 +100,9 @@ It takes only 1 minute!
 
 ### Delete your account
 Had enough of social networking or you just haven't time enough? Well you can delete your account. Even if we would like to have you forever in our system, we can understand that you want to leave us.
-To make that, just go to your **profile**, click on ``Edit profile``, go to ``Delete account`` section and click on the big red button.
+To make that, just go to your **profile**, click on `Edit profile`, go to `Delete account` section and click on the big red button.
 
-    Once you delete your account, you cannot ``ctrl+z`` this action. So please think twice before doing this!
+    Once you delete your account, you cannot *ctrl+z* this action. So please think twice before doing this!
 
 ## Posts
 
@@ -139,58 +139,58 @@ There are two ways of doing this.
 ### Create a circle
 To create a circle all you have to do is:
 
-- 1. Go to your profile.
-- 2. Click on `Manage circles`.
-- 3. Write a name for the circle.
-- 4. Add people to it, writing their names and then select the person you mean.
-- 5. Click on `Save`.
+1. Go to your profile.
+2. Click on `Manage circles`.
+3. Write a name for the circle.
+4. Add people to it, writing their names and then select the person you mean.
+5. Click on `Save`.
 
 Done! You have another circle!
 
 ### Edit your own circle
 To edit any circle you have created, follow the next steps:
 
-- 1. Go to your profile.
-- 2. Click on `Manage circles`.
-- 3. Look up for your circle.
-- 4. Click on the pencil icon.
-- 5. Edit want you want to (Name of the circle or people in it).
-- 6. Click on `Save`.
+1. Go to your profile.
+2. Click on `Manage circles`.
+3. Look up for your circle.
+4. Click on the pencil icon.
+5. Edit want you want to (Name of the circle or people in it).
+6. Click on `Save`.
 
 Done! The circle has been edited!
 
 ### Delete a circle
 To delete one of your circles, it's very easy! Just follow the next steps:
 
-- 1. Go to your profile.
-- 2. Click on `Manage circles`.
-- 3. Look up for your circle.
-- 4. Click on the trash icon.
-- 5. Confirm the action.
+1. Go to your profile.
+2. Click on `Manage circles`.
+3. Look up for your circle.
+4. Click on the trash icon.
+5. Confirm the action.
 
 _Pfft!_ Circle gone!
 
     This cannot be reversed, once you've deleted a circle, you cannot go back in time!
 
 ## Discover
-You will soon have the option to search for other users, hashtags or circles!
+You want to see what's going on in your surroundings? Discover it! So simple it is to search for hashtags, users and posts. Just need to know what you are looking for and we'll take it from there.
 
+### Searching for a user?
+If you're just looking for a user that has a name you already know, just type `@user_name` in the search box and it will give you all the users that have a name starting with that name you gave or that it's exactly the name you gave.
 
-## Connecting
+### Searching for a hot topic?
+You've seen a hashtag trending a while ago and you want to see what was all about? No problema amigo, just look for it! All you have to do is to write `#hashtag_name` in the search field and if your search query matches it, there-you-go!
 
-
-
-## Policy
-
-
+### Searching for posts containing some info?
+Not sure if it was a hashtag, a user or just some random info in a post, but you definitely want to get that post? We've got it covered! Write that down what you want to look for and we'll show you everything related to that, there's no need to write anything else! 
 
 ## Privacy
-
-
+Your information is as worthy for you as it is for us! We don't want to publish any information that might put in danger your privacy and cleanness of your spam inbox.
+ 
+    What is sensitive is a no way, José for posting it into the internet. We cannot guarantee that kind of privacy.
 
 ## Security
-
-
+If you are worried about the security of your account, you shouldn't! You are in good hands. We care about that and we don't let that any intruders mess up with our system. 
 
 ## Developers
 
@@ -249,9 +249,6 @@ Jelisa [@Iotka](http://github.com/Iotka)
 
 Nico [@nrigheriu](http://github.com/nrigheriu)
 
-Levi [@LeviTU](http://github.com/LeviTU)
-
-
 
 ## Troubleshoot
 
@@ -261,8 +258,8 @@ You found a bug in our social network? You can help us out and tell us about it.
 
 To do that:
 
-- 1. Go to our [GitHub repository](https://github.com/7Pros/circuit/).
-- 2. Open our Issues.
-- 3. Check if your bug is not already there.
-- 4. If yes, just write in it that you're experiencing the same problem and suscribe to the thread so we can update you when we've fixed it.
-- 5. If not, open an issue describing the bug and we'll back to you if we need any more information.
+1. Go to our [GitHub repository](https://github.com/7Pros/circuit/).
+2. Open our Issues.
+3. Check if your bug is not already there.
+4. If yes, just write in it that you're experiencing the same problem and suscribe to the thread so we can update you when we've fixed it.
+5. If not, open an issue describing the bug and we'll back to you if we need any more information.
