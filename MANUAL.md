@@ -59,12 +59,18 @@ support@circuit.io
 ## Manage your account
 
 ### Edit your profile
+As every social network, you want kinda personalize your own profile! As we are minimalistic, and surely you are too, we have added only the minimal personalizable items as your name, your real name, your e-mail address, and a brief description of you.
+You can, however, have your password changed or your account deleted if you would wish to. Just follow the instructions below and the job it's done!
 
 ### Change your password
+Do you want to change your password? That's not a problem! Just go to your **profile**, click in ``Edit profile` and there you will find the area where you can easily change your password!
+It takes only 1 minute!
 
 ### Delete your account
+Had enough of social networking or you just haven't time enough? Well you can delete your account. Even if we would like to have you forever in our system, we can understand that you want to leave us.
+To make that, just go to your **profile**, click in ``Edit profile``, go to ``Delete account`` section and click in the big red button.
 
-
+    Once you delete your account, you cannot ``ctrl+z`` this action. So please think twice before doing this!
 
 ## Posts
 
@@ -72,6 +78,7 @@ support@circuit.io
 Posts are the heart of **Circuit**. It is the way you communicate with other users. There are some more options besides posting 256 characters of pure text. You can further answer to people, repost things, mention users or use hashtags.
 
 ### Hashtags
+Hashtags are the best way to keep information centralized
 
 ### Mentions
 
