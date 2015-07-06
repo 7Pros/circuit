@@ -18,7 +18,7 @@ from posts.models import Post
 from PIL import Image
 from django.core.exceptions import ValidationError
 
-from circles.models import Circle
+from circles.models import Circle, GLOBAL_CIRCLE
 
 
 def post_content_is_valid(content):
@@ -89,6 +89,14 @@ def set_post_extra(post, request):
         'can_be_seen': can_be_seen,
         'replies': post.reply.all(),
     })
+
+
+def visible_posts_for(user):
+    only_me = Post.objects.filter(circles=None)
+    globally = Post.objects.filter(circles=GLOBAL_CIRCLE)
+    my_circle = Post.objects.filter(circles__owner=user.pk)
+    in_circle = Post.objects.filter(circles__members=user.pk)
+    return only_me | globally | my_circle | in_circle
 
 
 def check_reply(user):

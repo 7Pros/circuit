@@ -8,6 +8,8 @@ import json
 from django.db import models
 from users.models import User
 
+GLOBAL_CIRCLE = -1
+
 class Circle(models.Model):
     name = models.CharField(max_length=50, blank=True)
     owner = models.ForeignKey(User, null=True, blank=True)
