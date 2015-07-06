@@ -1,9 +1,3 @@
-"""@package circles
-Circle's related models.
-
-@author 7Pros
-@license
-"""
 import json
 from django.db import models
 from users.models import User
@@ -12,10 +6,9 @@ ME_CIRCLE = -2
 PUBLIC_CIRCLE = -1
 
 class Circle(models.Model):
-    name = models.CharField(max_length=50, blank=True)
-    owner = models.ForeignKey(User, null=True, blank=True)
-    members = models.ManyToManyField(User, related_name='members')
-    is_editable = models.BooleanField(default=True)
+    name = models.CharField(max_length=50, default='', blank=True)
+    owner = models.ForeignKey(User)
+    members  = models.ManyToManyField(User, related_name='members')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
