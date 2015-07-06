@@ -3,7 +3,7 @@
         <div class="panel-heading">Top 5 hashtags</div>
         <div class="panel-body">
             {% for hashtag in top_hashtags %}
-                <a href="{% url 'posts:hashtags' hashtag_name=hashtag %}">#{{ hashtag }}</a> <br>
+                <a href="{% url 'posts:hashtags' hashtag_name=hashtag %}">#{{ hashtag }}</a>
             {% endfor %}
         </div>
     </div>
