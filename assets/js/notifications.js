@@ -84,7 +84,7 @@ function addNotification(notification) {
                 icon: 'mdi-action-info',
                 buttons: {
                     sticker: false,
-                    close: true
+                    sticker_hover: false
                 }
             });
         browserNotification.get().click(function (e) {

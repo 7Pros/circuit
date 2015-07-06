@@ -47,6 +47,8 @@ gulp.task('js', function () {
 });
 
 gulp.task('copy', function () {
-    return gulp.src('assets/vendor/bootstrap-material-design/fonts/*')
+    return gulp.src(['assets/vendor/bootstrap-material-design/fonts/*',
+                    'assets/vendor/bootstrap/fonts/*'
+    ])
         .pipe(gulp.dest('./circuit/static/fonts'));
 });
