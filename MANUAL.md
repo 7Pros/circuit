@@ -202,17 +202,23 @@ Do you want to handle the info yourself? We are cool with that and we offer you 
 
 ##### General
 If you want to see the information everytime without having to come here and read it again, we have made a general overview JSON Response where you can either look it up on our site or just send a request to
-    [http://127.0.0.1/api/](http://127.0.0.1/api/)
+
+[http://127.0.0.1/api/](http://127.0.0.1/api/)
+    
 and it will return what you can do.
 
 ##### Login
 To login you have to send a GET request to
-    [http://127.0.0.1/api/login/](http://127.0.0.1/api/login/)
+
+[http://127.0.0.1/api/login/](http://127.0.0.1/api/login/)
+    
 get the field names and send back a POST request with the required fields. You will get a **Token**, *without it you won't get further*.
 
 ##### Send a post
 To send a post you need to include in the header the given token as
-    Authorization: Token <<token>>
+
+    Authorization: Token <<put_your_token_here>>
+    
 You will need as well a post content, an image file or None if you don't want to upload one and **very important** a circle id. We will give you obviously which are the available circles that you can choose.
 
 ##### Restrictions
@@ -220,7 +226,9 @@ As we want to keep our servers spam-free, we've limited the requests that can be
 
 #### HTML API
 You don't want to worry about handling information and all that boring stuff? We have a solution for you! Use our HTML API! All you have to do to begin is to send a request to
-    `[http://127.0.0.1/api/login/](http://127.0.0.1/api/login/)`
+
+[http://127.0.0.1/api/login/](http://127.0.0.1/api/login/)
+    
 as a form request and you'll get a form! With which all the required info will be sent.
 
 ##### Login
