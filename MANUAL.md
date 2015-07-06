@@ -237,11 +237,21 @@ You want to see the magic under the hood? This is an open source project, so you
 Want to come to visit the silicon chip of our circuit? Come to [visit us](http://github.com/7Pros/circuit)
 
 #### Admins
+Matze [@MetalMatze](http://github.com/MetalMatze)
+Julian [@Gjum](http://github.com/Gjum)
+Juan [@juanecabellob](http://github.com/juanecabellob)
+Kjell [@KjellPirschel](http://github.com/KjellPirschel)
+Jelisa [@Iotka](http://github.com/Iotka)
+Nico [@nrigheriu](http://github.com/nrigheriu)
+Levi [@LeviTU](http://github.com/LeviTU)
+
+
 
 ## Troubleshoot
 
 ### Bugs?
-We are humans! It can come to times where our circuits get mixed and you see the resulting short circuit. You find a bug in our social network? You help us out and tell us which one.
+We are humans! It can come to times where our circuits get mixed and you see the resulting short circuit.
+You found a bug in our social network? You can help us out and tell us about it.
 
 To do that:
 
