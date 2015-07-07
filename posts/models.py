@@ -4,8 +4,10 @@ Post and Hashtag model file.
 @author 7Pros
 @copyright
 """
+import datetime
+
 from django.db import models
-from django.http import Http404
+from django.db.models import Count
 
 from users.models import User
 from circles.models import Circle
@@ -60,3 +62,8 @@ class Hashtag(models.Model):
         @return the posts that have used this hashtag
         """
         return Hashtag.objects.get(name=hashtag_name).posts.all()
+
+    @staticmethod
+    def top():
+        return Hashtag.objects.filter(posts__created_at__gt=datetime.datetime.now() - datetime.timedelta(days=1)) \
+            .annotate(itemcount=Count('name')).order_by('-itemcount')

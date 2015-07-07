@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-4">
+        {% include 'users/top_hashtags.html' %}
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                {% include 'posts/_post_create.html' %}
+
+                <br/><br/>
+
+                <ul class="nav nav-tabs" style="margin: -15px;margin-bottom: 15px;">
+                    <li class="active"><a href="#all" data-toggle="tab">All circles</a></li>
+                    <li><a href="#circle1" data-toggle="tab">Circle 1</a></li>
+                    <li><a href="#circle2" data-toggle="tab">Circle 2</a></li>
+                    <li><a href="#circle3" data-toggle="tab">Circle 3</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade active in" id="all">
+                        {% if posts %}
+                            {% for post in posts|dictsortreversed:'created_at' %}
+                                {% if forloop.counter != 1 %}
+                                    <hr/>
+                                {% endif %}
+                                {% include 'posts/_post.html' %}
+                            {% endfor %}
+                        {% else %}
+                            <br/>
+                            <p class="text-muted lead" style="color: #aaa; text-align: center;">
+                                This user has no posts<br/>
+                                #circuitzombie</p>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane fade" id="circle1">
+
+                    </div>
+                    <div class="tab-pane fade" id="circle2">
+
+                    </div>
+                    <div class="tab-pane fade" id="circle3">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

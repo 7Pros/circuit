@@ -26,4 +26,5 @@ urlpatterns = [
     url(r'^$', views.LandingPage.as_view(), name='landingpage'),
     url(r'^circles/', include('circles.urls', namespace='circles')),
     url(r'^legal-notice/', views.LegalNotice.as_view(), name='legal-notice'),
+    url(r'^feed/', views.feed, name='feed')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
