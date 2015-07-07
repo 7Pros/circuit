@@ -1,5 +1,5 @@
 """
---Brief Description--
+Router required for the communication to the channels between client and server
 
 @author 7Pros
 @copyright 
@@ -12,6 +12,11 @@ from .serializers import NotificationSerializer
 
 
 class NotificationRouter(ModelPubRouter):
+    """
+    Generic router class.
+
+    Creates a route called `notifications` and registers it for the communication between client and server.
+    """
     valid_verbs = ['subscribe']
     route_name = 'notifications'
     model = Notification

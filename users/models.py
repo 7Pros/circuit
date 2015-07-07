@@ -143,6 +143,9 @@ class User(AbstractBaseUser):
         return self.is_superuser
 
 class Notification(SelfPublishModel, models.Model):
+    """
+    Generic SwampDragon SelfPublishModel class.
+    """
     TYPE_OF_NOTIFICATIONS = (
         (0, 'circle-related'),
         (1, 'post-related')
@@ -159,6 +162,11 @@ class Notification(SelfPublishModel, models.Model):
 
     @staticmethod
     def set_all_as_read(user):
+        """
+        Set all the user's notifications as read.
+
+        @param user: the user that will get all his notifications as read.
+        """
         user_notifications = Notification.objects.filter(user=user).filter(status=False)
         if len(user_notifications) > 0:
             for notification in user_notifications:
@@ -167,5 +175,12 @@ class Notification(SelfPublishModel, models.Model):
 
     @staticmethod
     def get_number_of_unseen_notifications(user):
+        """
+        Returns the number of unseen notifications.
+
+        @param user: the user of the notifications.
+
+        @return: int - number of unseen notifications.
+        """
         return len(Notification.objects.filter(user=user).filter(status=False))
 
