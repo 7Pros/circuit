@@ -19,6 +19,7 @@ from PIL import Image
 from django.core.exceptions import ValidationError
 
 from circles.models import Circle
+from users.models import User
 import datetime
 from django.db.models import Count
 
@@ -71,6 +72,7 @@ def set_post_extra(post, request):
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
+    number_of_favorites = len(post.favorites.all())
     can_show_circle = post.author.pk == request.user.pk
 
     if post.circles:
@@ -92,6 +94,7 @@ def set_post_extra(post, request):
         'can_be_deleted': can_be_deleted,
         'can_show_circle': can_show_circle,
         'can_be_seen': can_be_seen,
+        'number_of_favorites': number_of_favorites,
         'replies': post.reply.all(),
     })
 
@@ -260,6 +263,9 @@ class PostsListView(ListView):
             posts = Hashtag.filter_posts_by_hashtag(self.kwargs['hashtag_name'])
         except Hashtag.DoesNotExist:
             raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
+        for post in posts:
+            set_post_extra(post, self.request)
+
         return posts
 
 
@@ -294,3 +300,20 @@ def top_hashtags():
 
     return Hashtag.objects.filter(posts__created_at__gt = datetime.datetime.now() - datetime.timedelta(days=1))\
         .annotate(itemcount=Count('name')).order_by('-itemcount')
+
+class FavoriteListView(ListView):
+    template_name = 'posts/favorite_list.html'
+    model = Post
+
+    def get_queryset(self):
+        """
+        Gets all the posts that have been favour by the user.
+
+        @return: the favorited posts
+        """
+        posts = User.objects.get(pk=self.request.user.pk).favorites.all()
+
+        for post in posts:
+            set_post_extra(post, self.request)
+
+        return posts
