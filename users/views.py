@@ -14,8 +14,10 @@ from django.shortcuts import redirect, Http404, render
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
+from circles.models import PUBLIC_CIRCLE
 
 from circuit import settings
+from posts.models import Post
 from posts.views import set_post_extra, top_hashtags, visible_posts_for
 from users.models import User, create_hash
 
@@ -201,9 +203,14 @@ def user_profile_by_username(request, username):
     except:
         raise Http404("Username does not exist", username)
 
-    posts = visible_posts_for(request.user) \
-        .filter(author=user.pk) \
-        .select_related('author', 'repost_original', 'reply_original')
+    if request.user.is_authenticated():
+        posts = visible_posts_for(request.user) \
+            .filter(author=user.pk) \
+            .select_related('author', 'repost_original', 'reply_original')
+    else:
+        posts = Post.objects.filter(circles=PUBLIC_CIRCLE) \
+            .filter(author=user.pk) \
+            .select_related('author', 'repost_original', 'reply_original')
 
     for post in posts:
         set_post_extra(post, request)
@@ -307,4 +314,3 @@ def user_search(request):
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
-
