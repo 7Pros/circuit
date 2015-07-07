@@ -25,5 +25,6 @@ urlpatterns = [
     url(r'^posts/', include('posts.urls', namespace='posts')),
     url(r'^$', views.LandingPage.as_view(), name='landingpage'),
     url(r'^circles/', include('circles.urls', namespace='circles')),
+    url(r'^search/$', views.SearchView.as_view(), name='search'),
     url(r'^impressum/', views.Impressum.as_view(), name='Impressum'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
