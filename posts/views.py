@@ -18,6 +18,7 @@ from posts.models import Post
 from PIL import Image
 from django.core.exceptions import ValidationError
 
+from users.models import User
 from circles.models import Circle, PUBLIC_CIRCLE, ME_CIRCLE
 import datetime
 from django.db.models import Count
