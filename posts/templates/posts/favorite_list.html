@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load parser %}
+    <div class="row">
+
+        <div class="col-xs-12 col-sm-6 col-md-8" style="margin-left: 20%">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    {% with posts=object_list %}
+                        {% for post in posts|dictsortreversed:'created_at' %}
+                            {% if forloop.counter != 1 %}
+                                <hr/>
+                            {% endif %}
+                            {% include 'posts/_post.html' %}
+                        {% empty %}
+                            <br/>
+                            <p class="text-muted lead" style="text-align: center;">
+                                No posts with this hashtag</p>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
