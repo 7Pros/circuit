@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-        <h1>Results for "{{ search_query }}"</h1>
+    <h1>Results for "{{ search_query }}"</h1>
 
     <div class="row">
         {% if users %}
@@ -9,9 +9,6 @@
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
                     {% include 'users/_user_card.html' %}
                 </div>
-            {% empty %}
-                <p class="text-muted" style="text-align:center;margin:10px;">
-                    No hashtags found</p>
             {% endfor %}
         {% endif %}
     </div>
@@ -24,9 +21,6 @@
                     <div class="panel-body">
                         {% for hashtag in hashtags %}
                             <a href="{% url 'search' %}?q=%23{{ hashtag }}">#{{ hashtag }}</a>
-                        {% empty %}
-                            <p class="text-muted" style="text-align:center;margin:10px;">
-                                No hashtags found</p>
                         {% endfor %}
                     </div>
                 </div>
@@ -40,9 +34,6 @@
                                 <hr/>
                             {% endif %}
                             {% include 'posts/_post.html' %}
-                        {% empty %}
-                            <p class="text-muted" style="text-align:center;margin:10px;">
-                                No posts found</p>
                         {% endfor %}
                     </div>
                 </div>
