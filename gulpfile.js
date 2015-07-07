@@ -11,7 +11,10 @@ gulp.task('default', [
 ]);
 
 gulp.task('css', function () {
-    return gulp.src('./assets/less/app.less')
+    return gulp.src([
+        './assets/less/app.less',
+        './assets/vendor/animate-css/animate.css'
+    ])
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(sourcemaps.write())
@@ -27,10 +30,10 @@ gulp.task('js', function () {
         './assets/vendor/vue/dist/vue.js',
         './assets/vendor/devbridge-autocomplete/dist/jquery.autocomplete.js',
         './assets/js/app.js',
-		'./assets/vendor/wow/dist/wow.js'
+        './assets/vendor/wow/dist/wow.js'
     ])
         .pipe(concat('app.js'))
-		.pipe(concat('wow.js'))
+        .pipe(concat('wow.js'))
         .pipe(gulp.dest('./circuit/static/js'))
 });
 
