@@ -7,7 +7,7 @@ Posts' app url patterns.
 from django.conf.urls import url
 
 from posts import views
-from posts.views import PostsListView
+from posts.views import PostsListView, FavoriteListView
 
 urlpatterns = [
     url(r'^create/$', views.post_create, name='create'),
@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/delete/$', views.PostDeleteView.as_view(), name='delete'),
     url(r'^(?P<pk>\d+)/favorite/$', views.post_favorite, name='favorite'),
     url(r'^hashtags/(?P<hashtag_name>\w+)/$', PostsListView.as_view(), name='hashtags'),
+    url(r'^favorites/$', FavoriteListView.as_view(), name='favorites'),
 ]
