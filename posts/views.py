@@ -90,7 +90,7 @@ def visible_posts_for(user):
     public = Post.objects.filter(circles=PUBLIC_CIRCLE)
     my_circle = Post.objects.filter(circles__owner=user.pk)
     in_circle = Post.objects.filter(circles__members=user.pk)
-    return own | public | my_circle | in_circle
+    return (own | public | my_circle | in_circle).order_by('created_at').reverse()
 
 
 def check_reply(user):
