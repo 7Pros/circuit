@@ -21,8 +21,8 @@ class LandingPage(TemplateView):
     template_name = 'landingpage.html'
 
 
-class Impressum(TemplateView):
-    template_name = 'Impressum.html'
+class LegalNotice(TemplateView):
+    template_name = 'legal-notice.html'
 
 
 class SearchView(TemplateView):
