@@ -73,6 +73,7 @@ def set_post_extra(post, request):
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
     number_of_favorites = len(post.favorites.all())
+    number_of_reposts = len(post.repost_original.all())
 
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
@@ -80,6 +81,7 @@ def set_post_extra(post, request):
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
         'number_of_favorites': number_of_favorites,
+        'number_of_reposts': number_of_reposts,
         'replies': post.reply.all(),
     })
 

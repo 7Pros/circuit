@@ -52,7 +52,11 @@
                 {% endif %}
             </a>
             {% if post.extra.can_be_reposted %}
-                <a class="mdi-av-repeat" href="{% url 'posts:repost' pk=post.original_or_self.pk %}"></a>
+                <a class="mdi-av-repeat" href="{% url 'posts:repost' pk=post.original_or_self.pk %}">
+                {% if post.extra.number_of_reposts %}
+                    <span class="badge" style="margin-left: -10px;">{{ post.extra.number_of_reposts }}</span>
+                {% endif %}
+                </a>
             {% endif %}
             <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" data-toggle="collapse"></a>
             <div class="pull-right">
