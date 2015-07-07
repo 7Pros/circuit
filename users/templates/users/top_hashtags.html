@@ -1,6 +1,6 @@
 {% if request.user.is_authenticated %}
     <div class="panel panel-default">
-        <div class="panel-heading">Top 5 hashtags</div>
+        <div class="panel-heading">Trends in circuit</div>
         <div class="panel-body">
             {% for hashtag in top_hashtags %}
                 <a href="{% url 'posts:hashtags' hashtag_name=hashtag %}">#{{ hashtag }}</a>
