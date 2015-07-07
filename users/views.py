@@ -16,8 +16,7 @@ from django.views import generic
 from django.views.generic import CreateView
 
 from circuit import settings
-from posts.models import Post
-from posts.views import set_post_extra
+from posts.views import set_post_extra, top_hashtags, visible_posts_for
 from users.models import User, create_hash
 
 
@@ -197,10 +196,12 @@ def user_profile_by_username(request, username):
     try:
         user = User.objects.get(username=username)
     except:
-        raise Http404("Username doesn't exist", username)
+        raise Http404("Username does not exist", username)
 
-    posts = Post.objects.filter(author=user.pk) \
+    posts = visible_posts_for(request.user) \
+        .filter(author=user.pk) \
         .select_related('author', 'repost_original', 'reply_original')
+
     for post in posts:
         set_post_extra(post, request)
     context = {'posts': posts, 'user': user}
@@ -213,13 +214,13 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = Post.objects.filter(author=self.object.pk) \
+        posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
-        setattr(context['user'], 'circles', context['user'].circle_set.all())
 
         for post in posts:
             set_post_extra(post, self.request)
         context.update(posts=posts)
+        context.update(top_hashtags=top_hashtags())
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
@@ -303,3 +304,4 @@ def user_search(request):
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
+
