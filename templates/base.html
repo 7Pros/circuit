@@ -42,8 +42,12 @@
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
                         {% else %}
                             <li><a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md">Help</a></li>
-                            <li><a href="{% url 'users:signup' %}">Sign up</a></li>
-                            <li><a href="{% url 'users:login' %}">Login</a></li>
+                            {% if request.get_full_path != '/users/signup/' %}
+                                <li><a href="{% url 'users:signup' %}">Sign up</a></li>
+                            {% endif %}
+                            {% if request.get_full_path != '/users/login/' %}
+                                <li><a href="{% url 'users:login' %}">Login</a></li>
+                            {% endif %}
                         {% endif %}
                     </ul>
                 </nav>
