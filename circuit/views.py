@@ -7,9 +7,7 @@ Main project views file.
 import datetime
 
 from django.db.models import Count
-
 from django.http import Http404
-
 from django.views.generic import TemplateView
 
 from posts.models import Hashtag
