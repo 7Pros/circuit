@@ -161,6 +161,9 @@ class PostEditView(generic.UpdateView):
         """
         if not self.request.user.is_authenticated:
             return self.form_invalid(form)
+        has_img = 'image' in self.request.FILES
+        if has_img and not post_image_is_valid(self.request.FILES['image']):
+            messages.error(self.request, 'Invalid image format')
 
         if not post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
@@ -172,7 +175,10 @@ class PostEditView(generic.UpdateView):
             if circle_owner_id != self.request.user.pk:
                 return self.form_invalid(form)
 
+
         post = form.save()
+        if has_img:
+            post.image = self.request.FILES['image']
 
         circle_pk = int(self.request.POST['circle'])
         post.circles = Circle(circle_pk)
