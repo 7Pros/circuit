@@ -305,3 +305,20 @@ def user_search(request):
 
     return JsonResponse({'suggestions': users_data}, safe=False)
 
+class UserFavoriteView(generic.ListView):
+    template_name = 'posts/favorite_list.html'
+    model = User
+
+    def get_queryset(self):
+        """
+        Gets all the posts that have been favour by the user.
+
+        @return: the favorited posts
+        """
+        posts = User.objects.get(pk=self.kwargs['pk']).favorites.all()
+
+        for post in posts:
+            set_post_extra(post, self.request)
+
+        return posts
+

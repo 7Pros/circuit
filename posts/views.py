@@ -314,19 +314,4 @@ def top_hashtags():
     return Hashtag.objects.filter(posts__created_at__gt = datetime.datetime.now() - datetime.timedelta(days=1))\
         .annotate(itemcount=Count('name')).order_by('-itemcount')
 
-class FavoriteListView(ListView):
-    template_name = 'posts/favorite_list.html'
-    model = Post
 
-    def get_queryset(self):
-        """
-        Gets all the posts that have been favour by the user.
-
-        @return: the favorited posts
-        """
-        posts = User.objects.get(pk=self.request.user.pk).favorites.all()
-
-        for post in posts:
-            set_post_extra(post, self.request)
-
-        return posts

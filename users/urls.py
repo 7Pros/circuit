@@ -12,6 +12,7 @@ from users.views import (
     UserProfileView,
     UserUpdateView,
     UserDeleteView,
+    UserFavoriteView,
 )
 
 urlpatterns = [
@@ -27,4 +28,6 @@ urlpatterns = [
     url(r'^(?P<username>[^/]+)/$', views.user_profile_by_username, name='profile_username'),
     url(r'^(?P<pk>\d+)/edit/$', UserUpdateView.as_view(), name='edit'),
     url(r'^(?P<pk>\d+)/delete/$', UserDeleteView.as_view(), name='delete'),
+    url(r'^(?P<pk>\d+)/favorites/$', UserFavoriteView.as_view(), name='favorites'),
+
 ]
