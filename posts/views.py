@@ -257,23 +257,6 @@ def save_hashtags(hashtags, post):
             hashtagList[0].posts.add(post)
 
 
-class PostsListView(ListView):
-    template_name = 'posts/posts_list.html'
-    model = Post
-
-    def get_queryset(self):
-        """
-        Returns the posts containing a wished hashtag
-
-        @return posts objects that contain the searched hashtag
-        """
-        try:
-            posts = Hashtag.filter_posts_by_hashtag(self.kwargs['hashtag_name'])
-        except Hashtag.DoesNotExist:
-            raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
-        return posts
-
-
 def post_favorite(request, pk=None):
     """
     Favorite or un-favorite a post.
