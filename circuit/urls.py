@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^users/', include('users.urls', namespace='users')),
+    url(r'^api/', include('api.urls', namespace='api')),
     url(r'^posts/', include('posts.urls', namespace='posts')),
     url(r'^$', views.LandingPage.as_view(), name='landingpage'),
     url(r'^circles/', include('circles.urls', namespace='circles')),
