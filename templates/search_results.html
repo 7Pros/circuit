@@ -1,17 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Results for "{{ search_query }}"</h1>
 
-    <div class="row">
-        {% if users %}
+    {% if users or posts or hashtags %}
+        <h1>
+            {% if show_all == 'users' %}All users for
+            {% elif show_all == 'hashtags' %}All hashtags for
+            {% elif show_all == 'posts' %}Posts for
+            {% else %}Results for{% endif %}
+            {{ search_query }}
+        </h1>
+    {% else %}
+        <div class="row">
+            <p class="lead text-muted" style="text-align:center;margin:10px;">
+                No results for {{ search_query }}
+            </p>
+        </div>
+    {% endif %}
+
+    {% if users %}
+        <div class="row">
             {% for user in users %}
                 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
                     {% include 'users/_user_card.html' %}
                 </div>
             {% endfor %}
+        </div>
+        {% if not show_all %}
+            <a href="{% url 'search' %}?q={{ search_query|urlencode }}&all=users"
+               class="btn btn-sm">Show all users</a>
         {% endif %}
-    </div>
+    {% endif %}
 
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-8">
@@ -22,6 +41,11 @@
                         {% for hashtag in hashtags %}
                             <a href="{% url 'search' %}?q=%23{{ hashtag }}">#{{ hashtag }}</a>
                         {% endfor %}
+                        {% if not show_all %}
+                            <a href="{% url 'search' %}?q={{ search_query|urlencode }}&all=hashtags"
+                               class="pull-right">more&#8230;</a>
+                            <div class="clearfix"></div>
+                        {% endif %}
                     </div>
                 </div>
             {% endif %}
@@ -36,10 +60,15 @@
                             {% include 'posts/_post.html' %}
                         {% endfor %}
                     </div>
+                    {% if not show_all %}
+                        <hr/>
+                        <a href="{% url 'search' %}?q={{ search_query|urlencode }}&all=posts"
+                           class="btn btn-sm pull-right">Show more posts&#8230;</a>
+                        <div class="clearfix"></div>
+                    {% endif %}
                 </div>
             {% endif %}
 
         </div>
-
     </div>
 {% endblock %}

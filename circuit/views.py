@@ -7,7 +7,6 @@ Main project views file.
 import datetime
 
 from django.db.models import Count
-from django.http import Http404
 from django.views.generic import TemplateView
 
 from posts.models import Hashtag
@@ -29,12 +28,17 @@ class SearchView(TemplateView):
     def get_context_data(self, **kwargs):
         """Collects all results and update the context with them."""
         query = self.request.GET.get('q', '').strip()
-        try:
-            limit_users = int(self.request.GET.get('lu', 6))
-            limit_hashtags = int(self.request.GET.get('lh', 10))
-            limit_posts = int(self.request.GET.get('lp', 50))
-        except:
-            raise Http404('Invalid search parameters')
+        show_all = self.request.GET.get('all', '')
+
+        if show_all:
+            limit_users = limit_hashtags = limit_posts = 0
+            if show_all == 'users': limit_users = -1
+            elif show_all == 'hashtags': limit_hashtags = -1
+            elif show_all == 'posts': limit_posts = -1
+        else:
+            limit_users = 6
+            limit_hashtags = 10
+            limit_posts = 50
 
         # search_type is @ for user, # for hashtag,
         # anything else for full text search
@@ -84,13 +88,18 @@ class SearchView(TemplateView):
             posts_by_username = pq.filter(author__username__icontains=search_text)
             posts = posts_by_content | posts_by_name | posts_by_username
 
+        # only get the rows that are actually shown
+        if 0 <= limit_users:    users    = users[:limit_users]
+        if 0 <= limit_hashtags: hashtags = hashtags[:limit_hashtags]
+        if 0 <= limit_posts:    posts    = posts[:limit_posts]
+
         ctx = super(SearchView, self).get_context_data(**kwargs)
         ctx.update({
+            'show_all': show_all,
             'search_query': query,
-            'search_type': search_type,
             'search_text': search_text,
-            'hashtags': hashtags[:limit_hashtags],
-            'users': users[:limit_users],
-            'posts': posts[:limit_posts],
+            'users': users,
+            'hashtags': hashtags,
+            'posts': posts,
         })
         return ctx
