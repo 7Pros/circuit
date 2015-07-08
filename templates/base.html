@@ -35,26 +35,26 @@
                             <li>
                                 <a href="{% url 'users:profile' pk=request.user.pk %}">
                                     <span class="mdi-social-person"></span>
-                                    Profile
+                                    <span class="navbar-icon-text">Profile</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">
                                     <span class="mdi-action-help"></span>
-                                    Help
+                                    <span class="navbar-icon-text">Help</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="{% url 'users:logout' %}">
                                     <span class="mdi-action-exit-to-app"></span>
-                                    Logout
+                                    <span class="navbar-icon-text">Logout</span>
                                 </a>
                             </li>
                         {% else %}
                             <li>
                                 <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">
                                     <span class="mdi-action-help"></span>
-                                    Help
+                                    <span class="navbar-icon-text">Help</span>
                                 </a>
                             </li>
                             {% if request.get_full_path != '/users/signup/' %}
