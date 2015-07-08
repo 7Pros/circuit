@@ -8,9 +8,7 @@ import datetime
 import re
 
 from PIL import Image
-
 from django.core.exceptions import ValidationError
-
 from django.db import models
 
 from django.db.models import Count
