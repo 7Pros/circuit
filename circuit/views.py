@@ -36,9 +36,9 @@ class SearchView(TemplateView):
             elif show_all == 'hashtags': limit_hashtags = -1
             elif show_all == 'posts': limit_posts = -1
         else:
-            limit_users = 6
+            limit_users = 3
             limit_hashtags = 10
-            limit_posts = 50
+            limit_posts = 20
 
         # search_type is @ for user, # for hashtag,
         # anything else for full text search
