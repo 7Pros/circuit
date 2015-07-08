@@ -10,7 +10,8 @@ from rest_framework import permissions, throttling, parsers
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view, renderer_classes, authentication_classes, permission_classes, throttle_classes, parser_classes
+from rest_framework.decorators import api_view, renderer_classes, authentication_classes, permission_classes, \
+    throttle_classes, parser_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
@@ -94,12 +95,12 @@ def user_login(request):
             return Response(template_name='api/login.html', status=status.HTTP_200_OK)
         elif 'application/json' in request.content_type:
             return Response(data={
-                'message':{
+                'message': {
                     'action-feedback': 'Please provide your login credentials, if you don\'t have an account, please visit our website and create your account'
                 },
                 'required-data': {
-                        'email': 'The registered email for the user\'s account',
-                        'password': 'The password for the account',
+                    'email': 'The registered email for the user\'s account',
+                    'password': 'The password for the account',
                 },
             }, status=status.HTTP_200_OK)
 
@@ -153,7 +154,7 @@ def user_login(request):
 @throttle_classes([throttling.AnonRateThrottle, throttling.UserRateThrottle])
 @parser_classes((parsers.JSONParser, parsers.MultiPartParser))
 @csrf_exempt
-def post_create(request):
+def posts_create(request):
     """
     If the user is authenticated, it will perform the posting of a new entry to the user it was logged in profile.
 
@@ -177,7 +178,8 @@ def post_create(request):
                     post.image = request.data['image']
 
                 circle_pk = int(request.data['circle'])
-                pseudo_circle = Circle(circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
+                pseudo_circle = Circle(
+                    circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
                 post = Post(content=request.POST['content'], author=request.user, circles=pseudo_circle)
 
                 post.save()
@@ -213,7 +215,8 @@ def post_create(request):
                 # TODO: fix circles
                 if 'circle' in request.data:
                     circle_pk = int(request.data['circle'])
-                    pseudo_circle = Circle(circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
+                    pseudo_circle = Circle(
+                        circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
                     post.circles = pseudo_circle
                 else:
                     return Response(data={
