@@ -26,6 +26,15 @@
                     <a class="navbar-brand" href="{% url 'landingpage' %}">circuit</a>
                 {% endif %}
             </div>
+            <form action="{% url 'search' %}" method="get"
+                  class="navbar-form navbar-left">
+                <input type="text"
+                       name="q"
+                       class="form-control col-lg-8"
+                       placeholder="Search @user #hashtag"
+                       value="{{ search_query }}"
+                       required />
+            </form>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <nav>
                     <ul class="nav navbar-nav">
