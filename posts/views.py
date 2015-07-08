@@ -80,6 +80,8 @@ def set_post_extra(post, request):
         'replies': post.reply.all(),
     })
 
+    return post
+
 
 def visible_posts_for(user):
     """

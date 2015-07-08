@@ -10,7 +10,7 @@ from django.db.models import Count
 from django.views.generic import TemplateView
 
 from posts.models import Hashtag
-from posts.views import visible_posts_for, top_hashtags
+from posts.views import visible_posts_for, top_hashtags, set_post_extra
 from users.models import User
 
 
@@ -100,7 +100,7 @@ class SearchView(TemplateView):
             'search_text': search_text,
             'users': users,
             'hashtags': hashtags,
-            'posts': posts,
+            'posts': [set_post_extra(p, self.request) for p in posts],
             'top_hashtags': top_hashtags(),
         })
         return ctx
