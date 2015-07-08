@@ -1,0 +1,107 @@
+{% extends 'rest_framework/base.html' %}
+
+{% block bootstrap_theme %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/app.css" %}"/>
+{% endblock %}
+
+{% block title %}circuit | API{% endblock %}
+
+{% block body %}
+    <header>
+        <div class="navbar">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target=".navbar-responsive-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'users:profile' pk=request.user.pk %}">circuit</a>
+                </div>
+                <div class="navbar-collapse collapse navbar-responsive-collapse">
+                    <nav>
+                        <ul class="nav navbar-nav">
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
+                            <li><a href="{% url 'users:logout' %}">Logout</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="row col-md-offset-3 col-md-6">
+            <div class="panel panel-default panel-body">
+                <form action="{% url 'api:posts-create' %}" method="post" id="post_create"
+                      enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <br/>
+                    {% if message %}
+                        <div class="alert alert-{% if message.status %}danger{% else %}success{% endif %} alert-dismissable">{{ message.content }}</div>
+                    {% endif %}
+                    <div class="col-md-8">
+                <textarea
+                        maxlength="256"
+                        name="content"
+                        class="form-control floating-label"
+                        rows="3"
+                        v-model="content"
+                        data-hint="(% 256 - content.length %)"
+                        placeholder="Write something!"></textarea>
+                    </div>
+                    <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
+                        Write
+                    </button>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-4 col-lg-4" style="height: 60px;padding-top: 15px;">
+                            <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="mdi-social-people"></i>
+                            </span>
+                                <select class="form-control" name="circle">
+                                    <option value="0" selected="selected">Select a circle</option>
+                                    <option value="-1" selected="selected">Only visible for me</option>
+                                    <option value="-2">Public</option>
+                                    {% if user.circles %}
+                                        {% for circle in user.circles|dictsortreversed:'pk' %}
+                                            <option value="{{ circle.pk }}">{{ circle.name }}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-5 col-lg-5" style="height: 60px;padding-top: 18px;">
+                            <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="mdi-image-image"></i>
+                            </span>
+                                <input class="" name="image" type="file" style="margin-top: 5px;"/>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+
+            </div>
+        </div>
+    </main>
+{% endblock %}
+{% block script %}
+    <script src="{% static "js/app.js" %}"></script>
+    <script type="application/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+    <script>
+        $("form").on("submit", function () {
+            $(this).serialize();
+        });
+    </script>
+{% endblock %}

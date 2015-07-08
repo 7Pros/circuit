@@ -11,14 +11,13 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, Http404, render
-from django.template import loader, Context
+from django.template import loader
 from django.views import generic
 from django.views.generic import CreateView
 from circles.models import PUBLIC_CIRCLE
 
 from circuit import settings
-from posts.models import Post
-from posts.views import set_post_extra, top_hashtags, visible_posts_for
+from posts.models import Post, Hashtag
 from users.models import User, create_hash
 
 
@@ -46,34 +45,8 @@ class UserCreateView(CreateView):
         """Creates the user if all data is valid."""
         form.instance.set_password(form.cleaned_data['password'])
         user = form.save()
-
-        self.send_confirm_mail(user)
-
+        email_notification_for_user(user, "Welcome to circuit", 'users/confirmation_email.html')
         return super(UserCreateView, self).form_valid(form)
-
-    def send_confirm_mail(self, user):
-        """Sends a confirmation mail to the user's email address.
-
-        @param self: object
-        @param user: User - user
-
-        @return void
-        """
-        template = loader.get_template('users/confirmation_email.html')
-        context = Context({
-            'user': user,
-            'site_url': settings.SITE_URL,
-        })
-        html = template.render(context)
-
-        send_mail(
-            subject='Welcome to circuit',
-            message='hi',
-            from_email='hello@circuit.io',
-            recipient_list=[user.email],
-            fail_silently=False,
-            html_message=html
-        )
 
 
 def user_request_reset_password(request):
@@ -90,24 +63,10 @@ def user_request_reset_password(request):
             user.save()
 
             # send password reset email with token
-            template = loader.get_template('users/password_reset_email.html')
-            context = Context({
-                'user': user,
-                'site_url': settings.SITE_URL,
-            })
-            html = template.render(context)
-
-            send_mail(
-                subject='Password reset',
-                message='hi',
-                from_email='hello@circuit.io',
-                recipient_list=[user.email],
-                fail_silently=False,
-                html_message=html
-            )
+            subject_toDo = 'password_reset'
+            email_notification_for_user(user, subject_toDo, 'users/password_reset_email.html')
 
             messages.success(request, 'Password reset email send.')
-
             return redirect('users:login')
 
         except ObjectDoesNotExist:
@@ -160,11 +119,8 @@ def user_create_confirm(request, token):
 
 def user_login(request):
     if request.method == "GET":
-        if not request.user.is_authenticated():
-            template = loader.get_template('users/user_login.html')
-            return HttpResponse(template.render(request=request))
-        else:
-            return redirect('users:profile', pk=request.user.pk)
+        template = loader.get_template('users/user_login.html')
+        return HttpResponse(template.render(request=request))
 
     if request.method == "POST":
         email = request.POST['email']
@@ -204,7 +160,7 @@ def user_profile_by_username(request, username):
         raise Http404("Username does not exist", username)
 
     if request.user.is_authenticated():
-        posts = visible_posts_for(request.user) \
+        posts = Post.visible_posts_for(request.user) \
             .filter(author=user.pk) \
             .select_related('author', 'repost_original', 'reply_original')
     else:
@@ -213,7 +169,7 @@ def user_profile_by_username(request, username):
             .select_related('author', 'repost_original', 'reply_original')
 
     for post in posts:
-        set_post_extra(post, request)
+        post.set_post_extra(request)
     context = {'posts': posts, 'user': user}
 
     return render(request, 'users/user_profile.html', context)
@@ -224,13 +180,13 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
+        posts = Post.visible_posts_for(self.request.user).filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
 
         for post in posts:
-            set_post_extra(post, self.request)
+            post.set_post_extra(self.request)
         context.update(posts=posts)
-        context.update(top_hashtags=top_hashtags())
+        context.update(top_hashtags=Hashtag.top())
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
@@ -314,3 +270,28 @@ def user_search(request):
         users_data.append(user_data)
 
     return JsonResponse({'suggestions': users_data}, safe=False)
+
+
+def email_notification_for_user(user, subject, templateFile, context={}):
+    """
+    function for notification via email for users:
+    site-url is set as the link to the main page of the circuit
+    and is available in the templates as well as the user and the values given
+    in the dictionary "context"
+    the template file should contain the explicit path to the template beginning in the templates folder of users
+    """
+    template = loader.get_template(templateFile)
+    context.update({
+        'user': user,
+        'site_url': settings.SITE_URL,
+    })
+    html = template.render(context)
+
+    send_mail(
+        subject=subject,
+        message='notification',
+        from_email='noreply@circuit.io',
+        recipient_list=[user.email],
+        fail_silently=False,
+        html_message=html
+    )
