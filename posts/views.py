@@ -4,8 +4,6 @@ Post views file.
 @author 7Pros
 @copyright
 """
-import re
-
 from django.contrib import messages
 from django.shortcuts import redirect, Http404
 from django.views.generic import ListView, DetailView
@@ -37,8 +35,8 @@ def post_create(request):
         if has_image:
             post.image = request.FILES['image']
         post.save()
-        parsed_content = parse_content(request.POST['content'])
-        save_hashtags(parsed_content['hashtags'], post)
+        parsed_content = Post.parse_content(request.POST['content'])
+        Post.save_hashtags(parsed_content['hashtags'], post)
         for mentionedUser in User.objects.filter(username__in=parsed_content['mentions']):
             mentionedUser_is_in_circle = False
             for member in post.circles.members.all():
@@ -92,9 +90,9 @@ class PostEditView(generic.UpdateView):
         if not Post.content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
         old_post = self.object
-        parsed_content_old = parse_content(old_post.content)
+        parsed_content_old = Post.parse_content(old_post.content)
         post = form.save()
-        parsed_content_new = parse_content(post.content)
+        parsed_content_new = Post.parse_content(post.content)
         for mentionedUser in User.objects.filter(username__in=parsed_content_new['mentions']):
             mentionedUser_is_in_circle = False
             for member in post.circles.members.all():
@@ -202,24 +200,6 @@ def post_reply(request, pk=None):
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
-
-
-def parse_content(content):
-    hashtags = re.findall(r"#(\w+)", content)
-    mentions = re.findall(r"@(\w+)", content)
-    return {'hashtags': hashtags, 'mentions': mentions}
-
-
-def save_hashtags(hashtags, post):
-    for hashtagWord in hashtags:
-        hashtagList = Hashtag.objects.filter(name=hashtagWord)
-
-        if len(hashtagList) == 0:
-            hashtag = Hashtag(name=hashtagWord.lower())
-            hashtag.save()
-            hashtag.posts.add(post)
-        else:
-            hashtagList[0].posts.add(post)
 
 
 class PostsListView(ListView):

@@ -5,6 +5,7 @@ Post and Hashtag model file.
 @copyright
 """
 import datetime
+import re
 
 from PIL import Image
 from django.core.exceptions import ValidationError
@@ -65,6 +66,18 @@ class Post(models.Model):
             'replies': self.reply.all(),
         })
 
+    def save_hashtags(self, hashtags):
+        for hashtagWord in hashtags:
+            hashtagList = Hashtag.objects.filter(name=hashtagWord)
+
+            if len(hashtagList) == 0:
+                hashtag = Hashtag(name=hashtagWord.lower())
+                hashtag.save()
+                hashtag.posts.add(post)
+            else:
+                hashtagList[0].posts.add(post)
+
+
     def check_repost(self, user):
         """
         Check if a post can be reposted by a user.
@@ -101,6 +114,13 @@ class Post(models.Model):
 
     def __str__(self):
         return self.content
+
+    @staticmethod
+    def parse_content(content):
+        hashtags = re.findall(r"#(\w+)", content)
+        mentions = re.findall(r"@(\w+)", content)
+        return {'hashtags': hashtags, 'mentions': mentions}
+
 
     @staticmethod
     def content_is_valid(content):
