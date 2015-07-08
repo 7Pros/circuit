@@ -366,6 +366,11 @@ class PostDeleteView(generic.DeleteView):
         return reverse('users:profile', kwargs={'pk': self.request.user.pk})
 
 
+<<<<<<< HEAD
 def top_hashtags():
+    """
+    Shows most used hashtags in last 24 hours
+    @return filters hashtags in descending order from last 24 h
+    """
     return Hashtag.objects.filter(posts__created_at__gt=datetime.datetime.now() - datetime.timedelta(days=1)) \
-        .annotate(itemcount=Count('name')).order_by('-itemcount')
+           .annotate(itemcount=Count('name')).order_by('-itemcount')
