@@ -36,7 +36,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
                             <li class="center-block">
-                                <a data-target="#modal-post-create" data-toggle="modal" style="margin-right: 200px;color: #D7F1FD;"><span class="mdi-communication-forum" style="margin-bottom: -20px;"></span></a>
+                                <a data-target="#modal-post-create" data-toggle="modal" style="float:none; margin-right: 250px;color: #D7F1FD;"><span class="mdi-communication-forum" style="margin-bottom: -15px;margin-top: -2px;"></span></a>
                             </li>
                             <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
                             <li><a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md">Help</a></li>
