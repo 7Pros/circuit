@@ -30,16 +30,6 @@ class SearchView(TemplateView):
         query = self.request.GET.get('q', '').strip()
         show_all = self.request.GET.get('all', '')
 
-        if show_all:
-            limit_users = limit_hashtags = limit_posts = 0
-            if show_all == 'users': limit_users = -1
-            elif show_all == 'hashtags': limit_hashtags = -1
-            elif show_all == 'posts': limit_posts = -1
-        else:
-            limit_users = 3
-            limit_hashtags = 10
-            limit_posts = 20
-
         # search_type is @ for user, # for hashtag,
         # anything else for full text search
         search_type = query[0] if query and query[0] in ('@', '#') else None
@@ -88,10 +78,15 @@ class SearchView(TemplateView):
             posts_by_username = pq.filter(author__username__icontains=search_text)
             posts = posts_by_content | posts_by_name | posts_by_username
 
-        # only get the rows that are actually shown
-        if 0 <= limit_users:    users    = users[:limit_users]
-        if 0 <= limit_hashtags: hashtags = hashtags[:limit_hashtags]
-        if 0 <= limit_posts:    posts    = posts[:limit_posts]
+        # only show first few results, except all users/hashtags are explicitly wanted
+        if show_all == 'users': hashtags = posts = []
+        elif show_all == 'hashtags': users = posts = []
+        elif show_all == 'posts':
+            users = hashtags = []
+        else:
+            users = users[:3]
+            hashtags = hashtags[:10]
+            posts = posts[:20]
 
         ctx = super(SearchView, self).get_context_data(**kwargs)
         ctx.update({
