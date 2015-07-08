@@ -21,12 +21,10 @@
 
                     {% if posts %}
                         {% for post in posts|dictsortreversed:'created_at' %}
-                            {% if post.extra.can_be_seen %}
-                                {% if forloop.counter != 1 %}
-                                    <hr/>
-                                {% endif %}
-                                {% include 'posts/_post.html' %}
+                            {% if forloop.counter != 1 %}
+                                <hr/>
                             {% endif %}
+                            {% include 'posts/_post.html' %}
                         {% endfor %}
                     {% else %}
                         <br/>
