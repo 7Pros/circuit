@@ -1,0 +1,84 @@
+{% extends 'rest_framework/login_base.html' %}
+
+{% block title %}circuit | API{% endblock %}
+
+{% load static %}
+
+{% block bootstrap_theme %}
+    <link rel="stylesheet" href="{% static "css/app.css" %}"/>
+{% endblock %}
+
+{% block body %}
+<header>
+    <div class="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target=".navbar-responsive-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{% url 'landingpage' %}">circuit</a>
+            </div>
+            <div class="navbar-collapse collapse navbar-responsive-collapse">
+                <nav>
+                    <ul class="nav navbar-nav">
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{% url 'users:signup' %}">Sign up</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+            <div class="panel panel-default panel-body">
+
+                <h2>Login</h2>
+                {% if message %}
+                    <div class="alert alert-{% if message.status %}danger{% else %}success{% endif %} alert-dismissable">{{ message.content }}</div>
+                {% endif %}
+
+                <form action="{% url 'api:login' %}" method="post">
+                    {% csrf_token %}
+                    <br/>
+
+                    <div class="form-group">
+                        <input type="email"
+                               name="email"
+                               class="form-control floating-label"
+                               placeholder="E-Mail"
+                               required>
+                        <br/>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="password"
+                               name="password"
+                               class="form-control floating-label"
+                               placeholder="Password"
+                               required>
+                    </div>
+
+                    <button class="btn btn-lg btn-raised btn-primary" type="submit">Login</button>
+                    <a class="pull-right" href="{% url 'users:request_password_reset' %}" style="margin-top: 20px">Forgot password?</a>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %}
+    <script type="application/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>
+    <script>
+        $("form").on("submit", function () {
+            $(this).serialize();
+        });
+    </script>
+{% endblock %}
