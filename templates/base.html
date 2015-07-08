@@ -42,8 +42,8 @@
                                     <span class="mdi-action-settings"></span>
                                 </a>
                                 <ul class="dropdown-menu" id="user-settings">
-                                    <li><a href="{% url 'users:edit' pk=user.pk %}" style="color: #03a9f4 !important;">Edit profile</a></li>
-                                    <li><a href="{% url 'circles:manage' user_pk=user.pk %}" style="color: #03a9f4 !important;">Manage circles</a></li>
+                                    <li><a href="{% url 'users:edit' pk=request.user.pk %}" style="color: #03a9f4 !important;">Edit profile</a></li>
+                                    <li><a href="{% url 'circles:manage' user_pk=request.user.pk %}" style="color: #03a9f4 !important;">Manage circles</a></li>
                                 </ul>
                             </li>
                         {% else %}
