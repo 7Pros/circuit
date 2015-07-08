@@ -17,8 +17,7 @@ from django.views.generic import CreateView
 from circles.models import PUBLIC_CIRCLE
 
 from circuit import settings
-from posts.models import Post
-from posts.views import set_post_extra, top_hashtags, visible_posts_for
+from posts.models import Post, Hashtag
 from users.models import User, create_hash
 
 
@@ -161,7 +160,7 @@ def user_profile_by_username(request, username):
         raise Http404("Username does not exist", username)
 
     if request.user.is_authenticated():
-        posts = visible_posts_for(request.user) \
+        posts = Post.visible_posts_for(request.user) \
             .filter(author=user.pk) \
             .select_related('author', 'repost_original', 'reply_original')
     else:
@@ -170,7 +169,7 @@ def user_profile_by_username(request, username):
             .select_related('author', 'repost_original', 'reply_original')
 
     for post in posts:
-        set_post_extra(post, request)
+        post.set_post_extra(request)
     context = {'posts': posts, 'user': user}
 
     return render(request, 'users/user_profile.html', context)
@@ -181,13 +180,13 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
+        posts = Post.visible_posts_for(self.request.user).filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
 
         for post in posts:
-            set_post_extra(post, self.request)
+            post.set_post_extra(self.request)
         context.update(posts=posts)
-        context.update(top_hashtags=top_hashtags())
+        context.update(top_hashtags=Hashtag.top())
         context.update(active_tab='posts')
 
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
@@ -311,17 +310,17 @@ class UserFavoriteView(generic.DetailView):
         """
         favorite_posts = User.objects.get(pk=self.object.pk).favorites.all()
 
-        visible_posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
+        visible_posts = Post.visible_posts_for(self.request.user).filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
 
         posts = list()
         for favorite_post in favorite_posts:
             if favorite_post in visible_posts:
-                set_post_extra(favorite_post, self.request)
+                favorite_post.set_post_extra(favorite_post, self.request)
                 posts.append(favorite_post)
 
         context.update(posts=posts)
-        context.update(top_hashtags=top_hashtags())
+        context.update(top_hashtags=Hashtag.top_hashtags())
         context.update(active_tab='favorites')
 
         return super(UserFavoriteView, self).render_to_response(context, **response_kwargs)

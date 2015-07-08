@@ -19,7 +19,7 @@
 **Circuit** is a social network where you can write posts with 256 characters to specified groups called *circles*.
 
 ## Get started with Circuit
-We are always welcoming new users! If you are new starting with us, the first thing you've got to do is to sign up, to sign up follow the steps in the **Sign up** section. After that it's easy peasy, because we have a _First steps_ tutorial, just follow them and you're ready to go!
+We are always welcoming new users! If you are new starting with us, the first thing you've got to do is to sign up, to do that follow the steps in the **Sign up** section. After that it's easy peasy, because we have a _First steps_ tutorial, just follow them and you're ready to go!
 
 ### Signing up
 
