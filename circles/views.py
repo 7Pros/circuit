@@ -13,8 +13,8 @@ from django.http import Http404
 from django.views import generic
 
 from circles.models import Circle
+import users
 from users.models import User
-import users.views
 
 
 class CircleList(generic.ListView):

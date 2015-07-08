@@ -14,10 +14,11 @@ from django.shortcuts import redirect, Http404, render
 from django.template import loader, Context
 from django.views import generic
 from django.views.generic import CreateView
+from circles.models import PUBLIC_CIRCLE
 
 from circuit import settings
 from posts.models import Post
-from posts.views import set_post_extra
+from posts.views import set_post_extra, top_hashtags, visible_posts_for
 from users.models import User, create_hash
 
 
@@ -45,7 +46,7 @@ class UserCreateView(CreateView):
         """Creates the user if all data is valid."""
         form.instance.set_password(form.cleaned_data['password'])
         user = form.save()
-        email_notification_for_user(user,"Welcome to circuit",'users/confirmation_email.html')
+        email_notification_for_user(user, "Welcome to circuit", 'users/confirmation_email.html')
         return super(UserCreateView, self).form_valid(form)
 
 
@@ -63,8 +64,8 @@ def user_request_reset_password(request):
             user.save()
 
             # send password reset email with token
-            subject_toDo='password_reset'
-            email_notification_for_user(user,subject_toDo,'users/password_reset_email.html')
+            subject_toDo = 'password_reset'
+            email_notification_for_user(user, subject_toDo, 'users/password_reset_email.html')
 
             messages.success(request, 'Password reset email send.')
             return redirect('users:login')
@@ -119,8 +120,11 @@ def user_create_confirm(request, token):
 
 def user_login(request):
     if request.method == "GET":
-        template = loader.get_template('users/user_login.html')
-        return HttpResponse(template.render(request=request))
+        if not request.user.is_authenticated():
+            template = loader.get_template('users/user_login.html')
+            return HttpResponse(template.render(request=request))
+        else:
+            return redirect('users:profile', pk=request.user.pk)
 
     if request.method == "POST":
         email = request.POST['email']
@@ -157,10 +161,17 @@ def user_profile_by_username(request, username):
     try:
         user = User.objects.get(username=username)
     except:
-        raise Http404("Username doesn't exist", username)
+        raise Http404("Username does not exist", username)
 
-    posts = Post.objects.filter(author=user.pk) \
-        .select_related('author', 'repost_original', 'reply_original')
+    if request.user.is_authenticated():
+        posts = visible_posts_for(request.user) \
+            .filter(author=user.pk) \
+            .select_related('author', 'repost_original', 'reply_original')
+    else:
+        posts = Post.objects.filter(circles=PUBLIC_CIRCLE) \
+            .filter(author=user.pk) \
+            .select_related('author', 'repost_original', 'reply_original')
+
     for post in posts:
         set_post_extra(post, request)
     context = {'posts': posts, 'user': user}
@@ -173,13 +184,13 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = Post.objects.filter(author=self.object.pk) \
+        posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
-        setattr(context['user'], 'circles', context['user'].circle_set.all())
 
         for post in posts:
             set_post_extra(post, self.request)
         context.update(posts=posts)
+        context.update(top_hashtags=top_hashtags())
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
@@ -266,7 +277,6 @@ def user_search(request):
 
 
 def email_notification_for_user(user, subject, templateFile, context={}):
-
     template = loader.get_template(templateFile)
     context.update({
         'user': user,

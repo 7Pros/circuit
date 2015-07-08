@@ -4,21 +4,28 @@ Post views file.
 @author 7Pros
 @copyright
 """
+import datetime
 import re
 
 from django.contrib import messages
+from django.db.models import Count
+
 from django.shortcuts import redirect, Http404
+
 from django.views.generic import ListView, DetailView
+
 from django.core.urlresolvers import reverse
+
 from django.views import generic
+
 from PIL import Image
+
 from django.core.exceptions import ValidationError
 
-from posts.models import Hashtag
-from posts.models import Post
-from circles.models import Circle
+from circles.models import PUBLIC_CIRCLE, Circle, ME_CIRCLE
+from posts.models import Post, Hashtag
+import users
 from users.models import User
-import users.views
 
 
 def post_content_is_valid(content):
@@ -69,29 +76,26 @@ def set_post_extra(post, request):
     can_be_edited = post.original_or_self().author.pk == request.user.pk
     is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
     can_be_deleted = post.author.pk == request.user.pk
-    can_show_circle = post.author.pk == request.user.pk
-
-    if post.circles:
-        if not can_show_circle:
-            if request.user.is_authenticated():
-                request_user_circles = request.user.get_circles()
-                can_be_seen = post.circles in request_user_circles
-            else:
-                can_be_seen = False
-        else:
-            can_be_seen = True
-    else:
-        can_be_seen = True
 
     setattr(post, 'extra', {
         'can_be_reposted': can_be_reposted,
         'can_be_edited': can_be_edited,
         'is_favorited': is_favorited,
         'can_be_deleted': can_be_deleted,
-        'can_show_circle': can_show_circle,
-        'can_be_seen': can_be_seen,
         'replies': post.reply.all(),
     })
+
+
+def visible_posts_for(user):
+    """
+    Returns a pre-filtered query object containing all posts visible for the specified user.
+    @param user: instance of the User model
+    """
+    own = Post.objects.filter(author=user)
+    public = Post.objects.filter(circles=PUBLIC_CIRCLE)
+    my_circle = Post.objects.filter(circles__owner=user.pk)
+    in_circle = Post.objects.filter(circles__members=user.pk)
+    return own | public | my_circle | in_circle
 
 
 def check_reply(user):
@@ -120,8 +124,9 @@ def post_create(request):
     elif 'circle' not in request.POST:
         messages.error(request, 'No circle selected')
     else:
-        circles = Circle.objects.get(pk=request.POST['circle'])
-        post = Post(content=request.POST['content'], author=request.user, circles=circles)
+        circle_pk = int(request.POST['circle'])
+        pseudo_circle = Circle(circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
+        post = Post(content=request.POST['content'], author=request.user, circles=pseudo_circle)
         if has_img:
             post.image = request.FILES['image']
         post.save()
@@ -154,10 +159,11 @@ class PostDetailView(DetailView):
 
 
 class PostEditView(generic.UpdateView):
-    """Edit a post's content."""
+    """Edit a post's content and/or circle."""
     model = Post
     fields = [
         'content',
+        'circles',
     ]
 
     def form_valid(self, form):
@@ -196,6 +202,18 @@ class PostEditView(generic.UpdateView):
                     }
                 users.views.email_notification_for_user(mentionedUser, "You were mentioned",
                                                         'users/notification_for_post_email.html', context)
+
+        circle_pk = int(self.request.POST['circle'])
+        if circle_pk not in (ME_CIRCLE, PUBLIC_CIRCLE):
+            circle_owner_id = Circle.objects.get(pk=circle_pk).owner_id
+            # Is the selected circle not one of the user's circles?
+            if circle_owner_id != self.request.user.pk:
+                return self.form_invalid(form)
+
+        post = form.save()
+
+        circle_pk = int(self.request.POST['circle'])
+        post.circles = Circle(circle_pk)
 
         return super(PostEditView, self).form_valid(form)
 
@@ -341,3 +359,8 @@ class PostDeleteView(generic.DeleteView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.request.user.pk})
+
+
+def top_hashtags():
+    return Hashtag.objects.filter(posts__created_at__gt=datetime.datetime.now() - datetime.timedelta(days=1)) \
+        .annotate(itemcount=Count('name')).order_by('-itemcount')
