@@ -17,7 +17,7 @@
                        onclick="window.location.replace('{% url 'users:profile' pk=user.pk %}')"
                        role="tab" data-toggle="tab">
                         <span class="mdi-communication-message"></span>
-                        Posts
+                        <span style="position: relative !important; top: -3px;">Posts</span>
                     </a>
                 </li>
                 <li role="presentation">
@@ -26,7 +26,7 @@
                        onclick="window.location.replace('{% url 'users:favorites' pk=user.pk %}')"
                        role="tab" data-toggle="tab">
                         <span class="mdi-action-grade"></span>
-                        Favorites
+                        <span style="position: relative !important; top: -3px;">Favorites</span>
                     </a>
                 </li>
             </ul>

@@ -36,8 +36,8 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
                             <li>
-                                <a data-target="#modal-post-create" data-toggle="modal" style="float:none; margin-right: 250px;color: #D7F1FD;">
-                                    <span class="mdi-communication-forum" style="margin-bottom: -15px;margin-top: -2px;"></span>
+                                <a data-target="#modal-post-create" data-toggle="modal" style="position:relative !important; float:none; margin-right: 150px !important;color: #D7F1FD;">
+                                    <span class="mdi-communication-forum" style="margin-bottom: 0 !important;margin-top: 0 !important; padding-bottom: 0 !important;padding-top: 0 !important;"></span>
                                 </a>
                             </li>
                             <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
