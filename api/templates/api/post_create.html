@@ -61,19 +61,30 @@
                 <br/>
 
                 <div class="row">
-                    <div class="form-group col-xs-12 col-md-4">
-                        <select class="form-control" name="circle">
-                            <option value="0" selected="selected">Select a circle</option>
-                            {% if user.circles %}
-                                {% for circle in user.circles|dictsort:'name' %}
-                                    <option value="{{ circle.pk }}">{{ circle.name }}</option>
-                                {% endfor %}
-                            {% endif %}
-                        </select>
+                    <div class="col-xs-12 col-md-4 col-lg-4"  style="height: 60px;padding-top: 15px;">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="mdi-social-people"></i>
+                            </span>
+                            <select class="form-control" name="circle">
+                                <option value="0" selected="selected">Select a circle</option>
+                                <option value="-1" selected="selected">Only visible for me</option>
+                                <option value="-2">Public</option>
+                                {% if user.circles %}
+                                    {% for circle in user.circles|dictsortreversed:'pk' %}
+                                        <option value="{{ circle.pk }}">{{ circle.name }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
                     </div>
-                    <div class="col-xs-12 col-md-6">
-                        <label></label>
-                        <input class="" name="image" type="file"/>
+                    <div class="col-xs-12 col-md-5 col-lg-5" style="height: 60px;padding-top: 18px;">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="mdi-image-image"></i>
+                            </span>
+                            <input class="" name="image" type="file" style="margin-top: 5px;"/>
+                        </div>
                     </div>
 
 

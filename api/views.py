@@ -90,7 +90,18 @@ def user_login(request):
     @return: Response rendering a template in case the request was made with a form or a json in case it was a application/json type.
     """
     if request.method == 'GET':
-        return Response(template_name='api/login.html', status=status.HTTP_200_OK)
+        if 'application/x-www-form-urlencoded' in request.content_type:
+            return Response(template_name='api/login.html', status=status.HTTP_200_OK)
+        elif 'application/json' in request.content_type:
+            return Response(data={
+                'message':{
+                    'action-feedback': 'Please provide your login credentials, if you don\'t have an account, please visit our website and create your account'
+                },
+                'required-data': {
+                        'email': 'The registered email for the user\'s account',
+                        'password': 'The password for the account',
+                },
+            }, status=status.HTTP_200_OK)
 
     if request.method == 'POST':
         user = authenticate(email=request.data['email'], password=request.data['password'])
@@ -114,7 +125,11 @@ def user_login(request):
                 user_circles = user.circle_set.all()
                 user_circles_json = dict()
                 for circle in user_circles:
-                    user_circles_json.pop(circle.pk, circle.name)
+                    user_circles_json[circle.pk] = circle.name
+                user_circles_json['-2'] = 'Me'
+                user_circles_json['-1'] = 'Public'
+                print(user_circles_json)
+
                 return Response(data={
                     'message': {
                         'content': 'Login succesful. To create a post please use post URL and give with it the given token to authenticate yourself!',
@@ -161,10 +176,9 @@ def post_create(request):
                 if request.data['image'] and post_image_is_valid(request.data['image']):
                     post.image = request.data['image']
 
-                # TODO: fix circles
-                # non required fields
-                if 'circle' in request.data and request.data['circle'] != '0':
-                    post.circles = Circle.objects.get(pk=request.data['circle'])
+                circle_pk = int(request.data['circle'])
+                pseudo_circle = Circle(circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
+                post = Post(content=request.POST['content'], author=request.user, circles=pseudo_circle)
 
                 post.save()
                 save_hashtags(parsedString['hashtags'], post)
@@ -188,6 +202,7 @@ def post_create(request):
     elif request.method == 'POST' and 'application/json' in request.content_type:
         if request.user.is_authenticated:
             if post_content_is_valid(request.data['content']):
+                token = request.auth
 
                 parsedString = parse_content(request.data['content'])
                 post = Post(content=request.data['content'], author=request.user)
@@ -196,8 +211,19 @@ def post_create(request):
                     post.image = request.data['image']
 
                 # TODO: fix circles
-                if 'circle' in request.data and request.data['circle'] != '0':
-                    post.circles = Circle.objects.get(pk=request.data['circle'])
+                if 'circle' in request.data:
+                    circle_pk = int(request.data['circle'])
+                    pseudo_circle = Circle(circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
+                    post.circles = pseudo_circle
+                else:
+                    return Response(data={
+                        'message': {
+                            'status': 1,
+                            'action-feedback': 'You didn\'t select any circle',
+                            'user-authentication-token': token.key,
+                        },
+                        'post-required-values': post_required_values
+                    }, template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
 
                 post.save()
                 save_hashtags(parsedString['hashtags'], post)
@@ -205,11 +231,13 @@ def post_create(request):
                 user_circles = request.user.circle_set.all()
                 user_circles_json = dict()
                 for circle in user_circles:
-                    user_circles_json.pop(circle.pk, circle.name)
-                token = request.auth
+                    user_circles_json[circle.pk] = circle.name
+                user_circles_json['-2'] = 'Me'
+                user_circles_json['-1'] = 'Public'
 
                 return Response(data={
                     'message': {
+                        'status': 0,
                         'action-feedback': 'Post created',
                         'user-authentication-token': token.key,
                     },
