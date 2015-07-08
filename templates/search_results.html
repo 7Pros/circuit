@@ -15,12 +15,6 @@
             <p class="lead text-muted" style="text-align:center;margin:10px;">
                 No results for {{ search_query }}
             </p>
-            <br/><br/><br/>
-
-            <div class="col-sm-push-3 col-md-push-3 col-md-push-3 col-lg-push-4
-                        col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                {% include 'users/top_hashtags.html' %}
-            </div>
         </div>
     {% endif %}
 
@@ -75,6 +69,13 @@
                 </div>
             {% endif %}
 
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-push-6 col-md-push-4 col-xs-12 col-sm-6 col-md-8">
+            {% include 'users/top_hashtags.html' %}
         </div>
     </div>
 {% endblock %}

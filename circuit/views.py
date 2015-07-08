@@ -93,12 +93,6 @@ class SearchView(TemplateView):
         if 0 <= limit_hashtags: hashtags = hashtags[:limit_hashtags]
         if 0 <= limit_posts:    posts    = posts[:limit_posts]
 
-        # if there are no results, show trending hashtags
-        trending_hashtags = []
-        # run queries once, they are cached for later
-        if not len(users) and not len(hashtags) and not len(posts):
-            trending_hashtags = top_hashtags()
-
         ctx = super(SearchView, self).get_context_data(**kwargs)
         ctx.update({
             'show_all': show_all,
@@ -107,6 +101,6 @@ class SearchView(TemplateView):
             'users': users,
             'hashtags': hashtags,
             'posts': posts,
-            'top_hashtags': trending_hashtags,
+            'top_hashtags': top_hashtags(),
         })
         return ctx
