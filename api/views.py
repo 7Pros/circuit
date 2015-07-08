@@ -47,7 +47,6 @@ class RootView(APIView):
     parser_classes = parsers.JSONParser, parsers.FormParser
 
     def get(self, request, *args, **kwargs):
-        # TODO: add about page
         return Response({
             'API options': {
                 'login': {
@@ -67,7 +66,7 @@ class RootView(APIView):
                         'circles': 'The int value of a circle. Default values are:\n 0 -> Me circle \n 1 -> Public circle',
                     },
                 },
-                'Documentation': 'Please read our Manual here: https://github.com/7Pros/circuit/blob/develop/MANUAL.md',
+                'Documentation': 'Please read our Manual here: https://github.com/7Pros/circuit/blob/develop/MANUAL.md#overview-',
                 'Contact': 'Please open an issue on our issue tracker: https://github.com/7Pros/circuit/issues/new',
             },
         })
@@ -91,7 +90,7 @@ def user_login(request):
     @return: Response rendering a template in case the request was made with a form or a json in case it was a application/json type.
     """
     if request.method == 'GET':
-        if 'application/x-www-form-urlencoded' in request.content_type:
+        if 'text/plain' in request.content_type:
             return Response(template_name='api/login.html', status=status.HTTP_200_OK)
         elif 'application/json' in request.content_type:
             return Response(data={
