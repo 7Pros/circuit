@@ -27,4 +27,7 @@ urlpatterns = [
     url(r'^(?P<username>[^/]+)/$', views.user_profile_by_username, name='profile_username'),
     url(r'^(?P<pk>\d+)/edit/$', UserUpdateView.as_view(), name='edit'),
     url(r'^(?P<pk>\d+)/delete/$', UserDeleteView.as_view(), name='delete'),
+    url(r'^notification/(?P<pk>\d+)/see/$', views.see_nofitication, name='see_notification'),
+    url(r'^notification/mark-all/$', views.mark_all_as_read, name='mark_notifications_as_read'),
+    url(r'^notification/show-all/$', views.show_all_notifications, name='show_all_notifications')
 ]

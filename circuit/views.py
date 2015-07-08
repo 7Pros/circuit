@@ -10,7 +10,7 @@ from django.db.models import Count
 from django.views.generic import TemplateView
 
 from posts.models import Hashtag
-from posts.views import visible_posts_for, top_hashtags, set_post_extra
+from posts import views
 from users.models import User
 
 
@@ -37,7 +37,7 @@ class SearchView(TemplateView):
         # for user/hashtag search, skip the @# and search for the remaining text
         search_text = query[1:] if search_type else query
 
-        pq = visible_posts_for(self.request.user)
+        pq = views.visible_posts_for(self.request.user)
 
         if search_type == '@':  # user search
             users_by_name = User.objects.filter(name__icontains=search_text)
@@ -110,7 +110,7 @@ class SearchView(TemplateView):
             'next_range': next_range,
             'users': users,
             'hashtags': hashtags,
-            'posts': [set_post_extra(p, self.request) for p in posts],
-            'top_hashtags': top_hashtags(),
+            'posts': [views.set_post_extra(p, self.request) for p in posts],
+            'top_hashtags': views.top_hashtags(),
         })
         return ctx

@@ -8,9 +8,10 @@ import hashlib
 import os
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from swampdragon.models import SelfPublishModel
+from .serializers import NotificationSerializer
 from django.db import models
 import circles
-
 
 def create_hash():
     """Generate a random sha1 hash.
@@ -141,3 +142,46 @@ class User(AbstractBaseUser):
     def has_module_perms(self, module_label):
         """Needed for using Django's admin panel."""
         return self.is_superuser
+
+class Notification(SelfPublishModel, models.Model):
+    """
+    Generic SwampDragon SelfPublishModel class.
+    """
+    TYPE_OF_NOTIFICATIONS = (
+        (0, 'circle-related'),
+        (1, 'post-related')
+    )
+
+    message = models.CharField(max_length=255)
+    status = models.BooleanField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(User)
+    post = models.ForeignKey('posts.Post', blank=True, null=True)
+    type = models.IntegerField(default=1, choices=TYPE_OF_NOTIFICATIONS)
+    serializer_class = NotificationSerializer
+
+    @staticmethod
+    def set_all_as_read(user):
+        """
+        Set all the user's notifications as read.
+
+        @param user: the user that will get all his notifications as read.
+        """
+        user_notifications = Notification.objects.filter(user=user).filter(status=False)
+        if len(user_notifications) > 0:
+            for notification in user_notifications:
+                notification.status = True
+                notification.save()
+
+    @staticmethod
+    def get_number_of_unseen_notifications(user):
+        """
+        Returns the number of unseen notifications.
+
+        @param user: the user of the notifications.
+
+        @return: int - number of unseen notifications.
+        """
+        return len(Notification.objects.filter(user=user).filter(status=False))
+

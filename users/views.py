@@ -11,15 +11,15 @@ from django.core.mail import send_mail
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, Http404, render
-from django.template import loader, Context
+from django.template import loader
 from django.views import generic
 from django.views.generic import CreateView
-from circles.models import PUBLIC_CIRCLE
 
+from circles.models import PUBLIC_CIRCLE
 from circuit import settings
 from posts.models import Post
-from posts.views import set_post_extra, top_hashtags, visible_posts_for
-from users.models import User, create_hash
+from posts import views
+from users.models import User, Notification, create_hash
 
 
 class UserCreateView(CreateView):
@@ -161,7 +161,7 @@ def user_profile_by_username(request, username):
         raise Http404("Username does not exist", username)
 
     if request.user.is_authenticated():
-        posts = visible_posts_for(request.user) \
+        posts = views.visible_posts_for(request.user) \
             .filter(author=user.pk) \
             .select_related('author', 'repost_original', 'reply_original')
     else:
@@ -170,7 +170,7 @@ def user_profile_by_username(request, username):
             .select_related('author', 'repost_original', 'reply_original')
 
     for post in posts:
-        set_post_extra(post, request)
+        views.set_post_extra(post, request)
     context = {'posts': posts, 'user': user}
 
     return render(request, 'users/user_profile.html', context)
@@ -181,13 +181,13 @@ class UserProfileView(generic.DetailView):
     model = User
 
     def render_to_response(self, context, **response_kwargs):
-        posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
+        posts = views.visible_posts_for(self.request.user).filter(author=self.object.pk) \
             .select_related('author', 'repost_original', 'reply_original').all()
 
         for post in posts:
-            set_post_extra(post, self.request)
+            views.set_post_extra(post, self.request)
         context.update(posts=posts)
-        context.update(top_hashtags=top_hashtags())
+        context.update(top_hashtags=views.top_hashtags())
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
@@ -296,3 +296,73 @@ def email_notification_for_user(user, subject, templateFile, context={}):
         fail_silently=False,
         html_message=html
     )
+
+
+def set_notifications_attribute(context_user):
+    """
+    Set all notifications to the user.
+
+    @param context_user: the user to which the notifications will be added
+    """
+    setattr(context_user, 'notifications', context_user.notification_set.all())
+
+
+def send_notifications(user, email_subject, email_template, context, post=None):
+    """
+    Sends the email and the real-time notifications to the users.
+
+    @param user: the user that will get the notification.
+    @param email_subject: the email's subject.
+    @param email_template: the email's template.
+    @param context: the contents of the notification.
+    @param post: In case it is a post-related notification will be a post instance.
+    """
+    # email_notification_for_user(user, email_subject, email_template, context)
+    if post is not None:
+        new_notification = Notification(message=context['content'], status=False, user=user, post=post, type=1)
+    else:
+        new_notification = Notification(message=context['content'], status=False, user=user, type=0)
+
+    new_notification.save()
+
+
+def see_nofitication(request, **kwargs):
+    """
+    Sets the notification as viewed. If it's a post-related notifications, returns a view to the post, otherwise just returns to the referer page.
+
+    @param request: incoming request data.
+    @param kwargs: sent keyword arguments with the request.
+
+    @return: redirects to the post or to the referer.
+    """
+    notification = Notification.objects.get(pk=kwargs['pk'])
+    notification.status = True
+    notification.save()
+
+    if notification.type == 1:
+        return redirect('posts:post', pk=notification.post.pk)
+    elif notification.type == 0:
+        return redirect(request.META['HTTP_REFERER'])
+
+
+def mark_all_as_read(request):
+    """
+    Set all the notifications as read.
+
+    @param request: the incoming request data.
+
+    @return: returns to the referer page with all the notifications set as read.
+    """
+    Notification.set_all_as_read(request.user)
+    return redirect(request.META['HTTP_REFERER'])
+
+
+def show_all_notifications(request):
+    """
+    Returns the rendered view of the user's notifications panel.
+
+    @param request: the incoming request.
+
+    @return: the rendered template.
+    """
+    return render(request, 'users/user_notifications.html', {'notifications': request.user.notification_set.all()})

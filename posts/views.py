@@ -4,28 +4,23 @@ Post views file.
 @author 7Pros
 @copyright
 """
-import datetime
 import re
+import datetime
 
 from django.contrib import messages
-from django.db.models import Count
-
-from django.shortcuts import redirect, Http404
-
-from django.views.generic import ListView, DetailView
-
+from django.shortcuts import redirect
+from django.views.generic import DetailView
 from django.core.urlresolvers import reverse
-
 from django.views import generic
-
 from PIL import Image
-
 from django.core.exceptions import ValidationError
 
-from circles.models import PUBLIC_CIRCLE, Circle, ME_CIRCLE
+from django.db.models import Count
+
 from posts.models import Post, Hashtag
-import users
+from circles.models import Circle, PUBLIC_CIRCLE, ME_CIRCLE
 from users.models import User
+import users.views
 
 
 def post_content_is_valid(content):
@@ -141,11 +136,11 @@ def post_create(request):
                     mentionedUser_is_in_circle = True
             if mentionedUser_is_in_circle:
                 context = {
-                    'content': "%s mentioned you in his post" % (request.user.username),
+                    'content': "%s mentioned you in his post!" % (request.user.username),
                     'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                 }
-                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
-                                                        'users/notification_for_post_email.html', context)
+                users.views.send_notifications(mentionedUser, "You were mentioned!",
+                                   'users/notification_for_post_email.html', context, post)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -197,16 +192,16 @@ class PostEditView(generic.UpdateView):
                     mentionedUser_is_in_circle = True
                 if mentionedUser.username in parsed_content_old['mentions']:
                     context = {
-                        'content': "%s changed his post you were metioned in" % (self.request.user.username),
+                        'content': "%s changed his post and you were metioned in!" % (self.request.user.username),
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
                 else:
                     context = {
-                        'content': "%s mentioned you in his post" % (self.request.user.username),
+                        'content': "%s mentioned you in his post!" % (self.request.user.username),
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
-                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
-                                                        'users/notification_for_post_email.html', context)
+                users.views.send_notifications(mentionedUser, "You were mentioned!",
+                                   'users/notification_for_post_email.html', context, post)
 
         circle_pk = int(self.request.POST['circle'])
         if circle_pk not in (ME_CIRCLE, PUBLIC_CIRCLE):
@@ -258,8 +253,8 @@ def post_repost(request, pk=None):
         'content': "There is a new repost to a post of you made by %s" % (user.username),
         'link_to_subject': reverse("posts:post", kwargs={'pk': repost.pk})
     }
-    users.views.email_notification_for_user(repost_original.author, "There is a new repost to your post",
-                                            'users/notification_for_post_email.html', context)
+    users.views.send_notifications(repost_original.author, "There is a new repost to your post",
+                       'users/notification_for_post_email.html', context, repost)
 
     return redirect('posts:post', pk=repost.pk)
 
@@ -292,8 +287,8 @@ def post_reply(request, pk=None):
         'content': "There is a new reply to a post of you made by %s" % (user.username),
         'link_to_subject': reverse("posts:post", kwargs={'pk': reply.pk})
     }
-    users.views.email_notification_for_user(author, "There is a new reply to your post",
-                                            'users/notification_for_post_email.html', context)
+    users.views.send_notifications(author, "There is a new reply to your post",
+                       'users/notification_for_post_email.html', context, reply)
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
@@ -334,8 +329,8 @@ def post_favorite(request, pk=None):
         'content': "%s favorited your post" % (request.user.username),
         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
     }
-    users.views.email_notification_for_user(post.author, "There is a new repost to your post",
-                                            'users/notification_for_post_email.html', context)
+    users.views.send_notifications(post.author, "There is a new repost to your post",
+                       'users/notification_for_post_email.html', context, post)
 
     referer = request.META['HTTP_REFERER']
     if referer:
@@ -351,11 +346,10 @@ class PostDeleteView(generic.DeleteView):
         return reverse('users:profile', kwargs={'pk': self.request.user.pk})
 
 
-<<<<<<< HEAD
 def top_hashtags():
     """
     Shows most used hashtags in last 24 hours
     @return filters hashtags in descending order from last 24 h
     """
     return Hashtag.objects.filter(posts__created_at__gt=datetime.datetime.now() - datetime.timedelta(days=1)) \
-           .annotate(itemcount=Count('name')).order_by('-itemcount')
+        .annotate(itemcount=Count('name')).order_by('-itemcount')

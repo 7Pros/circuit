@@ -11,6 +11,7 @@
 <body>
 
 <header>
+{% load swampdragon_tags %}
     <div class="navbar">
         <div class="container">
             <div class="navbar-header">
@@ -41,6 +42,10 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
+                            <input class="invisible" id="user_id" type="hidden" value="{{ request.user.pk }}"/>
+
+                            {% include 'users/_notifications_area.html' %}
+
                             <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
                             <li>
                                 <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">Help</a>
@@ -70,6 +75,8 @@
 </main>
 
 <footer></footer>
+{% swampdragon_settings %}
+<script src="{% static 'swampdragon/js/dist/swampdragon.min.js' %}"></script>
 <script src="{% static "js/app.js" %}"></script>
 </body>
 </html>
