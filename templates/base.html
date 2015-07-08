@@ -35,11 +35,6 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
-                            <li>
-                                <a data-target="#modal-post-create" data-toggle="modal" style="position:relative !important; float:none; margin-right: 150px !important;color: #D7F1FD;">
-                                    <span class="mdi-communication-forum" style="margin-bottom: 0 !important;margin-top: 0 !important; padding-bottom: 0 !important;padding-top: 0 !important;"></span>
-                                </a>
-                            </li>
                             <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
                             <li><a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md">Help</a></li>
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
@@ -58,6 +53,11 @@
         </div>
     </div>
 </header>
+<a class="btn btn-info btn-fab btn-raised mdi-communication-forum"
+   data-target="#modal-post-create"
+   data-toggle="modal"
+   style="left: 50% !important;color: #D7F1FD; margin-top: -125px;">
+</a>
 
 <main class="container">
     {% block content %}
