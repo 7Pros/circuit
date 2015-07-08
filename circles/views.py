@@ -13,8 +13,8 @@ from django.http import Http404
 from django.views import generic
 
 from circles.models import Circle
-import users
 from users.models import User
+from users.views import email_notification_for_user
 
 
 class CircleList(generic.ListView):
@@ -72,10 +72,10 @@ class CircleEdit(generic.UpdateView):
                     # send notification email only to new users
                     mail_members = mail_members | Q(pk=member_pk)
         context = {
-            'content': "%s added you to a circle" % (self.request.user.username),
+            'content': "%s added you to a circle" % self.request.user.username,
         }
         for member in User.objects.filter(mail_members):
-            users.views.email_notification_for_user(member, "You were added to a circle",
+            email_notification_for_user(member, "You were added to a circle",
                                                     'users/notification_for_new_circle_email.html', context)
         return super(CircleEdit, self).form_valid(form)
 

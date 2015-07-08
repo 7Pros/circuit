@@ -73,9 +73,9 @@ class Post(models.Model):
             if len(hashtagList) == 0:
                 hashtag = Hashtag(name=hashtagWord.lower())
                 hashtag.save()
-                hashtag.posts.add(post)
+                hashtag.posts.add(self)
             else:
-                hashtagList[0].posts.add(post)
+                hashtagList[0].posts.add(self)
 
 
     def check_repost(self, user):
@@ -92,7 +92,7 @@ class Post(models.Model):
         if user.pk == self.author.pk:
             return 'own_post'  # don't repost own post
 
-        existing_repost = Post.objects.filter(author=user, repost_original=post).exists()
+        existing_repost = Post.objects.filter(author=user, repost_original=self).exists()
         if existing_repost:
             # don't repost more than once
             return 'already_reposted_as'
