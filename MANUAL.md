@@ -2,27 +2,17 @@
 
 ## Table of contents
 
-+ [Overview of Circuit](#overview-of-circuit)
-
-+ [Get started](#get-started-with-circuit)
-
-+ [Manage your account](#manage-your-account)
-
-+ [Posts](#posts)
-
-+ [Circles](#circles)
-
-+ [Discover](#discover)
-
-+ [Privacy](#privacy)
-
-+ [Security](#security)
-
-+ [Developers](#developers)
-
-+ [Troubleshoot](#troubleshoot)
-
-+ [FAQs](#faqs)
++ [Overview of Circuit](#overview-of-circuit)  
++ [Get started](#get-started-with-circuit)  
++ [Manage your account](#manage-your-account)  
++ [Posts](#posts)  
++ [Circles](#circles)  
++ [Discover](#discover)  
++ [Privacy](#privacy)  
++ [Security](#security)  
++ [Developers](#developers)  
++ [Troubleshoot](#troubleshoot)  
++ [FAQs](#faqs)  
 
 ## Overview of Circuit
 
@@ -238,18 +228,12 @@ You want to see the magic under the hood? This is an open source project, so you
 Want to come to visit the silicon chip of our circuit? Come to [visit us](http://github.com/7Pros/circuit)
 
 #### Admins
-Matze [@MetalMatze](http://github.com/MetalMatze)
-
-Julian [@Gjum](http://github.com/Gjum)
-
-Juan [@juanecabellob](http://github.com/juanecabellob)
-
-Kjell [@KjellPirschel](http://github.com/KjellPirschel)
-
-Jelisa [@Iotka](http://github.com/Iotka)
-
-Nico [@nrigheriu](http://github.com/nrigheriu)
-
+[@MetalMatze](http://github.com/MetalMatze)  
+[@Gjum](http://github.com/Gjum)  
+[@juanecabellob](http://github.com/juanecabellob)  
+[@KjellPirschel](http://github.com/KjellPirschel)  
+[@Iotka](http://github.com/Iotka)  
+[@nrigheriu](http://github.com/nrigheriu)  
 
 ## Troubleshoot
 
