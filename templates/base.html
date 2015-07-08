@@ -37,6 +37,15 @@
                                 <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">Help</a>
                             </li>
                             <li><a href="{% url 'users:logout' %}">Logout</a></li>
+                            <li class="dropdown">
+                                <a data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="mdi-action-settings"></span>
+                                </a>
+                                <ul class="dropdown-menu" id="user-settings">
+                                    <li><a href="{% url 'users:edit' pk=user.pk %}" style="color: #03a9f4 !important;">Edit profile</a></li>
+                                    <li><a href="{% url 'circles:manage' user_pk=user.pk %}" style="color: #03a9f4 !important;">Manage circles</a></li>
+                                </ul>
+                            </li>
                         {% else %}
                             <li>
                                 <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">Help</a>
