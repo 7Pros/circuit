@@ -40,6 +40,12 @@ class Post(models.Model):
             p = p.repost_original
         return p
 
+    def get_number_of_favorites(self):
+        return self.original_or_self().favorites.count()
+
+    def get_number_of_reposts(self):
+        return self.original_or_self().repost.count()
+
     def __str__(self):
         return self.content
 
