@@ -29,7 +29,7 @@
         {% if request.user.pk != post.author.pk %}
             <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" onclick="$('#reply-area-{{ post.pk }} textarea').text('@{{ post.author.username }} @{{ post_reply.author.username }}').focus()"></a>
         {% else %}
-            <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" onclick="$('#reply-area-{{ post.pk }} textarea').text('@{{ post.author.username }}').focus()"></a>
+            <a class="mdi-content-reply" href="#reply-area-{{ post.pk }}" onclick="$('#reply-area-{{ post.pk }} textarea').text('@{{ post.author.username }} ').focus()"></a>
         {% endif %}
         <div class="pull-right">
             {% if post_reply.extra.can_be_edited %}

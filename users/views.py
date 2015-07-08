@@ -170,6 +170,9 @@ def user_profile_by_username(request, username):
 
     for post in posts:
         post.set_post_extra(request)
+        for reply in post.extra['replies']:
+            reply.set_post_extra(request)
+    
     context = {'posts': posts, 'user': user}
 
     return render(request, 'users/user_profile.html', context)
@@ -185,6 +188,9 @@ class UserProfileView(generic.DetailView):
 
         for post in posts:
             post.set_post_extra(self.request)
+            for reply in post.extra['replies']:
+                reply.set_post_extra(self.request)
+
         context.update(posts=posts)
         context.update(top_hashtags=Hashtag.top())
         context.update(active_tab='posts')
@@ -289,14 +295,14 @@ def email_notification_for_user(user, subject, templateFile, context={}):
     })
     html = template.render(context)
 
-    send_mail(
-        subject=subject,
-        message='notification',
-        from_email='noreply@circuit.io',
-        recipient_list=[user.email],
-        fail_silently=False,
-        html_message=html
-    )
+    # # send_mail(
+    #     subject=subject,
+    #     message='notification',
+    #     from_email='noreply@circuit.io',
+    #     recipient_list=[user.email],
+    #     fail_silently=False,
+    #     html_message=html
+    # )
 
 class UserFavoriteView(generic.DetailView):
     template_name = 'users/user_profile.html'
@@ -317,6 +323,8 @@ class UserFavoriteView(generic.DetailView):
         for favorite_post in favorite_posts:
             if favorite_post in visible_posts:
                 favorite_post.set_post_extra(self.request)
+                for reply in favorite_post.extra['replies']:
+                    reply.set_post_extra(self.request)
                 posts.append(favorite_post)
 
         context.update(posts=posts)

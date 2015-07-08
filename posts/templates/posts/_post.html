@@ -83,7 +83,7 @@
         {% endif %}
         <div class="replies">
             {% for post_reply in post.extra.replies|dictsortreversed:'created_at' %}
-                {% include 'posts/_replied_posts.html' %}
+                {% include 'posts/_replied_posts.html' with post=post_reply %}
             {% endfor %}
         </div>
     </div>
