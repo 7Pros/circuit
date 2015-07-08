@@ -32,14 +32,30 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
-                            <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
                             <li>
-                                <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">Help</a>
+                                <a href="{% url 'users:profile' pk=request.user.pk %}">
+                                    <span class="mdi-social-person"></span>
+                                    Profile
+                                </a>
                             </li>
-                            <li><a href="{% url 'users:logout' %}">Logout</a></li>
+                            <li>
+                                <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">
+                                    <span class="mdi-action-help"></span>
+                                    Help
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'users:logout' %}">
+                                    <span class="mdi-action-exit-to-app"></span>
+                                    Logout
+                                </a>
+                            </li>
                         {% else %}
                             <li>
-                                <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">Help</a>
+                                <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">
+                                    <span class="mdi-action-help"></span>
+                                    Help
+                                </a>
                             </li>
                             {% if request.get_full_path != '/users/signup/' %}
                                 <li><a href="{% url 'users:signup' %}">Sign up</a></li>
