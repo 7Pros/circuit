@@ -113,13 +113,13 @@ def check_reply(user):
 
 
 def post_create(request):
-    has_img = 'image' in request.FILES
+    has_image = 'image' in request.FILES
     if not request.user.is_authenticated:
         messages.error(request, 'Not logged in')
     elif 'content' not in request.POST \
             or not post_content_is_valid(request.POST['content']):
         messages.error(request, 'Invalid post content')
-    elif has_img and not post_image_is_valid(request.FILES['image']):
+    elif has_image and not post_image_is_valid(request.FILES['image']):
         messages.error(request, 'Invalid image format')
     elif 'circle' not in request.POST:
         messages.error(request, 'No circle selected')
@@ -127,7 +127,7 @@ def post_create(request):
         circle_pk = int(request.POST['circle'])
         pseudo_circle = Circle(circle_pk)  # not saved to DB, only used to store PK, do not use for anything else!
         post = Post(content=request.POST['content'], author=request.user, circles=pseudo_circle)
-        if has_img:
+        if has_image:
             post.image = request.FILES['image']
         post.save()
         parsed_content = parse_content(request.POST['content'])
@@ -178,6 +178,9 @@ class PostEditView(generic.UpdateView):
         """
         if not self.request.user.is_authenticated:
             return self.form_invalid(form)
+        has_img = 'image' in self.request.FILES
+        if has_img and not post_image_is_valid(self.request.FILES['image']):
+            messages.error(self.request, 'Invalid image format')
 
         if not post_content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
@@ -211,6 +214,8 @@ class PostEditView(generic.UpdateView):
                 return self.form_invalid(form)
 
         post = form.save()
+        if has_img:
+            post.image = self.request.FILES['image']
 
         circle_pk = int(self.request.POST['circle'])
         post.circles = Circle(circle_pk)
