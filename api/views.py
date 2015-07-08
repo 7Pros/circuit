@@ -57,8 +57,8 @@ class RootView(APIView):
                         'password': 'The password for the account',
                     },
                 },
-                'create': {
-                    'url': '/api/create/',
+                'posts': {
+                    'url': '/api/posts/',
                     'Methods Allowed': 'POST',
                     'Required data': {
                         'content': 'Maximum length of 256 unicode characters. It is the post content and it can contain text, mentions, and hashtags',
