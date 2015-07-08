@@ -1,0 +1,21 @@
+{% extends 'users/user_profile.html' %}
+{% load parser %}
+
+{% block posts_area %}
+
+    {% with posts=object_list %}
+        {% for post in posts|dictsortreversed:'created_at' %}
+            {% if forloop.counter != 1 %}
+                <hr/>
+            {% endif %}
+            {% include 'posts/_post.html' %}
+        {% empty %}
+            <br/>
+            <p class="text-muted lead" style="text-align: center;">
+                No favorites <br/>
+                #circuitzombie
+            </p>
+        {% endfor %}
+    {% endwith %}
+
+{% endblock %}

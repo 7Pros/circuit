@@ -10,6 +10,25 @@ gulp.task('default', [
     'js'
 ]);
 
+gulp.task('less', function () {
+    return gulp.src(['./assets/less/app.less',
+        './assets/less/_overrides.less'
+    ])
+        .pipe(sourcemaps.init())
+        .pipe(less())
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('./circuit/static/css'));
+});
+
+gulp.task('css', ['less'], function () {
+    return gulp.src([
+        './circuit/static/css/app.css',
+        './assets/vendor/pnotify/pnotify.buttons.css'
+    ])
+        .pipe(concat('app.css'))
+        .pipe(gulp.dest('./circuit/static/css'))
+});
+
 gulp.task('css', function () {
     return gulp.src('./assets/less/app.less')
         .pipe(sourcemaps.init())

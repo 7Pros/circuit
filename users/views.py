@@ -316,7 +316,7 @@ def user_search(request):
     return JsonResponse({'suggestions': users_data}, safe=False)
 
 class UserFavoriteView(generic.ListView):
-    template_name = 'posts/favorite_list.html'
+    template_name = 'users/user_profile.html'
     model = User
 
     def get_queryset(self):
