@@ -34,6 +34,24 @@
   border-width: 4px;
 }
 
+.btn-fab {
+  &.btn-fab-mini {
+    @media
+      screen and (min-width: @screen-xs-min),
+      screen and (min-width: @screen-sm-min) {
+        margin-top: -110px !important;
+    }
+    @media screen and (max-width: @screen-md-max){
+        margin-top: -120px !important;
+    }
+    @media screen and (min-width: @screen-lg-min) {
+        margin-top: -125px !important;
+    }
+    color: #D7F1FD !important;
+    left: 50% !important;
+  }
+}
+
 .post {
   &.lead {
     margin-bottom: 0;
