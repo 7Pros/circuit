@@ -63,7 +63,7 @@
                         <hr/>
                         {% if prev_range %}
                             <a href="{% url 'search' %}?q={{ search_query|urlencode }}&all=posts&range={{ prev_range }}"
-                               class="btn btn-sm">Newer posts</a>
+                               class="btn btn-sm pull-left">Newer posts</a>
                         {% endif %}
                         {% if next_range %}
                             <a href="{% url 'search' %}?q={{ search_query|urlencode }}&all=posts&range={{ next_range }}"
