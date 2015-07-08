@@ -277,6 +277,13 @@ def user_search(request):
 
 
 def email_notification_for_user(user, subject, templateFile, context={}):
+    """
+    function for notification via email for users:
+    site-url is set as the link to the main page of the circuit
+    and is available in the templates as well as the user and the values given
+    in the dictionary "context"
+    the template file should contain the explicit path to the template beginning in the templates folder of users
+    """
     template = loader.get_template(templateFile)
     context.update({
         'user': user,
