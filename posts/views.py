@@ -5,19 +5,17 @@ Post views file.
 @copyright
 """
 import re
-from django.contrib import messages
 
+from django.contrib import messages
 from django.shortcuts import redirect, Http404
 from django.views.generic import ListView, DetailView
 from django.core.urlresolvers import reverse
-
 from django.views import generic
-
-from posts.models import Hashtag
-from posts.models import Post
 from PIL import Image
 from django.core.exceptions import ValidationError
 
+from posts.models import Hashtag
+from posts.models import Post
 from circles.models import Circle
 from users.models import User
 import users.views
