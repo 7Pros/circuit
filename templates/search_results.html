@@ -18,21 +18,20 @@
         </div>
     {% endif %}
 
-    {% if users %}
-        <div class="row">
-            {% for user in users %}
-                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                    {% include 'users/_user_card.html' %}
-                </div>
-            {% endfor %}
-        </div>
-        {% if not show_all %}
-            <a href="{% url 'search' %}?q={{ search_query|urlencode }}&all=users"
-               class="btn btn-sm">Show all users</a>
-        {% endif %}
-    {% endif %}
-
     <div class="row">
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            {% if users %}
+                {% for user in users %}
+                    {% include 'users/_user_card.html' %}
+                {% endfor %}
+                {% if not show_all %}
+                    <a href="{% url 'search' %}?q={{ search_query|urlencode }}&all=users"
+                       class="btn btn-sm">Show all users</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
         <div class="col-xs-12 col-sm-6 col-md-8">
 
             {% if hashtags %}
