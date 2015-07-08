@@ -36,7 +36,7 @@ def post_create(request):
             post.image = request.FILES['image']
         post.save()
         parsed_content = Post.parse_content(request.POST['content'])
-        Post.save_hashtags(parsed_content['hashtags'], post)
+        post.save_hashtags(parsed_content['hashtags'])
         for mentionedUser in User.objects.filter(username__in=parsed_content['mentions']):
             mentionedUser_is_in_circle = False
             for member in post.circles.members.all():
@@ -217,7 +217,7 @@ class PostsListView(ListView):
         except Hashtag.DoesNotExist:
             raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
         for post in posts:
-            post.set_post_extra(post, self.request)
+            post.set_post_extra(self.request)
 
         return posts
 
