@@ -316,11 +316,11 @@ class UserFavoriteView(generic.DetailView):
         posts = list()
         for favorite_post in favorite_posts:
             if favorite_post in visible_posts:
-                favorite_post.set_post_extra(favorite_post, self.request)
+                favorite_post.set_post_extra(self.request)
                 posts.append(favorite_post)
 
         context.update(posts=posts)
-        context.update(top_hashtags=Hashtag.top_hashtags())
+        context.update(top_hashtags=Hashtag.top())
         context.update(active_tab='favorites')
 
         return super(UserFavoriteView, self).render_to_response(context, **response_kwargs)
