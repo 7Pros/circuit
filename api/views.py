@@ -15,7 +15,6 @@ from rest_framework.decorators import api_view, renderer_classes, authentication
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from posts.views import post_content_is_valid, parse_content, save_hashtags, post_image_is_valid
 from circles.models import Circle
 from posts.models import Post
 
@@ -167,13 +166,13 @@ def posts_create(request):
         # authentication
         if request.user.is_authenticated:
             # post validation
-            if post_content_is_valid(request.data['content']):
+            if Post.post_content_is_valid(request.data['content']):
 
-                parsedString = parse_content(request.data['content'])
+                parsedString = Post.parse_content(request.data['content'])
                 post = Post(content=request.data['content'], author=request.user)
 
                 # non required fields
-                if request.data['image'] and post_image_is_valid(request.data['image']):
+                if request.data['image'] and Post.image_is_valid(request.data['image']):
                     post.image = request.data['image']
 
                 circle_pk = int(request.data['circle'])
@@ -182,7 +181,7 @@ def posts_create(request):
                 post = Post(content=request.POST['content'], author=request.user, circles=pseudo_circle)
 
                 post.save()
-                save_hashtags(parsedString['hashtags'], post)
+                post.save_hashtags(parsedString['hashtags'])
                 setattr(request.user, 'circles', request.user.circle_set.all())
 
                 return Response(data={
@@ -202,13 +201,13 @@ def posts_create(request):
 
     elif request.method == 'POST' and 'application/json' in request.content_type:
         if request.user.is_authenticated:
-            if post_content_is_valid(request.data['content']):
+            if Post.content_is_valid(request.data['content']):
                 token = request.auth
 
-                parsedString = parse_content(request.data['content'])
+                parsedString = Post.parse_content(request.data['content'])
                 post = Post(content=request.data['content'], author=request.user)
 
-                if 'image' in request.data and request.data['image'] and post_image_is_valid(request.data['image']):
+                if 'image' in request.data and request.data['image'] and Post.image_is_valid(request.data['image']):
                     post.image = request.data['image']
 
                 # TODO: fix circles
@@ -228,7 +227,7 @@ def posts_create(request):
                     }, template_name='api/post_create.html', status=status.HTTP_401_UNAUTHORIZED)
 
                 post.save()
-                save_hashtags(parsedString['hashtags'], post)
+                post.save_hashtags(parsedString['hashtags'])
 
                 user_circles = request.user.circle_set.all()
                 user_circles_json = dict()

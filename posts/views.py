@@ -4,112 +4,17 @@ Post views file.
 @author 7Pros
 @copyright
 """
-import datetime
-import re
-
 from django.contrib import messages
-from django.db.models import Count
-
 from django.shortcuts import redirect, Http404
-
 from django.views.generic import ListView, DetailView
-
 from django.core.urlresolvers import reverse
-
 from django.views import generic
-
-from PIL import Image
-
-from django.core.exceptions import ValidationError
 
 from circles.models import PUBLIC_CIRCLE, Circle, ME_CIRCLE
 from posts.models import Post, Hashtag
 import users
 from users.models import User
-
-
-def post_content_is_valid(content):
-    return 0 < len(content) <= 256
-
-
-def post_image_is_valid(image):
-    try:
-        this_image = Image.open(image)
-        if this_image:
-            if this_image.format in ('BMP', 'PNG', 'JPEG', 'PPM', 'JPG'):
-                return True
-            raise ValidationError("unsupported image type")
-    except OSError as error:
-        return False
-
-
-def check_repost(post, user):
-    """
-    Check if a post can be reposted by a user.
-
-    @param post: the post to repost
-    @param user: the user that wants to repost
-    @return `ok` if the post can be reposted by the user, a different error string otherwise
-    """
-    if not user.is_authenticated():
-        return 'not_auth'  # no user to repost as
-
-    if user.pk == post.author.pk:
-        return 'own_post'  # don't repost own post
-
-    existing_repost = Post.objects.filter(author=user, repost_original=post).exists()
-    if existing_repost:
-        # don't repost more than once
-        return 'already_reposted_as'
-
-    return 'ok'
-
-
-def set_post_extra(post, request):
-    """
-    Add an `extra` attribute to a post for easy information access in a template.
-
-    @param post: the post to add extra information to
-    @param request: the request for which information is added
-    """
-    can_be_reposted = 'ok' == check_repost(post.original_or_self(), request.user)
-    can_be_edited = post.original_or_self().author.pk == request.user.pk
-    is_favorited = post.original_or_self().favorites.filter(pk=request.user.pk).exists()
-    can_be_deleted = post.author.pk == request.user.pk
-
-    setattr(post, 'extra', {
-        'can_be_reposted': can_be_reposted,
-        'can_be_edited': can_be_edited,
-        'is_favorited': is_favorited,
-        'can_be_deleted': can_be_deleted,
-        'replies': post.reply.all(),
-    })
-
-
-def visible_posts_for(user):
-    """
-    Returns a pre-filtered query object containing all posts visible for the specified user.
-    @param user: instance of the User model
-    """
-    own = Post.objects.filter(author=user)
-    public = Post.objects.filter(circles=PUBLIC_CIRCLE)
-    my_circle = Post.objects.filter(circles__owner=user.pk)
-    in_circle = Post.objects.filter(circles__members=user.pk)
-    return own | public | my_circle | in_circle
-
-
-def check_reply(user):
-    """
-    Checks if a post can be replied to
-
-    @param user: the user that wants to reply to a post.
-
-    @return: 'not_auth' in case the user isn't authenticated, 'ok' otherwise.
-    """
-    if not user.is_authenticated():
-        return 'not_auth'
-
-    return 'ok'
+from users.views import email_notification_for_user
 
 
 def post_create(request):
@@ -117,9 +22,9 @@ def post_create(request):
     if not request.user.is_authenticated:
         messages.error(request, 'Not logged in')
     elif 'content' not in request.POST \
-            or not post_content_is_valid(request.POST['content']):
+            or not Post.content_is_valid(request.POST['content']):
         messages.error(request, 'Invalid post content')
-    elif has_image and not post_image_is_valid(request.FILES['image']):
+    elif has_image and not Post.image_is_valid(request.FILES['image']):
         messages.error(request, 'Invalid image format')
     elif 'circle' not in request.POST:
         messages.error(request, 'No circle selected')
@@ -130,8 +35,8 @@ def post_create(request):
         if has_image:
             post.image = request.FILES['image']
         post.save()
-        parsed_content = parse_content(request.POST['content'])
-        save_hashtags(parsed_content['hashtags'], post)
+        parsed_content = Post.parse_content(request.POST['content'])
+        Post.save_hashtags(parsed_content['hashtags'], post)
         for mentionedUser in User.objects.filter(username__in=parsed_content['mentions']):
             mentionedUser_is_in_circle = False
             for member in post.circles.members.all():
@@ -139,11 +44,11 @@ def post_create(request):
                     mentionedUser_is_in_circle = True
             if mentionedUser_is_in_circle:
                 context = {
-                    'content': "%s mentioned you in his post" % (request.user.username),
+                    'content': "%s mentioned you in his post" % request.user.username,
                     'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                 }
-                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
-                                                        'users/notification_for_post_email.html', context)
+                email_notification_for_user(mentionedUser, "You were mentioned",
+                                            'users/notification_for_post_email.html', context)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -153,7 +58,7 @@ class PostDetailView(DetailView):
     model = Post
 
     def render_to_response(self, context, **response_kwargs):
-        set_post_extra(context['post'], self.request)
+        context['post'].set_post_extra(self.request)
 
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
@@ -179,15 +84,15 @@ class PostEditView(generic.UpdateView):
         if not self.request.user.is_authenticated:
             return self.form_invalid(form)
         has_img = 'image' in self.request.FILES
-        if has_img and not post_image_is_valid(self.request.FILES['image']):
+        if has_img and not Post.image_is_valid(self.request.FILES['image']):
             messages.error(self.request, 'Invalid image format')
 
-        if not post_content_is_valid(self.request.POST['content']):
+        if not Post.content_is_valid(self.request.POST['content']):
             return self.form_invalid(form)
         old_post = self.object
-        parsed_content_old = parse_content(old_post.content)
+        parsed_content_old = Post.parse_content(old_post.content)
         post = form.save()
-        parsed_content_new = parse_content(post.content)
+        parsed_content_new = Post.parse_content(post.content)
         for mentionedUser in User.objects.filter(username__in=parsed_content_new['mentions']):
             mentionedUser_is_in_circle = False
             for member in post.circles.members.all():
@@ -195,12 +100,12 @@ class PostEditView(generic.UpdateView):
                     mentionedUser_is_in_circle = True
                 if mentionedUser.username in parsed_content_old['mentions']:
                     context = {
-                        'content': "%s changed his post you were metioned in" % (self.request.user.username),
+                        'content': "%s changed his post you were metioned in" % self.request.user.username,
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
                 else:
                     context = {
-                        'content': "%s mentioned you in his post" % (self.request.user.username),
+                        'content': "%s mentioned you in his post" % self.request.user.username,
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
                 users.views.email_notification_for_user(mentionedUser, "You were mentioned",
@@ -242,7 +147,7 @@ def post_repost(request, pk=None):
     user = request.user
     repost_original = Post.objects.get(pk=pk).original_or_self()
 
-    check = check_repost(repost_original, user)
+    check = repost_original.check_repost(user)
     if check == 'not_auth':
         return redirect('posts:post', pk=repost_original.pk)
     if check != 'ok':
@@ -253,7 +158,7 @@ def post_repost(request, pk=None):
                   repost_original=repost_original)
     repost.save()
     context = {
-        'content': "There is a new repost to a post of you made by %s" % (user.username),
+        'content': "There is a new repost to a post of you made by %s" % user.username,
         'link_to_subject': reverse("posts:post", kwargs={'pk': repost.pk})
     }
     users.views.email_notification_for_user(repost_original.author, "There is a new repost to your post",
@@ -277,8 +182,8 @@ def post_reply(request, pk=None):
     reply_original = Post.objects.get(pk=pk)
     author = reply_original.author
 
-    check = check_reply(user)
-    if check == 'not_auth':
+    check = reply_original.check_reply(user)
+    if check != 'ok':
         return redirect('posts:post', pk=reply_original.pk)
 
     reply = Post(content=request.POST['content_reply'],
@@ -287,7 +192,7 @@ def post_reply(request, pk=None):
 
     reply.save()
     context = {
-        'content': "There is a new reply to a post of you made by %s" % (user.username),
+        'content': "There is a new reply to a post of you made by %s" % user.username,
         'link_to_subject': reverse("posts:post", kwargs={'pk': reply.pk})
     }
     users.views.email_notification_for_user(author, "There is a new reply to your post",
@@ -295,24 +200,6 @@ def post_reply(request, pk=None):
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
-
-
-def parse_content(content):
-    hashtags = re.findall(r"#(\w+)", content)
-    mentions = re.findall(r"@(\w+)", content)
-    return {'hashtags': hashtags, 'mentions': mentions}
-
-
-def save_hashtags(hashtags, post):
-    for hashtagWord in hashtags:
-        hashtagList = Hashtag.objects.filter(name=hashtagWord)
-
-        if len(hashtagList) == 0:
-            hashtag = Hashtag(name=hashtagWord.lower())
-            hashtag.save()
-            hashtag.posts.add(post)
-        else:
-            hashtagList[0].posts.add(post)
 
 
 class PostsListView(ListView):
@@ -346,7 +233,7 @@ def post_favorite(request, pk=None):
         post.favorites.add(request.user)
     post.save()
     context = {
-        'content': "%s favorited your post" % (request.user.username),
+        'content': "%s favorited your post" % request.user.username,
         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
     }
     users.views.email_notification_for_user(post.author, "There is a new repost to your post",
@@ -364,13 +251,3 @@ class PostDeleteView(generic.DeleteView):
 
     def get_success_url(self):
         return reverse('users:profile', kwargs={'pk': self.request.user.pk})
-
-
-<<<<<<< HEAD
-def top_hashtags():
-    """
-    Shows most used hashtags in last 24 hours
-    @return filters hashtags in descending order from last 24 h
-    """
-    return Hashtag.objects.filter(posts__created_at__gt=datetime.datetime.now() - datetime.timedelta(days=1)) \
-           .annotate(itemcount=Count('name')).order_by('-itemcount')
