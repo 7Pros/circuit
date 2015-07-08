@@ -231,6 +231,8 @@ class UserProfileView(generic.DetailView):
             set_post_extra(post, self.request)
         context.update(posts=posts)
         context.update(top_hashtags=top_hashtags())
+        context.update(active_tab='posts')
+
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
@@ -315,20 +317,30 @@ def user_search(request):
 
     return JsonResponse({'suggestions': users_data}, safe=False)
 
-class UserFavoriteView(generic.ListView):
+class UserFavoriteView(generic.DetailView):
     template_name = 'users/user_profile.html'
     model = User
 
-    def get_queryset(self):
+    def render_to_response(self, context, **response_kwargs):
         """
         Gets all the posts that have been favour by the user.
 
         @return: the favorited posts
         """
-        posts = User.objects.get(pk=self.kwargs['pk']).favorites.all()
+        favorite_posts = User.objects.get(pk=self.object.pk).favorites.all()
 
-        for post in posts:
-            set_post_extra(post, self.request)
+        visible_posts = visible_posts_for(self.request.user).filter(author=self.object.pk) \
+            .select_related('author', 'repost_original', 'reply_original').all()
 
-        return posts
+        posts = list()
+        for favorite_post in favorite_posts:
+            if favorite_post in visible_posts:
+                set_post_extra(favorite_post, self.request)
+                posts.append(favorite_post)
+
+        context.update(posts=posts)
+        context.update(top_hashtags=top_hashtags())
+        context.update(active_tab='favorites')
+
+        return super(UserFavoriteView, self).render_to_response(context, **response_kwargs)
 
