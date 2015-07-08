@@ -29,7 +29,7 @@ class SearchView(TemplateView):
         """Collects all results and update the context with them."""
         query = self.request.GET.get('q', '').strip()
         show_all = self.request.GET.get('all', '')
-        p_from, p_to = map(int, self.request.GET.get('range', '0-0').split('-'))
+        p_from, p_to = map(int, self.request.GET.get('range', '0-3').split('-'))  # xxx 20 or 50
 
         # search_type is @ for user, # for hashtag,
         # anything else for full text search
@@ -88,17 +88,17 @@ class SearchView(TemplateView):
         else:
             users = users[:3]
             hashtags = hashtags[:10]
-            posts = posts[:20]
+            posts = posts[:3]
 
         # pagination
-        # prev_range should be '0-0' on first page,
-        # next_range should be '0-0' on last page
+        # prev_range should be None on first page,
+        # next_range should be None on last page
         range_size = p_to - p_from
         prev_range = '%i-%i' % (max(0, p_from - range_size), p_from)
-        if p_from < range_size:
+        if p_from < range_size or prev_range == '0-0':
             prev_range = None
         next_range = '%i-%i' % (p_to, p_to + range_size)
-        if len(posts) <= 0:
+        if p_to > len(posts):
             next_range = None
 
         ctx = super(SearchView, self).get_context_data(**kwargs)
