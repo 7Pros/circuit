@@ -248,11 +248,12 @@ def post_favorite(request, pk=None):
     else:
         post.favorites.add(request.user)
     post.save()
-    context = {
-        'content': "%s favorited your post" % request.user.username,
-        'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
-    }
-    send_notifications(post.author, "There is a new repost to your post",
+    if request.user.pk != post.author.pk:
+        context = {
+            'content': "%s favorited your post" % request.user.username,
+            'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
+        }
+        send_notifications(post.author, "There is a new repost to your post",
                        'users/notification_for_post_email.html', context, post)
 
     referer = request.META['HTTP_REFERER']
