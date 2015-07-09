@@ -295,14 +295,14 @@ def email_notification_for_user(user, subject, templateFile, context={}):
     })
     html = template.render(context)
 
-    # # send_mail(
-    #     subject=subject,
-    #     message='notification',
-    #     from_email='noreply@circuit.io',
-    #     recipient_list=[user.email],
-    #     fail_silently=False,
-    #     html_message=html
-    # )
+    send_mail(
+        subject=subject,
+        message='notification',
+        from_email='noreply@circuit.io',
+        recipient_list=[user.email],
+        fail_silently=False,
+        html_message=html
+    )
 
 class UserFavoriteView(generic.DetailView):
     template_name = 'users/user_profile.html'
