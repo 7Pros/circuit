@@ -63,12 +63,16 @@ class Post(models.Model):
         can_be_edited = self.original_or_self().author.pk == request.user.pk
         is_favorited = self.original_or_self().favorites.filter(pk=request.user.pk).exists()
         can_be_deleted = self.author.pk == request.user.pk
+        number_of_favorites = self.get_number_of_favorites()
+        number_of_reposts = self.get_number_of_reposts()
 
         setattr(self, 'extra', {
             'can_be_reposted': can_be_reposted,
             'can_be_edited': can_be_edited,
             'is_favorited': is_favorited,
             'can_be_deleted': can_be_deleted,
+            'number_of_favorites': number_of_favorites,
+            'number_of_reposts': number_of_reposts,
             'replies': self.reply.all(),
         })
 
