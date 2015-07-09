@@ -12,7 +12,6 @@ from django.views.generic import TemplateView
 from users.models import User
 from posts.models import Hashtag, Post
 
-
 class LandingPage(TemplateView):
     template_name = 'landingpage.html'
 

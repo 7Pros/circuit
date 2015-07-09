@@ -60,6 +60,15 @@
                                     <span class="navbar-icon-text">Logout</span>
                                 </a>
                             </li>
+                            <li class="dropdown">
+                                <a data-target="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <span class="mdi-action-settings"></span>
+                                </a>
+                                <ul class="dropdown-menu" id="user-settings" style="height: auto !important;">
+                                    <li><a href="{% url 'users:edit' pk=request.user.pk %}" style="color: #03a9f4 !important;">Edit profile</a></li>
+                                    <li><a href="{% url 'circles:manage' user_pk=request.user.pk %}" style="color: #03a9f4 !important;">Manage circles</a></li>
+                                </ul>
+                            </li>
                         {% else %}
                             <li>
                                 <a href="https://github.com/7Pros/circuit/blob/develop/MANUAL.md#welcome-to-the-circuit-user-manual">
@@ -88,7 +97,7 @@
 </main>
 
 {% if request.user.is_authenticated %}
-    <div class="container">
+    <div class="container" id="fab-post-create">
         <a class="btn btn-info btn-fab btn-raised mdi-av-queue"
            data-target="#modal-post-create"
            data-toggle="modal">
