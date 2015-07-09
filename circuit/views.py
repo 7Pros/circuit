@@ -148,7 +148,8 @@ class SearchView(TemplateView):
             'next_range': next_range,
             'users': users,
             'hashtags': hashtags,
-            'posts': [views.set_post_extra(p, self.request) for p in posts],
-            'top_hashtags': views.top_hashtags(),
+            'posts': [p.set_post_extra(self.request) for p in posts],
+            'top_hashtags': Hashtag.top(),
         })
+
         return ctx
