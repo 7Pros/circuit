@@ -14,8 +14,8 @@ from django.shortcuts import redirect, Http404, render
 from django.template import loader
 from django.views import generic
 from django.views.generic import CreateView
-from circles.models import PUBLIC_CIRCLE
 
+from circles.models import PUBLIC_CIRCLE
 from circuit import settings
 from posts.models import Post, Hashtag
 from users.models import User, create_hash
@@ -170,6 +170,9 @@ def user_profile_by_username(request, username):
 
     for post in posts:
         post.set_post_extra(request)
+        for reply in post.extra['replies']:
+            reply.set_post_extra(request)
+    
     context = {'posts': posts, 'user': user}
 
     return render(request, 'users/user_profile.html', context)
@@ -185,8 +188,13 @@ class UserProfileView(generic.DetailView):
 
         for post in posts:
             post.set_post_extra(self.request)
+            for reply in post.extra['replies']:
+                reply.set_post_extra(self.request)
+
         context.update(posts=posts)
         context.update(top_hashtags=Hashtag.top())
+        context.update(active_tab='posts')
+
         return super(UserProfileView, self).render_to_response(context, **response_kwargs)
 
 
@@ -295,3 +303,33 @@ def email_notification_for_user(user, subject, templateFile, context={}):
         fail_silently=False,
         html_message=html
     )
+
+class UserFavoriteView(generic.DetailView):
+    template_name = 'users/user_profile.html'
+    model = User
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Gets all the posts that have been favour by the user.
+
+        @return: the favorited posts
+        """
+        favorite_posts = User.objects.get(pk=self.object.pk).favorites.all()
+
+        visible_posts = Post.visible_posts_for(self.request.user).filter(author=self.object.pk) \
+            .select_related('author', 'repost_original', 'reply_original').all()
+
+        posts = list()
+        for favorite_post in favorite_posts:
+            if favorite_post in visible_posts:
+                favorite_post.set_post_extra(self.request)
+                for reply in favorite_post.extra['replies']:
+                    reply.set_post_extra(self.request)
+                posts.append(favorite_post)
+
+        context.update(posts=posts)
+        context.update(top_hashtags=Hashtag.top())
+        context.update(active_tab='favorites')
+
+        return super(UserFavoriteView, self).render_to_response(context, **response_kwargs)
+
