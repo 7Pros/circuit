@@ -5,12 +5,13 @@ Post views file.
 @copyright
 """
 from django.contrib import messages
-from django.shortcuts import redirect, Http404
-from django.views.generic import ListView, DetailView
+from django.http import Http404
+from django.shortcuts import redirect
+from django.views.generic import DetailView, ListView
 from django.core.urlresolvers import reverse
 from django.views import generic
 
-from circles.models import PUBLIC_CIRCLE, Circle, ME_CIRCLE
+from circles.models import Circle, ME_CIRCLE, PUBLIC_CIRCLE
 from posts.models import Post, Hashtag
 import users
 from users.models import User
@@ -223,7 +224,6 @@ class PostsListView(ListView):
             post.set_post_extra(self.request)
 
         return posts
-
 
 def post_favorite(request, pk=None):
     """

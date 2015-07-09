@@ -76,7 +76,7 @@ class CircleEdit(generic.UpdateView):
         }
         for member in User.objects.filter(mail_members):
             email_notification_for_user(member, "You were added to a circle",
-                                                    'users/notification_for_new_circle_email.html', context)
+                                        'users/notification_for_new_circle_email.html', context)
         return super(CircleEdit, self).form_valid(form)
 
     def get_success_url(self):
