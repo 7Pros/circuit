@@ -14,7 +14,7 @@ from django.views import generic
 
 from circles.models import Circle
 from users.models import User
-import users.views
+from users.views import email_notification_for_user
 
 
 class CircleList(generic.ListView):
@@ -75,8 +75,8 @@ class CircleEdit(generic.UpdateView):
             'content': "%s added you to a circle" % self.request.user.username,
         }
         for member in User.objects.filter(mail_members):
-            users.views.send_notifications(member, "You were added to a circle!",
-                               'users/notification_for_new_circle_email.html', context)
+            email_notification_for_user(member, "You were added to a circle",
+                                                    'users/notification_for_new_circle_email.html', context)
         return super(CircleEdit, self).form_valid(form)
 
     def get_success_url(self):
