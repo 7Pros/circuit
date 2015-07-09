@@ -88,7 +88,12 @@
     {% endblock %}
 </main>
 
-<footer></footer>
+<footer class="footer">
+    <div class="container">
+        <a class="pull-right" href="{% url 'legal-notice' %}">legal notice</a>
+    </div>
+</footer>
+
 <script src="{% static "js/app.js" %}"></script>
 </body>
 </html>
