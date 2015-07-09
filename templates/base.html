@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" style="padding: 0; height: 100%;">
 <head>{% load static %}
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="{% static "css/animate.css" %}"/>
     <link rel="shortcut icon" type="image/png" href="{% static "image/icon_circuit" %}"/>
 </head>
-<body>
+<body style="margin: 0; padding:0; height: 100%;">
 
-<header>
+<header style="margin: 0; padding: 0; height: 50px;">
     <div class="navbar">
         <div class="container">
             <div class="navbar-header">
@@ -52,6 +52,9 @@
     {% block content %}
     {% endblock %}
 </main>
+
+{% block fullscreen %}
+{% endblock %}
 
 <footer></footer>
 <script src="{% static "js/app.js" %}"></script>
