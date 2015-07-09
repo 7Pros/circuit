@@ -38,6 +38,9 @@ swampdragon.onChannelMessage(function (channels, message) {
 
 function upgradeBadge() {
     var badgeValue = document.getElementById('badge');
+    if (badgeValue == null) {
+        badgeValue.innerHTML = 1;
+    }
     badgeValue.innerHTML = parseInt(badgeValue.innerHTML) + 1;
 };
 
@@ -77,19 +80,19 @@ function addNotification(notification) {
         });
     } else {
         // TODO: personalize
-            var browserNotification = new PNotify({
-                text: notification.message,
-                type: 'info',
-                styling: 'bootstrap3',
-                hide: 'false',
-                delay: '5000',
-                opacity: .8,
-                icon: 'mdi-action-info',
-                buttons: {
-                    sticker: false,
-                    sticker_hover: false
-                }
-            });
+        var browserNotification = new PNotify({
+            text: notification.message,
+            type: 'info',
+            styling: 'bootstrap3',
+            hide: 'false',
+            delay: '5000',
+            opacity: .8,
+            icon: 'mdi-action-info',
+            buttons: {
+                sticker: false,
+                sticker_hover: false
+            }
+        });
         browserNotification.get().click(function (e) {
             if ($(e.target).is('.ui-pnotify-closer *, .ui-pnotify-sticker *')) {
                 return;
