@@ -22,6 +22,7 @@ gulp.task('css', ['less'], function () {
     return gulp.src([
         './circuit/static/css/app.css',
         './assets/vendor/wow/css/libs/animate.css',
+        './assets/vendor/pnotify/pnotify.core.css',
         './assets/vendor/pnotify/pnotify.buttons.css'
     ])
         .pipe(concat('app.css'))
@@ -37,6 +38,9 @@ gulp.task('js', function () {
         './assets/vendor/vue/dist/vue.js',
         './assets/vendor/devbridge-autocomplete/dist/jquery.autocomplete.js',
         './assets/vendor/wow/dist/wow.js',
+        './assets/vendor/pnotify/pnotify.core.js',
+        './assets/vendor/pnotify/pnotify.buttons.js',
+        './assets/js/notifications.js',
         './assets/js/app.js'
     ])
         .pipe(concat('app.js'))
@@ -44,6 +48,8 @@ gulp.task('js', function () {
 });
 
 gulp.task('copy', function () {
-    return gulp.src('assets/vendor/bootstrap-material-design/fonts/*')
+    return gulp.src(['assets/vendor/bootstrap-material-design/fonts/*',
+        'assets/vendor/bootstrap/fonts/*'
+    ])
         .pipe(gulp.dest('./circuit/static/fonts'));
 });

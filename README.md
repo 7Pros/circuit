@@ -8,7 +8,7 @@ A social network created with Django.
 
 ## Installation
 
-First make sure that you have [python](https://www.python.org/), [django](https://docs.djangoproject.com/en/1.8/intro/install/) & [Node.js](https://nodejs.org/) installed.
+First make sure that you have [python](https://www.python.org/), [django](https://docs.djangoproject.com/en/1.8/intro/install/), [redis](http://redis.io/topics/quickstart) & [Node.js](https://nodejs.org/) installed.
 
 Now clone this project to your machine
 
@@ -38,9 +38,11 @@ At last we need gulp to compile all our assets. Simply run gulp
 
     gulp
 
-You're ready to start the django webserver with
+You're ready to start the django and swampdragon webserver with
 
     python manage.py runserver
+and
+    python manage.py runsd
 
 Open [127.0.0.1:8000](http://127.0.0.1:8000/) - DONE
 
@@ -51,6 +53,10 @@ While developing you will need to run a smtp server, once you try to sign up.
     python -m smtpd -n -c DebuggingServer localhost:1025
     
 This will start a smtp server in your command line which django will send emails to.
+
+Don't forget to have your redis-server running. If you don't know how to do that, just go to your favorite command line program and type:
+
+    redis-server
 
 ### Contributing
 

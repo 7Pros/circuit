@@ -16,6 +16,7 @@
     "bootstrap": "~3.3.4",
     "vue": "~0.12.1",
     "devbridge-autocomplete": "~1.2.21",
-    "wow": "~1.1.2"
+    "wow": "~1.1.2",
+    "pnotify":"~2.0.1"
   }
 }

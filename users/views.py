@@ -18,7 +18,7 @@ from django.views.generic import CreateView
 from circles.models import PUBLIC_CIRCLE
 from circuit import settings
 from posts.models import Post, Hashtag
-from users.models import User, create_hash
+from users.models import User, Notification, create_hash
 
 
 class UserCreateView(CreateView):
@@ -303,6 +303,7 @@ def email_notification_for_user(user, subject, templateFile, context={}):
         fail_silently=False,
         html_message=html
     )
+    
 
 class UserFavoriteView(generic.DetailView):
     template_name = 'users/user_profile.html'
@@ -333,3 +334,72 @@ class UserFavoriteView(generic.DetailView):
 
         return super(UserFavoriteView, self).render_to_response(context, **response_kwargs)
 
+
+def set_notifications_attribute(context_user):
+    """
+    Set all notifications to the user.
+
+    @param context_user: the user to which the notifications will be added
+    """
+    setattr(context_user, 'notifications', context_user.notification_set.all())
+
+
+def send_notifications(user, email_subject, email_template, context, post=None):
+    """
+    Sends the email and the real-time notifications to the users.
+
+    @param user: the user that will get the notification.
+    @param email_subject: the email's subject.
+    @param email_template: the email's template.
+    @param context: the contents of the notification.
+    @param post: In case it is a post-related notification will be a post instance.
+    """
+    # email_notification_for_user(user, email_subject, email_template, context)
+    if post is not None:
+        new_notification = Notification(message=context['content'], status=False, user=user, post=post, type=1)
+    else:
+        new_notification = Notification(message=context['content'], status=False, user=user, type=0)
+
+    new_notification.save()
+
+
+def see_nofitication(request, **kwargs):
+    """
+    Sets the notification as viewed. If it's a post-related notifications, returns a view to the post, otherwise just returns to the referer page.
+
+    @param request: incoming request data.
+    @param kwargs: sent keyword arguments with the request.
+
+    @return: redirects to the post or to the referer.
+    """
+    notification = Notification.objects.get(pk=kwargs['pk'])
+    notification.status = True
+    notification.save()
+
+    if notification.type == 1:
+        return redirect('posts:post', pk=notification.post.pk)
+    elif notification.type == 0:
+        return redirect(request.META['HTTP_REFERER'])
+
+
+def mark_all_as_read(request):
+    """
+    Set all the notifications as read.
+
+    @param request: the incoming request data.
+
+    @return: returns to the referer page with all the notifications set as read.
+    """
+    Notification.set_all_as_read(request.user)
+    return redirect(request.META['HTTP_REFERER'])
+
+
+def show_all_notifications(request):
+    """
+    Returns the rendered view of the user's notifications panel.
+
+    @param request: the incoming request.
+
+    @return: the rendered template.
+    """
+    return render(request, 'users/user_notifications.html', {'notifications': request.user.notification_set.all()})

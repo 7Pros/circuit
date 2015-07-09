@@ -4,6 +4,7 @@ Post views file.
 @author 7Pros
 @copyright
 """
+
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
@@ -11,11 +12,10 @@ from django.views.generic import DetailView, ListView
 from django.core.urlresolvers import reverse
 from django.views import generic
 
-from circles.models import Circle, ME_CIRCLE, PUBLIC_CIRCLE
+from circles.models import PUBLIC_CIRCLE, Circle, ME_CIRCLE
 from posts.models import Post, Hashtag
-import users
 from users.models import User
-from users.views import email_notification_for_user
+from users.views import send_notifications
 
 
 def post_create(request):
@@ -38,9 +38,16 @@ def post_create(request):
         post.save()
         parsed_content = Post.parse_content(request.POST['content'])
         post.save_hashtags(parsed_content['hashtags'])
-        for mentionedUser in User.objects.filter(username__in=parsed_content['mentions']):
+        mentioned_users = User.objects.filter(username__in=parsed_content['mentions'])
+        for mentionedUser in mentioned_users:
             mentionedUser_is_in_circle = False
-            for member in post.circles.members.all():
+
+            if circle_pk == -1:
+                members = mentioned_users
+            else:
+                members = post.circles.members.all()
+
+            for member in members:
                 if mentionedUser == member:
                     mentionedUser_is_in_circle = True
             if mentionedUser_is_in_circle:
@@ -48,8 +55,8 @@ def post_create(request):
                     'content': "%s mentioned you in his post" % request.user.username,
                     'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                 }
-                email_notification_for_user(mentionedUser, "You were mentioned",
-                                            'users/notification_for_post_email.html', context)
+                send_notifications(mentionedUser, "You were mentioned!",
+                                   'users/notification_for_post_email.html', context, post)
 
     return redirect(request.META['HTTP_REFERER'] or 'landingpage')
 
@@ -97,11 +104,14 @@ class PostEditView(generic.UpdateView):
         parsed_content_old = Post.parse_content(old_post.content)
         post = form.save()
         parsed_content_new = Post.parse_content(post.content)
-        for mentionedUser in User.objects.filter(username__in=parsed_content_new['mentions']):
-            mentionedUser_is_in_circle = False
-            for member in post.circles.members.all():
-                if mentionedUser == member:
-                    mentionedUser_is_in_circle = True
+        mentioned_users = User.objects.filter(username__in=parsed_content_new['mentions'])
+        for mentionedUser in mentioned_users:
+            if post.circles_id == -1:
+                members = mentioned_users
+            else:
+                members = post.circles.members.all()
+
+            for member in members:
                 if mentionedUser.username in parsed_content_old['mentions']:
                     context = {
                         'content': "%s changed his post you were metioned in" % self.request.user.username,
@@ -112,8 +122,8 @@ class PostEditView(generic.UpdateView):
                         'content': "%s mentioned you in his post" % self.request.user.username,
                         'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
                     }
-                users.views.email_notification_for_user(mentionedUser, "You were mentioned",
-                                                        'users/notification_for_post_email.html', context)
+                send_notifications(mentionedUser, "You were mentioned!",
+                                   'users/notification_for_post_email.html', context, post)
 
         circle_pk = int(self.request.POST['circle'])
         if circle_pk not in (ME_CIRCLE, PUBLIC_CIRCLE):
@@ -165,8 +175,8 @@ def post_repost(request, pk=None):
         'content': "There is a new repost to a post of you made by %s" % user.username,
         'link_to_subject': reverse("posts:post", kwargs={'pk': repost.pk})
     }
-    users.views.email_notification_for_user(repost_original.author, "There is a new repost to your post",
-                                            'users/notification_for_post_email.html', context)
+    send_notifications(repost_original.author, "There is a new repost to your post",
+                       'users/notification_for_post_email.html', context, repost)
 
     return redirect('posts:post', pk=repost.pk)
 
@@ -199,8 +209,8 @@ def post_reply(request, pk=None):
         'content': "There is a new reply to a post of you made by %s" % user.username,
         'link_to_subject': reverse("posts:post", kwargs={'pk': reply.pk})
     }
-    users.views.email_notification_for_user(author, "There is a new reply to your post",
-                                            'users/notification_for_post_email.html', context)
+    send_notifications(author, "There is a new reply to your post",
+                       'users/notification_for_post_email.html', context, reply)
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
@@ -238,12 +248,13 @@ def post_favorite(request, pk=None):
     else:
         post.favorites.add(request.user)
     post.save()
-    context = {
-        'content': "%s favorited your post" % request.user.username,
-        'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
-    }
-    users.views.email_notification_for_user(post.author, "There is a new repost to your post",
-                                            'users/notification_for_post_email.html', context)
+    if request.user.pk != post.author.pk:
+        context = {
+            'content': "%s favorited your post" % request.user.username,
+            'link_to_subject': reverse("posts:post", kwargs={'pk': post.pk})
+        }
+        send_notifications(post.author, "There is a new repost to your post",
+                       'users/notification_for_post_email.html', context, post)
 
     referer = request.META['HTTP_REFERER']
     if referer:
