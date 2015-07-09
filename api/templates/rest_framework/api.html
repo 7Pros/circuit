@@ -1,0 +1,32 @@
+{% extends 'rest_framework/base.html' %}
+
+{% block bootstrap_theme %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/app.css" %}"/>
+{% endblock %}
+
+{% block title %}circuit | API{% endblock %}
+{% block branding %}
+    <button type="button" class="navbar-toggle" data-toggle="collapse"
+            data-target=".navbar-responsive-collapse">
+    </button>
+    {% if request.user.is_authenticated %}
+        <a class="navbar-brand" href="{% url 'users:profile' pk=request.user.pk %}">circuit</a>
+    {% else %}
+        <a class="navbar-brand" href="{% url 'landingpage' %}">circuit</a>
+    {% endif %}
+{% endblock %}
+{% block userlinks %}
+    {{ block.super }}
+    {% if request.user.is_authenticated %}
+        <li><a href="{% url 'users:profile' pk=request.user.pk %}">Profile</a></li>
+        <li><a href="{% url 'users:logout' %}">Logout</a></li>
+    {% else %}
+        <li><a href="{% url 'users:signup' %}">Sign up</a></li>
+        <li><a href="{% url 'api:login' %}">Login</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block script %}
+    <script src="{% static "js/app.js" %}"></script>
+{% endblock %}
