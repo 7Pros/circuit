@@ -11,7 +11,6 @@ from django.db.models import Count
 from django.views.generic import TemplateView
 
 from posts.models import Hashtag, Post
-from posts.views import visible_posts_for
 from posts import views
 from users.models import User
 
@@ -36,7 +35,7 @@ def feed(request):
     all_circles_posts = []
 
     for circle in user_circles:
-        posts_in_circle = visible_posts_for(request.user) \
+        posts_in_circle = Post.visible_posts_for(request.user) \
                               .filter(author__in=circle.get_members()) \
                               .order_by('-created_at')[:50]
 
@@ -76,7 +75,7 @@ class SearchView(TemplateView):
         # for user/hashtag search, skip the @# and search for the remaining text
         search_text = query[1:] if search_type else query
 
-        pq = views.visible_posts_for(self.request.user)
+        pq = Post.visible_posts_for(self.request.user)
 
         if search_type == '@':  # user search
             users_by_name = User.objects.filter(name__icontains=search_text)
