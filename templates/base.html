@@ -11,7 +11,7 @@
 </head>
 <body style="margin: 0; padding:0; height: 100%;">
 
-<header style="margin: 0; padding: 0; height: 50px;">
+<header>
     <div class="navbar">
         <div class="container">
             <div class="navbar-header">
@@ -102,11 +102,11 @@
 {% block fullscreen %}
 {% endblock %}
 
-<footer class="footer">
-    <div class="container">
-        <a class="pull-right" href="{% url 'legal-notice' %}">legal notice</a>
-    </div>
-</footer>
+{#<footer class="footer">#}
+{#    <div class="container">#}
+{#        <a class="pull-right" href="{% url 'legal-notice' %}">legal notice</a>#}
+{#    </div>#}
+{#</footer>#}
 
 {% if request.user.is_authenticated %}
     <a class="btn btn-fab btn-raised mdi-content-create"
