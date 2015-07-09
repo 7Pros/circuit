@@ -5,13 +5,14 @@ Post views file.
 @copyright
 """
 from django.contrib import messages
+from django.http import Http404
 from django.shortcuts import redirect
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 from django.core.urlresolvers import reverse
 from django.views import generic
 
 from circles.models import Circle, ME_CIRCLE, PUBLIC_CIRCLE
-from posts.models import Post
+from posts.models import Post, Hashtag
 import users
 from users.models import User
 from users.views import email_notification_for_user
@@ -59,6 +60,9 @@ class PostDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         context['post'].set_post_extra(self.request)
+
+        for reply in context['post'].extra['replies']:
+            reply.set_post_extra(self.request)
 
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
@@ -201,6 +205,25 @@ def post_reply(request, pk=None):
 
     return redirect('posts:post', pk=reply_original.pk)
 
+
+class PostsListView(ListView):
+    template_name = 'posts/posts_list.html'
+    model = Post
+
+    def get_queryset(self):
+        """
+        Returns the posts containing a wished hashtag
+
+        @return posts objects that contain the searched hashtag
+        """
+        try:
+            posts = Hashtag.filter_posts_by_hashtag(self.kwargs['hashtag_name'])
+        except Hashtag.DoesNotExist:
+            raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
+        for post in posts:
+            post.set_post_extra(self.request)
+
+        return posts
 
 def post_favorite(request, pk=None):
     """

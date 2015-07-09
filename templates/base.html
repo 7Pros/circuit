@@ -40,8 +40,6 @@
             </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <nav>
-                    <ul class="nav navbar-nav">
-                    </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
                             <li>
@@ -83,10 +81,30 @@
     </div>
 </header>
 
+
 <main class="container">
     {% block content %}
     {% endblock %}
 </main>
+
+{% if request.user.is_authenticated %}
+    <div class="container">
+        <a class="btn btn-info btn-fab btn-raised mdi-av-queue"
+           data-target="#modal-post-create"
+           data-toggle="modal">
+        </a>
+    </div>
+
+    <div class="modal fade" id="modal-post-create" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {% include 'posts/_post_create.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
 <footer class="footer">
     <div class="container">
