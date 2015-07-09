@@ -83,7 +83,6 @@ class Post(models.Model):
             else:
                 hashtagList[0].posts.add(self)
 
-
     def check_repost(self, user):
         """
         Check if a post can be reposted by a user.
@@ -126,7 +125,6 @@ class Post(models.Model):
         hashtags = re.findall(r"#(\w+)", content)
         mentions = re.findall(r"@(\w+)", content)
         return {'hashtags': hashtags, 'mentions': mentions}
-
 
     @staticmethod
     def content_is_valid(content):

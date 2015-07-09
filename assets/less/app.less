@@ -8,6 +8,19 @@
 
 @import "_overrides";
 
+.navbar {
+  li a {
+    [class^="mdi-"], [class*="mdi-"] {
+      position: relative;
+      top: 5px;
+      margin-top: -7px;
+    }
+    .navbar-icon-text {
+      .hidden-sm;
+    }
+  }
+}
+
 .panel-profile {
   .header {
     height: 100px;
