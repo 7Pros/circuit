@@ -82,9 +82,11 @@
 
     </div>
 
-    <div class="row">
-        <div class="col-sm-push-6 col-md-push-4 col-xs-12 col-sm-6 col-md-8">
-            {% include 'users/top_hashtags.html' %}
+    {% if not users and not posts and not hashtags %}
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-8">
+                {% include 'users/top_hashtags.html' %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}

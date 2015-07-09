@@ -110,7 +110,7 @@ class SearchView(TemplateView):
             'users': users,
             'hashtags': hashtags,
             'posts': [p.set_post_extra(self.request) for p in posts],
-            'top_hashtags': Hashtag.top(),
+            'top_hashtags': Hashtag.top() if not users and not posts and not hashtags else [],
         })
         return ctx
 
