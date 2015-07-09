@@ -15,6 +15,7 @@
     "bootstrap-material-design": "~0.3.0",
     "bootstrap": "~3.3.4",
     "vue": "~0.12.1",
-    "devbridge-autocomplete": "~1.2.21"
+    "devbridge-autocomplete": "~1.2.21",
+    "wow": "~1.1.2"
   }
 }

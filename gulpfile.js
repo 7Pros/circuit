@@ -21,18 +21,11 @@ gulp.task('less', function () {
 gulp.task('css', ['less'], function () {
     return gulp.src([
         './circuit/static/css/app.css',
+        './assets/vendor/wow/css/libs/animate.css',
         './assets/vendor/pnotify/pnotify.buttons.css'
     ])
         .pipe(concat('app.css'))
         .pipe(gulp.dest('./circuit/static/css'))
-});
-
-gulp.task('css', function () {
-    return gulp.src('./assets/less/app.less')
-        .pipe(sourcemaps.init())
-        .pipe(less())
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest('./circuit/static/css'));
 });
 
 gulp.task('js', function () {
@@ -43,6 +36,7 @@ gulp.task('js', function () {
         './assets/vendor/bootstrap-material-design/dist/js/ripples.js',
         './assets/vendor/vue/dist/vue.js',
         './assets/vendor/devbridge-autocomplete/dist/jquery.autocomplete.js',
+        './assets/vendor/wow/dist/wow.js',
         './assets/js/app.js'
     ])
         .pipe(concat('app.js'))
