@@ -19,6 +19,37 @@
       .hidden-sm;
     }
   }
+
+  .search {
+    i {
+      color: white;
+    }
+
+    input.form-control {
+      position: relative;
+      top: -8px;
+      left: 5px;
+      color: white !important;
+    }
+  }
+
+  .placeholder() {
+    color: @grey-100;
+    text-shadow: none;
+  }
+
+  *::-webkit-input-placeholder {
+    .placeholder();
+  }
+  *:-moz-placeholder {
+    .placeholder();
+  }
+  *::-moz-placeholder {
+    .placeholder();
+  }
+  *:-ms-input-placeholder {
+    .placeholder();
+  }
 }
 
 .panel-profile {
