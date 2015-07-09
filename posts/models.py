@@ -153,12 +153,14 @@ class Post(models.Model):
         Returns a pre-filtered query object containing all posts visible for the specified user.
         @param user: instance of the User model
         """
-        own = Post.objects.filter(author=user)
         public = Post.objects.filter(circles=PUBLIC_CIRCLE)
-        my_circle = Post.objects.filter(circles__owner=user.pk)
-        in_circle = Post.objects.filter(circles__members=user.pk)
-        return own | public | my_circle | in_circle
+        if user.is_authenticated():
+            own = Post.objects.filter(author=user)
+            my_circle = Post.objects.filter(circles__owner=user.pk)
+            in_circle = Post.objects.filter(circles__members=user.pk)
+            return own | public | my_circle | in_circle
 
+        return public
 
 class Hashtag(models.Model):
     name = models.CharField(max_length=255)
