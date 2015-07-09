@@ -26,19 +26,20 @@
                     <a class="navbar-brand" href="{% url 'landingpage' %}">circuit</a>
                 {% endif %}
             </div>
-            <form action="{% url 'search' %}" method="get"
-                  class="navbar-form navbar-left">
-                <input type="text"
-                       name="q"
-                       class="form-control col-lg-8"
-                       placeholder="Search @user #hashtag"
-                       value="{{ search_query }}"
-                       required />
-            </form>
+            <div class="search">
+                <form action="{% url 'search' %}" method="get"
+                      class="navbar-form navbar-left">
+                    <i class="mdi-action-search"></i>
+                    <input type="text"
+                           name="q"
+                           class="form-control col-lg-8"
+                           placeholder="Search @user #hashtag"
+                           value="{{ search_query }}"
+                           required/>
+                </form>
+            </div>
             <div class="navbar-collapse collapse navbar-responsive-collapse">
                 <nav>
-                    <ul class="nav navbar-nav">
-                    </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if request.user.is_authenticated %}
                             <input class="invisible" id="user_id" type="hidden" value="{{ request.user.pk }}"/>
@@ -84,12 +85,37 @@
     </div>
 </header>
 
+
 <main class="container">
     {% block content %}
     {% endblock %}
 </main>
 
-<footer></footer>
+{% if request.user.is_authenticated %}
+    <div class="container">
+        <a class="btn btn-info btn-fab btn-raised mdi-av-queue"
+           data-target="#modal-post-create"
+           data-toggle="modal">
+        </a>
+    </div>
+
+    <div class="modal fade" id="modal-post-create" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    {% include 'posts/_post_create.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<footer class="footer">
+    <div class="container">
+        <a class="pull-right" href="{% url 'legal-notice' %}">legal notice</a>
+    </div>
+</footer>
+
 {% load swampdragon_tags %}
 {% swampdragon_settings %}
 <script src="{% static 'swampdragon/js/dist/swampdragon.min.js' %}"></script>

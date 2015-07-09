@@ -6,8 +6,9 @@ Post views file.
 """
 
 from django.contrib import messages
-from django.shortcuts import redirect, Http404
-from django.views.generic import ListView, DetailView
+from django.http import Http404
+from django.shortcuts import redirect
+from django.views.generic import DetailView, ListView
 from django.core.urlresolvers import reverse
 from django.views import generic
 
@@ -66,6 +67,9 @@ class PostDetailView(DetailView):
 
     def render_to_response(self, context, **response_kwargs):
         context['post'].set_post_extra(self.request)
+
+        for reply in context['post'].extra['replies']:
+            reply.set_post_extra(self.request)
 
         return super(PostDetailView, self).render_to_response(context, **response_kwargs)
 
@@ -230,7 +234,6 @@ class PostsListView(ListView):
             post.set_post_extra(self.request)
 
         return posts
-
 
 def post_favorite(request, pk=None):
     """

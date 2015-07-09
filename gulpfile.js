@@ -11,7 +11,9 @@ gulp.task('default', [
 ]);
 
 gulp.task('less', function () {
-    return gulp.src('./assets/less/app.less')
+    return gulp.src(['./assets/less/app.less',
+        './assets/less/_overrides.less'
+    ])
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(sourcemaps.write())

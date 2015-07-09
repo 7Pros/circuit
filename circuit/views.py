@@ -4,15 +4,13 @@ Main project views file.
 @author 7Pros
 @copyright
 """
-from django.shortcuts import render, redirect
 import datetime
 
 from django.db.models import Count
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-
-from posts.models import Hashtag, Post
-from posts import views
 from users.models import User
+from posts.models import Hashtag, Post
 
 
 class LandingPage(TemplateView):
@@ -23,43 +21,6 @@ class LegalNotice(TemplateView):
     template_name = 'legal-notice.html'
 
 
-def feed(request):
-    if not request.user.is_authenticated():
-        return redirect('landingpage')
-
-    top_hashtags = Hashtag.top()
-
-    user_circles = request.user.get_circles()
-
-    user_circles_with_posts = []
-    all_circles_posts = []
-
-    for circle in user_circles:
-        posts_in_circle = Post.visible_posts_for(request.user) \
-                              .filter(author__in=circle.get_members()) \
-                              .order_by('-created_at')[:50]
-
-        circle_with_posts = {
-            'circle': circle,
-            'posts': posts_in_circle
-        }
-        user_circles_with_posts.append(circle_with_posts)
-
-        all_circles_posts.extend(posts_in_circle)
-
-    # take all posts of all circles sort them by create_at descending and take only 50 newest
-    all_circles_posts.sort(key=lambda post: post.created_at, reverse=True)
-    all_circles_posts = all_circles_posts[:50]
-
-    context = {
-        'top_hashtags': top_hashtags,
-        'user_circles_with_posts': user_circles_with_posts,
-        'all_circles_posts': all_circles_posts
-    }
-
-    return render(request, 'feed.html', context)
-
-
 class SearchView(TemplateView):
     template_name = 'search_results.html'
 
@@ -67,7 +28,7 @@ class SearchView(TemplateView):
         """Collects all results and update the context with them."""
         query = self.request.GET.get('q', '').strip()
         show_all = self.request.GET.get('all', '')
-        p_from, p_to = map(int, self.request.GET.get('range', '0-0').split('-'))
+        p_from, p_to = map(int, self.request.GET.get('range', '0-3').split('-'))  # xxx 20 or 50
 
         # search_type is @ for user, # for hashtag,
         # anything else for full text search
@@ -126,17 +87,17 @@ class SearchView(TemplateView):
         else:
             users = users[:3]
             hashtags = hashtags[:10]
-            posts = posts[:20]
+            posts = posts[:3]
 
         # pagination
-        # prev_range should be '0-0' on first page,
-        # next_range should be '0-0' on last page
+        # prev_range should be None on first page,
+        # next_range should be None on last page
         range_size = p_to - p_from
         prev_range = '%i-%i' % (max(0, p_from - range_size), p_from)
-        if p_from < range_size:
+        if p_from < range_size or prev_range == '0-0':
             prev_range = None
         next_range = '%i-%i' % (p_to, p_to + range_size)
-        if len(posts) <= 0:
+        if p_to > len(posts):
             next_range = None
 
         ctx = super(SearchView, self).get_context_data(**kwargs)
@@ -149,7 +110,43 @@ class SearchView(TemplateView):
             'users': users,
             'hashtags': hashtags,
             'posts': [p.set_post_extra(self.request) for p in posts],
-            'top_hashtags': Hashtag.top(),
+            'top_hashtags': Hashtag.top() if not users and not posts and not hashtags else [],
         })
-
         return ctx
+
+
+def feed(request):
+    if not request.user.is_authenticated():
+        return redirect('landingpage')
+
+    top_hashtags = Hashtag.top()
+
+    user_circles = request.user.get_circles()
+
+    user_circles_with_posts = []
+    all_circles_posts = []
+
+    for circle in user_circles:
+        posts_in_circle = Post.visible_posts_for(request.user) \
+                              .filter(author__in=circle.get_members()) \
+                              .order_by('-created_at')[:50]
+
+        circle_with_posts = {
+            'circle': circle,
+            'posts': posts_in_circle
+        }
+        user_circles_with_posts.append(circle_with_posts)
+
+        all_circles_posts.extend(posts_in_circle)
+
+    # take all posts of all circles sort them by create_at descending and take only 50 newest
+    all_circles_posts.sort(key=lambda post: post.created_at, reverse=True)
+    all_circles_posts = all_circles_posts[:50]
+
+    context = {
+        'top_hashtags': top_hashtags,
+        'user_circles_with_posts': user_circles_with_posts,
+        'all_circles_posts': all_circles_posts
+    }
+
+    return render(request, 'feed.html', context)
