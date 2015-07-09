@@ -13,23 +13,34 @@
     <br/>
 
     <div class="row">
-        <div class="form-group">
-            <div class="col-xs-12 col-md-4">
-                <select class="form-control" name="circle">
+        <div class="col-xs-12 col-md-4 col-lg-4" style="height: 60px;padding-top: 15px;">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="mdi-social-people"></i>
+                </span>
+                <select class="form-control" name="circle" style="margin-top: 3px;">
                     <option value="-2"{% if post.circles_id == -2 %} selected{% endif %}>Only visible to me</option>
                     <option value="-1"{% if post.circles_id == -1 %} selected{% endif %}>Public</option>
                     {% for circle in user.get_circles|dictsortreversed:'pk' %}
-                        <option value="{{ circle.pk }}"{% if post.circles_id == circle.pk %} selected{% endif %}>{{ circle.name }}</option>
+                        <option value="{{ circle.pk }}"{% if post.circles_id == circle.pk %}
+                                selected{% endif %}>{{ circle.name }}</option>
                     {% endfor %}
                 </select>
             </div>
         </div>
-        <div class="col-xs-12 col-md-4">
-            <input class="" name="image" type="file"/>
+        <div class="col-xs-12 col-md-5 col-lg-5" style="height: 60px;padding-top: 18px;">
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="mdi-image-image"></i>
+                </span>
+                <input class="" name="image" type="file" style="margin-top: 5px;"/>
+            </div>
         </div>
-        <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
-            {% if post %}Save{% else %}Write{% endif %}
-        </button>
+        <div class="col-xs-12 col-md-3 col-lg-3">
+            <button class="btn btn-lg btn-raised btn-primary pull-right" type="submit">
+                {% if post %}Save{% else %}Write{% endif %}
+            </button>
+        </div>
     </div>
     <div class="clearfix"></div>
 </form>

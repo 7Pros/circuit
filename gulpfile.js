@@ -11,9 +11,7 @@ gulp.task('default', [
 ]);
 
 gulp.task('less', function () {
-    return gulp.src([
-        './assets/less/app.less'
-    ])
+    return gulp.src('./assets/less/app.less')
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(sourcemaps.write())
@@ -23,7 +21,8 @@ gulp.task('less', function () {
 gulp.task('css', ['less'], function () {
     return gulp.src([
         './circuit/static/css/app.css',
-        './assets/vendor/wow/css/libs/animate.css'
+        './assets/vendor/wow/css/libs/animate.css',
+        './assets/vendor/pnotify/pnotify.buttons.css'
     ])
         .pipe(concat('app.css'))
         .pipe(gulp.dest('./circuit/static/css'))

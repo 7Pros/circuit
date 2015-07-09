@@ -4,37 +4,61 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6 col-md-4">
             {% include 'users/_user_card.html' %}
-            {% include 'users/_user_settings_card.html' %}
             {% include 'users/top_hashtags.html' %}
         </div>
 
         <div class="col-xs-12 col-sm-6 col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-body">
 
-                    {% include '_messages_alerts.html' %}
+            <ul class="nav nav-tabs" role="tablist" style="margin-bottom: -4px !important;">
+                <li role="presentation" class="active">
+                    <a{% if active_tab == 'posts' %} style="border-color: #56dcfd !important; border-bottom-width: 4px !important; border-bottom-style: solid !important;"{% endif %}
+                       href="#"
+                       onclick="window.location.replace('{% url 'users:profile' pk=user.pk %}')"
+                       role="tab" data-toggle="tab">
+                        <span class="mdi-communication-message"></span>
+                        <span style="position: relative !important; top: -3px;">Posts</span>
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a{% if active_tab == 'favorites' %} style="border-color: #56dcfd !important; border-bottom-width: 4px !important; border-bottom-style: solid !important;"{% endif %}
+                       href="#"
+                       onclick="window.location.replace('{% url 'users:favorites' pk=user.pk %}')"
+                       role="tab" data-toggle="tab">
+                        <span class="mdi-action-grade"></span>
+                        <span style="position: relative !important; top: -3px;">Favorites</span>
+                    </a>
+                </li>
+            </ul>
 
-                    {% if request.user.is_authenticated and request.user.pk == user.pk %}
-                        {% include 'posts/_post_create.html' %}
-                        <hr/>
-                    {% endif %}
+            <div class="tab-content">
+                <div class="tab-pane active" id="posts" role="tabpanel" >
+                    <div class="panel panel-default">
+                        <div class="panel-body">
 
-                    {% if posts %}
-                        {% for post in posts|dictsortreversed:'created_at' %}
-                            {% if forloop.counter != 1 %}
-                                <hr/>
+                            {% include '_messages_alerts.html' %}
+
+                            {% if posts %}
+                                {% for post in posts|dictsortreversed:'created_at' %}
+                                    {% if forloop.counter != 1 %}
+                                        <hr/>
+                                    {% endif %}
+
+                                    {% include 'posts/_post.html' %}
+                                {% endfor %}
+                            {% else %}
+                                 <br/>
+                                <p class="text-muted lead" style="color: #aaa; text-align: center;">
+                                    {% if active_tab == 'favorites' %}
+                                    This user has no posts<br/>
+                                    {% elif active_tab == 'favorites' %}
+                                    This user has no favorites<br/>
+                                    {% endif %}
+                                    #circuitzombie</p>
                             {% endif %}
-                            {% include 'posts/_post.html' %}
-                        {% endfor %}
-                    {% else %}
-                        <br/>
-                        <p class="text-muted lead" style="color: #aaa; text-align: center;">
-                            This user has no posts<br/>
-                            #circuitzombie</p>
-                    {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 {% endblock %}

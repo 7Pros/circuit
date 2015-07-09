@@ -8,7 +8,7 @@ import re
 
 from django import template
 from django.core.urlresolvers import reverse
-from django.template.defaultfilters import stringfilter
+from django.template.defaultfilters import stringfilter, urlencode
 
 register = template.Library()
 
@@ -39,8 +39,9 @@ def create_hashtag_url(matchobj):
 
     @return hashtag between <a></a> HTML tags
     """
-    url = reverse('posts:hashtags', kwargs={'hashtag_name': matchobj.group(0).lstrip('#')})
-    return '<a class="hashtag" href="' + url + '">' + matchobj.group(0) + '</a>'
+    hashtag = matchobj.group(0)  # format: #foo
+    url = reverse('search') + '?q=' + urlencode(hashtag)
+    return '<a class="hashtag" href="%(url)s">%(hashtag)s</a>' % locals()
 
 
 def create_mention_url(matchobj):

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-4">
+        {% include 'users/top_hashtags.html' %}
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-8">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                {% include 'posts/_post_create.html' %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 col-md-8 col-md-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <ul class="nav nav-tabs" style="margin: -15px;margin-bottom: 15px;">
+                    <li class="active">
+                        <a href="#all" data-toggle="tab">All Circles</a>
+                    </li>
+                    {% for circle_with_post in user_circles_with_posts %}
+                        <li>
+                            <a href="#circle{{ circle_with_post.circle.pk }}"
+                               data-toggle="tab">{{ circle_with_post.circle.name }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade active in" id="all">
+                        {% for post in all_circles_posts %}
+                            {% if forloop.counter != 1 %}
+                                <hr/>
+                            {% endif %}
+                            {% include 'posts/_post.html' %}
+                        {% empty %}
+                            <br/>
+
+                            <p class="text-muted lead" style="color: #aaa; text-align: center;">
+                                There are no posts in this circle<br/>
+                                #circuitzombie</p>
+                        {% endfor %}
+                    </div>
+                    {% for circle_with_post in user_circles_with_posts %}
+                        <div class="tab-pane fade" id="circle{{ circle_with_post.circle.pk }}">
+                            {% for post in circle_with_post.posts %}
+                                {% include 'posts/_post.html' %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
