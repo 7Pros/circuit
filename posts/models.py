@@ -66,6 +66,8 @@ class Post(models.Model):
             'replies': self.reply.all(),
         })
 
+        return self
+
     def save_hashtags(self, hashtags):
         for hashtagWord in hashtags:
             hashtagList = Hashtag.objects.filter(name=hashtagWord)

@@ -5,13 +5,13 @@ Post views file.
 @copyright
 """
 from django.contrib import messages
-from django.shortcuts import redirect, Http404
-from django.views.generic import ListView, DetailView
+from django.shortcuts import redirect
+from django.views.generic import DetailView
 from django.core.urlresolvers import reverse
 from django.views import generic
 
-from circles.models import PUBLIC_CIRCLE, Circle, ME_CIRCLE
-from posts.models import Post, Hashtag
+from circles.models import Circle, ME_CIRCLE, PUBLIC_CIRCLE
+from posts.models import Post
 import users
 from users.models import User
 from users.views import email_notification_for_user
@@ -36,7 +36,7 @@ def post_create(request):
             post.image = request.FILES['image']
         post.save()
         parsed_content = Post.parse_content(request.POST['content'])
-        Post.save_hashtags(parsed_content['hashtags'], post)
+        post.save_hashtags(parsed_content['hashtags'])
         for mentionedUser in User.objects.filter(username__in=parsed_content['mentions']):
             mentionedUser_is_in_circle = False
             for member in post.circles.members.all():
@@ -200,23 +200,6 @@ def post_reply(request, pk=None):
     reply_original.reply.add(reply)
 
     return redirect('posts:post', pk=reply_original.pk)
-
-
-class PostsListView(ListView):
-    template_name = 'posts/posts_list.html'
-    model = Post
-
-    def get_queryset(self):
-        """
-        Returns the posts containing a wished hashtag
-
-        @return posts objects that contain the searched hashtag
-        """
-        try:
-            posts = Hashtag.filter_posts_by_hashtag(self.kwargs['hashtag_name'])
-        except Hashtag.DoesNotExist:
-            raise Http404('Hashtag "%s" does not exist' % self.kwargs['hashtag_name'])
-        return posts
 
 
 def post_favorite(request, pk=None):

@@ -14,8 +14,8 @@ from django.shortcuts import redirect, Http404, render
 from django.template import loader
 from django.views import generic
 from django.views.generic import CreateView
-from circles.models import PUBLIC_CIRCLE
 
+from circles.models import PUBLIC_CIRCLE
 from circuit import settings
 from posts.models import Post, Hashtag
 from users.models import User, create_hash
