@@ -150,6 +150,8 @@ function addNotification(notification) {
     notificationsList.insertBefore(hr, notificationsList.children[2]);
     notificationsList.insertBefore(buttonNotification, notificationsList.children[2]);
 
+    $('li.dropdown').css('height', 'auto');
+
     // Remove excess notifications
     while (notificationsList.getElementsByTagName("button").length > 42) {
         notificationsList.getElementsByTagName("button")[41].remove();
