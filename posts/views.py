@@ -4,8 +4,6 @@ Post views file.
 @author 7Pros
 @copyright
 """
-import re
-import datetime
 
 from django.contrib import messages
 from django.shortcuts import redirect, Http404
@@ -15,7 +13,6 @@ from django.views import generic
 
 from circles.models import PUBLIC_CIRCLE, Circle, ME_CIRCLE
 from posts.models import Post, Hashtag
-import users
 from users.models import User
 from users.views import send_notifications
 
@@ -40,9 +37,16 @@ def post_create(request):
         post.save()
         parsed_content = Post.parse_content(request.POST['content'])
         post.save_hashtags(parsed_content['hashtags'])
-        for mentionedUser in User.objects.filter(username__in=parsed_content['mentions']):
+        mentioned_users = User.objects.filter(username__in=parsed_content['mentions'])
+        for mentionedUser in mentioned_users:
             mentionedUser_is_in_circle = False
-            for member in post.circles.members.all():
+
+            if circle_pk == -1:
+                members = mentioned_users
+            else:
+                members = post.circles.members.all()
+
+            for member in members:
                 if mentionedUser == member:
                     mentionedUser_is_in_circle = True
             if mentionedUser_is_in_circle:
@@ -96,11 +100,14 @@ class PostEditView(generic.UpdateView):
         parsed_content_old = Post.parse_content(old_post.content)
         post = form.save()
         parsed_content_new = Post.parse_content(post.content)
-        for mentionedUser in User.objects.filter(username__in=parsed_content_new['mentions']):
-            mentionedUser_is_in_circle = False
-            for member in post.circles.members.all():
-                if mentionedUser == member:
-                    mentionedUser_is_in_circle = True
+        mentioned_users = User.objects.filter(username__in=parsed_content_new['mentions'])
+        for mentionedUser in mentioned_users:
+            if post.circles_id == -1:
+                members = mentioned_users
+            else:
+                members = post.circles.members.all()
+
+            for member in members:
                 if mentionedUser.username in parsed_content_old['mentions']:
                     context = {
                         'content': "%s changed his post you were metioned in" % self.request.user.username,
