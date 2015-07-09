@@ -9,8 +9,8 @@ import datetime
 from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from posts.models import Post, Hashtag
 from users.models import User
+from posts.models import Hashtag, Post
 
 
 class LandingPage(TemplateView):
@@ -110,7 +110,7 @@ class SearchView(TemplateView):
             'users': users,
             'hashtags': hashtags,
             'posts': [p.set_post_extra(self.request) for p in posts],
-            'top_hashtags': Hashtag.top_hashtags(),
+            'top_hashtags': Hashtag.top(),
         })
         return ctx
 

@@ -166,7 +166,7 @@ def posts_create(request):
         # authentication
         if request.user.is_authenticated:
             # post validation
-            if Post.post_content_is_valid(request.data['content']):
+            if Post.content_is_valid(request.data['content']):
 
                 parsedString = Post.parse_content(request.data['content'])
                 post = Post(content=request.data['content'], author=request.user)
