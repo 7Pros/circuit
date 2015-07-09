@@ -70,10 +70,13 @@ function addNotification(notification) {
     // If we have permission to show browser notifications
     // we can show the notifiaction
     // TODO: fix double notifications
-    //if (window.Notification && Notification.permission === "granted") {
-    //    new Notification(notification.message);
-    //} else {
-    //    // TODO: personalize
+    if (window.Notification && Notification.permission === "granted") {
+        new Notification('circuit', {
+            body: notification.message,
+            icon: '../../static/images/notification_icon.png'
+        });
+    } else {
+        // TODO: personalize
             var browserNotification = new PNotify({
                 text: notification.message,
                 type: 'info',
@@ -93,7 +96,7 @@ function addNotification(notification) {
             }
             window.location.replace('/users/notification/' + notification.pk + '/see/');
         });
-    //}
+    }
 
     // Add the new notification elements
     var buttonNotification = document.createElement("button"),
@@ -203,3 +206,4 @@ function addNotificationToAllList(notification) {
     buttonNotification.insertBefore(divStatus, buttonNotification.firstChild);
     parent.insertBefore(buttonNotification, parent.children[1]);
 }
+
