@@ -8,8 +8,6 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 
 from posts.models import Hashtag, Post
-from posts.views import visible_posts_for
-
 
 class LandingPage(TemplateView):
     template_name = 'landingpage.html'
@@ -31,7 +29,7 @@ def feed(request):
     all_circles_posts = []
 
     for circle in user_circles:
-        posts_in_circle = visible_posts_for(request.user) \
+        posts_in_circle = Post.visible_posts_for(request.user) \
                               .filter(author__in=circle.get_members()) \
                               .order_by('-created_at')[:50]
 

@@ -54,7 +54,7 @@
                                 <a data-target="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <span class="mdi-action-settings"></span>
                                 </a>
-                                <ul class="dropdown-menu" id="user-settings">
+                                <ul class="dropdown-menu" id="user-settings" style="height: auto !important;">
                                     <li><a href="{% url 'users:edit' pk=request.user.pk %}" style="color: #03a9f4 !important;">Edit profile</a></li>
                                     <li><a href="{% url 'circles:manage' user_pk=request.user.pk %}" style="color: #03a9f4 !important;">Manage circles</a></li>
                                 </ul>
