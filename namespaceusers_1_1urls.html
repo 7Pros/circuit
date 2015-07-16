@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -125,14 +126,18 @@ Users urlspatterns file.
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    url(<span class="stringliteral">r&#39;^(?P&lt;username&gt;[^/]+)/$&#39;</span>, views.user_profile_by_username, name=<span class="stringliteral">&#39;profile_username&#39;</span>),</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    url(<span class="stringliteral">r&#39;^(?P&lt;pk&gt;\d+)/edit/$&#39;</span>, UserUpdateView.as_view(), name=<span class="stringliteral">&#39;edit&#39;</span>),</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    url(<span class="stringliteral">r&#39;^(?P&lt;pk&gt;\d+)/delete/$&#39;</span>, UserDeleteView.as_view(), name=<span class="stringliteral">&#39;delete&#39;</span>),</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;]</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    url(<span class="stringliteral">r&#39;^(?P&lt;pk&gt;\d+)/favorites/$&#39;</span>, UserFavoriteView.as_view(), name=<span class="stringliteral">&#39;favorites&#39;</span>),</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    url(<span class="stringliteral">r&#39;^notification/(?P&lt;pk&gt;\d+)/see/$&#39;</span>, views.see_nofitication, name=<span class="stringliteral">&#39;see_notification&#39;</span>),</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    url(<span class="stringliteral">r&#39;^notification/mark-all/$&#39;</span>, views.mark_all_as_read, name=<span class="stringliteral">&#39;mark_notifications_as_read&#39;</span>),</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    url(<span class="stringliteral">r&#39;^notification/show-all/$&#39;</span>, views.show_all_notifications, name=<span class="stringliteral">&#39;show_all_notifications&#39;</span>)</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;]</div>
 </div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jun 26 2015 14:26:06 for circuit by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jul 16 2015 11:36:26 for circuit by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>

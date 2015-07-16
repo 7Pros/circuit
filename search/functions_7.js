@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['original_5for_5fself',['original_or_self',['../classposts_1_1models_1_1_post.html#a09e258ebc3ceec3137d80206ef4f0cf4',1,'posts::models::Post']]]
+  ['image_5fis_5fvalid',['image_is_valid',['../classposts_1_1models_1_1_post.html#ac48c5bebf341f9ab84f11b948f13167f',1,'posts::models::Post']]]
 ];

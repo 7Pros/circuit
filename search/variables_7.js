@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['name',['name',['../classposts_1_1models_1_1_hashtag.html#a845b6da3d35019aaa4f48615cfe56e09',1,'posts.models.Hashtag.name()'],['../classusers_1_1models_1_1_user.html#ad5ede9137fb99b60bb0b37cdb2afba77',1,'users.models.User.name()'],['../classcircles_1_1models_1_1_circle.html#a7a7f91c6a8abfc81a2d39c19ac1d66e0',1,'circles.models.Circle.name()']]]
+  ['image',['image',['../classposts_1_1models_1_1_post.html#a782bd96275dd3575e8a603f7848703aa',1,'posts::models::Post']]],
+  ['is_5factive',['is_active',['../classusers_1_1models_1_1_user.html#a891322da6ee44334c455ebf83e61a27e',1,'users::models::User']]],
+  ['is_5fstaff',['is_staff',['../classusers_1_1models_1_1_user.html#a8ccbef98f2e495fcc0e8156d2ab43eea',1,'users::models::User']]],
+  ['is_5fsuperuser',['is_superuser',['../classusers_1_1models_1_1_user.html#a3192496df278d0d62ad68875bad8a707',1,'users::models::User']]]
 ];
