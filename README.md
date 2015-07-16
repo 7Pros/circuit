@@ -38,11 +38,11 @@ At last we need gulp to compile all our assets. Simply run gulp
 
     gulp
 
-You're ready to start the django and swampdragon webserver with
+You're ready to start the django and the notification server with
 
     python manage.py runserver
 and
-    python manage.py runsd
+    python notification_server privateip:port
 
 Open [127.0.0.1:8000](http://127.0.0.1:8000/) - DONE
 
