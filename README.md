@@ -6,6 +6,8 @@ A social network created with Django.
 
 [Live demo](http://circuit.lunarco.de/)
 
+![Feed screenshot](screenshot.png)
+
 ## Installation
 
 First make sure that you have [python](https://www.python.org/), [django](https://docs.djangoproject.com/en/1.8/intro/install/), [redis](http://redis.io/topics/quickstart) & [Node.js](https://nodejs.org/) installed.
