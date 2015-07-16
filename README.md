@@ -54,9 +54,9 @@ While developing you will need to run a smtp server, once you try to sign up.
     
 This will start a smtp server in your command line which django will send emails to.
 
-Don't forget to have your redis-server running. If you don't know how to do that, just go to your favorite command line program and type:
+Don't forget to have your redis-server listening on the private ip running. If you don't know how to do that, just go to your favorite command line program and type:
 
-    redis-server
+    redis-server --slaveof privateip port
 
 ### Contributing
 
