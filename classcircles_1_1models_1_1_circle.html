@@ -39,6 +39,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div id="navrow1" class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&#160;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="files.html"><span>Files</span></a></li>
       <li>
@@ -111,7 +112,7 @@ Public Member Functions</h2></td></tr>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a7a7f91c6a8abfc81a2d39c19ac1d66e0"><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcircles_1_1models_1_1_circle.html#a7a7f91c6a8abfc81a2d39c19ac1d66e0">name</a> = models.CharField(max_length=50, default='', blank=True)</td></tr>
 <tr class="separator:a7a7f91c6a8abfc81a2d39c19ac1d66e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a29daf925f52a19f9e865be6c037bef7b"><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcircles_1_1models_1_1_circle.html#a29daf925f52a19f9e865be6c037bef7b">owner</a> = models.ForeignKey(<a class="el" href="classusers_1_1models_1_1_user.html">User</a>)</td></tr>
+<tr class="memitem:a29daf925f52a19f9e865be6c037bef7b"><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcircles_1_1models_1_1_circle.html#a29daf925f52a19f9e865be6c037bef7b">owner</a> = models.ForeignKey(<a class="el" href="classusers_1_1models_1_1_user.html">User</a>, null=True, blank=True)</td></tr>
 <tr class="separator:a29daf925f52a19f9e865be6c037bef7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab662909a577cc404ab1f7b964a48b11"><td class="memItemLeft" align="right" valign="top">tuple&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcircles_1_1models_1_1_circle.html#aab662909a577cc404ab1f7b964a48b11">members</a> = models.ManyToManyField(<a class="el" href="classusers_1_1models_1_1_user.html">User</a>, related_name='members')</td></tr>
 <tr class="separator:aab662909a577cc404ab1f7b964a48b11"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -238,7 +239,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">tuple circles.models.Circle.owner = models.ForeignKey(<a class="el" href="classusers_1_1models_1_1_user.html">User</a>)</td>
+          <td class="memname">tuple circles.models.Circle.owner = models.ForeignKey(<a class="el" href="classusers_1_1models_1_1_user.html">User</a>, null=True, blank=True)</td>
         </tr>
       </table>
   </td>
@@ -276,7 +277,7 @@ Static Public Attributes</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jun 26 2015 14:26:06 for circuit by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Jul 16 2015 11:36:26 for circuit by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.9.1
 </small></address>
