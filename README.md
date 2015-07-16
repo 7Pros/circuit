@@ -40,11 +40,17 @@ At last we need gulp to compile all our assets. Simply run gulp
 
     gulp
 
-You're ready to start the django and swampdragon webserver with
+You're ready to start the django and the notification server with
 
     python manage.py runserver
+
 and
-    python manage.py runsd
+
+    python notification_server
+
+Don't forget to have your redis-server. If you don't know how to do that, just go to your favorite command line program and type:
+
+redis-server
 
 Open [127.0.0.1:8000](http://127.0.0.1:8000/) - DONE
 
@@ -56,13 +62,17 @@ While developing you will need to run a smtp server, once you try to sign up.
     
 This will start a smtp server in your command line which django will send emails to.
 
-Don't forget to have your redis-server running. If you don't know how to do that, just go to your favorite command line program and type:
-
-    redis-server
-
 ### Contributing
 
 If you want to contribute you should take a look at [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Documentation
+
 Check out our [META](https://github.com/7Pros/META) repository. In the [README.md](https://github.com/7Pros/META/blob/master/README.md) you can find all references.
+
+For the code documentation, you can just visit us our [official code documentation](http://7pros.github.io/circuit/)
+
+
+## Mounting it into a server.
+
+If you want to put this into a server, you should have a look at our [wiki about Amazon Web Services](https://github.com/7Pros/META/wiki/Amazon-Server).
